@@ -6,28 +6,35 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 
-# 1. Tìm thư viện Crypto++
+# 1. Tìm Crypto++
 find_package(CryptoPP REQUIRED)
 
-# 2. Tìm thư viện OpenSSL (Ưu tiên đường dẫn đã cài đặt ở --prefix)
-set(OPENSSL_ROOT_DIR "D:/UIT/NT219/libs/openssl361" CACHE PATH "Path to OpenSSL installation")
-set(OPENSSL_USE_STATIC_LIBS ON)
+# 2. Tìm OpenSSL
+# Chỉ ép đường dẫn cứng trên Windows nếu có
+if(WIN32)
+    set(OPENSSL_ROOT_DIR "D:/UIT/NT219/libs/openssl361" CACHE PATH "Path to OpenSSL installation")
+    set(OPENSSL_USE_STATIC_LIBS ON)
+endif()
+
 find_package(OpenSSL REQUIRED)
 
-include(CompilerWarnings)
+include(CompilerWarnings OPTIONAL)
 
 add_executable(demo1_app demo.cpp)
 
-target_set_compiler_warnings(demo1_app)
+if(COMMAND target_set_compiler_warnings)
+    target_set_compiler_warnings(demo1_app)
+endif()
 
 target_include_directories(demo1_app PRIVATE 
     ${OPENSSL_INCLUDE_DIR}
 )
 
+# Link thư viện (các lib socket ws2_32/crypt32 chỉ cần trên Windows)
 target_link_libraries(demo1_app PRIVATE 
     CryptoPP::CryptoPP
     OpenSSL::Crypto
     OpenSSL::SSL
-    ws2_32
-    crypt32
+    $<$<PLATFORM_ID:Windows>:ws2_32>
+    $<$<PLATFORM_ID:Windows>:crypt32>
 )
