@@ -1,13 +1,19 @@
-# Set up guide
+# Set up Task
 
-## Task 1: Dual boot
+## Task 1: Configure **dual boot**
 
-## Task 2: Env
+![alt text](image-11.png)
+
+## Task 2: Compiler Environment
 
 ### Windows
 
-![alt text](image-2.png)
+![alt text](image-3.png)
 
 ![alt text](image.png)
 
 ![alt text](image-1.png)
+
+### Linux
+
+![alt text](image-12.png)
