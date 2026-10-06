@@ -1,6 +1,6 @@
-# Tìm headers (aes.h)
+# Tìm headers (aes.h) - headers ở trực tiếp trong include/ (flat structure)
 find_path(CryptoPP_INCLUDE_DIR
-    NAMES cryptopp/aes.h aes.h
+    NAMES aes.h
     PATHS
         "D:/UIT/NT219/libs/cryptopp/include"
         "${CMAKE_SOURCE_DIR}/third_party/cryptopp/include"
@@ -8,15 +8,32 @@ find_path(CryptoPP_INCLUDE_DIR
         "/usr/include"
 )
 
-# Tìm file thư viện (libcryptopp.a)
-find_library(CryptoPP_LIBRARY
-    NAMES cryptopp libcryptopp
-    PATHS
-        "D:/UIT/NT219/libs/cryptopp/library/gcc"
-        "${CMAKE_SOURCE_DIR}/third_party/cryptopp/lib"
-        "/mingw64/lib"
-        "/usr/lib"
-)
+# Tìm file thư viện - ưu tiên MSVC static library
+if(MSVC)
+    # Ưu tiên x64/Output/Release - static library đầy đủ symbols
+    find_library(CryptoPP_LIBRARY
+        NAMES cryptlib cryptopp-static cryptopp
+        PATHS
+            "D:/UIT/NT219/libs/cryptopp/x64/Output/Release"
+            "D:/UIT/NT219/libs/cryptopp/x64/Output/Debug"
+            "D:/UIT/NT219/libs/cryptopp/x64/cryptlib/Release"
+            "D:/UIT/NT219/libs/cryptopp/x64/cryptlib/Debug"
+            "D:/UIT/NT219/libs/cryptopp/Win32/cryptlib/Release"
+            "D:/UIT/NT219/libs/cryptopp/Win32/cryptlib/Debug"
+            "D:/UIT/NT219/libs/cryptopp/library/msvc"
+            "${CMAKE_SOURCE_DIR}/third_party/cryptopp/lib"
+    )
+else()
+    find_library(CryptoPP_LIBRARY
+        NAMES cryptopp libcryptopp
+        PATHS
+            "D:/UIT/NT219/libs/cryptopp/library/gcc"
+            "D:/UIT/NT219/libs/cryptopp/library/clang"
+            "${CMAKE_SOURCE_DIR}/third_party/cryptopp/lib"
+            "/mingw64/lib"
+            "/usr/lib"
+    )
+endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(CryptoPP

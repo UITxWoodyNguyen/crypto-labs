@@ -1,0 +1,79 @@
+[
+  {
+    "name": "SP800-38A F.1.1 ECB-AES128 (4 blocks)",
+    "mode": "ecb",
+    "key": "2b7e151628aed2a6abf7158809cf4f3c",
+    "pt": "6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710",
+    "ct": "3ad77bb40d7a3660a89ecaf32466ef97f5d3d58503b9699de785895a96fdbaaf43b1cd7f598ece23881b00e3ed0306887b0c785e27e8ad3f8223207104725dd4"
+  },
+  {
+    "name": "SP800-38A F.2.1 CBC-AES128",
+    "mode": "cbc",
+    "key": "2b7e151628aed2a6abf7158809cf4f3c",
+    "iv": "000102030405060708090a0b0c0d0e0f",
+    "pt": "6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710",
+    "ct": "7649abac8119b246cee98e9b12e9197d5086cb9b507219ee95db113a917678b273bed6b8e3c1743b7116e69e222295163ff1caa1681fac09120eca307586e1a7"
+  },
+  {
+    "name": "SP800-38A F.3.13 CFB128-AES128",
+    "mode": "cfb",
+    "key": "2b7e151628aed2a6abf7158809cf4f3c",
+    "iv": "000102030405060708090a0b0c0d0e0f",
+    "pt": "6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710",
+    "ct": "3b3fd92eb72dad20333449f8e83cfb4ac8a64537a0b3a93fcde3cdad9f1ce58b26751f67a3cbb140b1808cf187a4f4dfc04b05357c5d1c0eeac4c66f9ff7f2e6"
+  },
+  {
+    "name": "SP800-38A F.4.1 OFB-AES128",
+    "mode": "ofb",
+    "key": "2b7e151628aed2a6abf7158809cf4f3c",
+    "iv": "000102030405060708090a0b0c0d0e0f",
+    "pt": "6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710",
+    "ct": "3b3fd92eb72dad20333449f8e83cfb4a7789508d16918f03f53c52dac54ed8259740051e9c5fecf64344f7a82260edcc304c6528f659c77866a510d9c1d6ae5e"
+  },
+  {
+    "name": "SP800-38A F.5.1 CTR-AES128",
+    "mode": "ctr",
+    "key": "2b7e151628aed2a6abf7158809cf4f3c",
+    "iv": "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
+    "pt": "6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710",
+    "ct": "874d6191b620e3261bef6864990db6ce9806f66b7970fdff8617187bb9fffdff5ae4df3edbd5d35e5b4f09020db03eab1e031dda2fbe03d1792170a0f3009cee"
+  },
+  {
+    "name": "GCM Test Case 2 (AES-128, 1 block zero)",
+    "mode": "gcm",
+    "key": "00000000000000000000000000000000",
+    "iv": "000000000000000000000000",
+    "aad": "",
+    "pt": "00000000000000000000000000000000",
+    "ct": "0388dace60b6a392f328c2b971b2fe78",
+    "tag": "ab6e47d42cec13bdf53a67b21257bddf"
+  },
+  {
+    "name": "GCM Test Case 4 (AES-128, AAD)",
+    "mode": "gcm",
+    "key": "feffe9928665731c6d6a8f9467308308",
+    "iv": "cafebabefacedbaddecaf888",
+    "aad": "feedfacedeadbeeffeedfacedeadbeefabaddad2",
+    "pt": "d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a721c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b39",
+    "ct": "42831ec2217774244b7221b784d0d49ce3aa212f2c02a4e035c17e2329aca12e21d514b25466931c7d8f6a5aac84aa051ba30b396a0aac973d58e091",
+    "tag": "5bc94fbc3221a5db94fae95ae7121a47"
+  },
+  {
+    "name": "SP800-38C Appendix C Example 1 (CCM, Tlen=4)",
+    "mode": "ccm",
+    "key": "404142434445464748494a4b4c4d4e4f",
+    "iv": "10111213141516",
+    "aad": "0001020304050607",
+    "pt": "20212223",
+    "ct": "7162015b",
+    "tag": "4dac255d"
+  },
+  {
+    "name": "IEEE 1619 XTS-AES128 vector 1",
+    "mode": "xts",
+    "key": "0000000000000000000000000000000000000000000000000000000000000000",
+    "iv": "00000000000000000000000000000000",
+    "pt": "0000000000000000000000000000000000000000000000000000000000000000",
+    "ct": "917cf69ebd68b2ec9b9fe9a3eadda692cd43d2f59598ed858c02c2652fbf922e"
+  }
+]
