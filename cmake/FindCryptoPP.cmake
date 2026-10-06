@@ -3,7 +3,6 @@ find_path(CryptoPP_INCLUDE_DIR
     NAMES cryptopp/aes.h aes.h
     PATHS
         "D:/UIT/NT219/libs/cryptopp/include"
-        "D:/UIT/NT219/libs/cryptopp"          # Nơi chứa trực tiếp *.h nếu chưa copy vào include/
         "${CMAKE_SOURCE_DIR}/third_party/cryptopp/include"
         "/mingw64/include"
         "/usr/include"
@@ -13,8 +12,7 @@ find_path(CryptoPP_INCLUDE_DIR
 find_library(CryptoPP_LIBRARY
     NAMES cryptopp libcryptopp
     PATHS
-        "D:/UIT/NT219/libs/cryptopp/lib"
-        "D:/UIT/NT219/libs/cryptopp"          # Nơi sinh ra libcryptopp.a sau khi chạy make
+        "D:/UIT/NT219/libs/cryptopp/library/gcc"
         "${CMAKE_SOURCE_DIR}/third_party/cryptopp/lib"
         "/mingw64/lib"
         "/usr/lib"
