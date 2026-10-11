@@ -122,6 +122,10 @@ if(BUILD_TESTS)
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests/test_core.cpp")
         add_executable(test_core tests/test_core.cpp)
         target_link_libraries(test_core PRIVATE aescore Catch2::Catch2WithMain)
+        # Clang on Windows: __COUNTER__ is a Microsoft extension, disable C2y warning for tests
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+            target_compile_options(test_core PRIVATE -Wno-c2y-extensions)
+        endif()
         add_test(NAME unit_tests COMMAND test_core)
     endif()
     
