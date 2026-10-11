@@ -1,6 +1,11 @@
 # Build directories
 build/
 build_linux/
+build_windows_msvc/
+build_windows_gcc/
+build_windows_clang/
+build_linux_gcc/
+build_linux_clang/
 bin/
 lib/
 out/

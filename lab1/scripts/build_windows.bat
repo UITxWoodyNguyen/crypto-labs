@@ -1,116 +1,183 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
+
 REM ===========================================================================
-REM build_windows.bat - Build + test Lab 1 (aestool) bang MSVC, dung Crypto++ co san
+REM build_windows.bat - Build Lab 1 (aestool) on Windows with MSVC, GCC, or Clang
 REM
-REM Cach dung (trong cmd da co "cl", vi du x64 Native Tools Command Prompt):
-REM     scripts\build_windows.bat [clean]
+REM Usage (from lab1 folder):
+REM     scripts\build_windows.bat [compiler] [clean]
 REM
-REM Bien moi truong tuy chon (khong dat thi dung mac dinh / tu dong tim):
-REM     CRYPTOPP_ROOT         thu muc source Crypto++     (mac dinh D:\UIT\NT219\libs\cryptopp)
-REM     MSVC_RUNTIME          MultiThreaded (/MT, mac dinh) hoac MultiThreadedDLL (/MD)
+REM Compilers:
+REM     msvc    - Microsoft Visual C++ (default, requires x64 Native Tools)
+REM     gcc     - MinGW-w64 GCC (from MSYS2 mingw64)
+REM     clang   - Clang (from MSYS2 mingw64)
+REM
+REM Examples:
+REM     scripts\build_windows.bat msvc
+REM     scripts\build_windows.bat gcc
+REM     scripts\build_windows.bat clang
+REM     scripts\build_windows.bat msvc clean
+REM
+REM Env vars (optional):
+REM     CRYPTOPP_ROOT     Crypto++ root (default: D:\UIT\NT219\libs\cryptopp)
+REM     OPENSSL_ROOT_DIR  OpenSSL root per compiler (auto-detected if not set)
+REM     MSVC_RUNTIME      MultiThreaded (/MT, default) or MultiThreadedDLL (/MD)
 REM ===========================================================================
 
-cd /d "%~dp0\..\.."
+cd /d "%~dp0\.."
 
-if "%CRYPTOPP_ROOT%"=="" set "CRYPTOPP_ROOT=D:\UIT\NT219\libs\cryptopp"
-if "%MSVC_RUNTIME%"=="" set "MSVC_RUNTIME=MultiThreaded"
+REM Parse arguments
+set "COMPILER="
+set "ACTION="
 
-where cl >nul 2>nul
-if errorlevel 1 goto :no_cl
+:PARSE_ARGS
+if "%~1"=="" goto :DONE_PARSE
+if /I "%~1"=="msvc"  set "COMPILER=msvc"  & shift & goto :PARSE_ARGS
+if /I "%~1"=="gcc"   set "COMPILER=gcc"   & shift & goto :PARSE_ARGS
+if /I "%~1"=="clang" set "COMPILER=clang" & shift & goto :PARSE_ARGS
+if /I "%~1"=="clean" set "ACTION=clean"   & shift & goto :PARSE_ARGS
+echo [WARN] Unknown argument: %~1
+shift
+goto :PARSE_ARGS
+
+:DONE_PARSE
+
+REM Defaults
+if "%COMPILER%"=="" set "COMPILER=msvc"
+
+REM Handle clean action
+if /I "%ACTION%"=="clean" (
+    echo Cleaning build directories...
+    for /d %%D in (build_windows_*) do (
+        echo Removing %%D
+        rmdir /s /q "%%D" 2>nul
+    )
+    exit /b 0
+)
+
+REM Validate compiler choice
+set "VALID_COMPILER=0"
+if /I "%COMPILER%"=="msvc"   set "VALID_COMPILER=1"
+if /I "%COMPILER%"=="gcc"    set "VALID_COMPILER=1"
+if /I "%COMPILER%"=="clang"  set "VALID_COMPILER=1"
+if "%VALID_COMPILER%"=="0" (
+    echo [ERROR] Invalid compiler: %COMPILER%
+    echo Usage: scripts\build_windows.bat ^<msvc^|gcc^|clang^> [clean]
+    exit /b 1
+)
+
+REM Check for cmake
 where cmake >nul 2>nul
-if errorlevel 1 goto :no_cmake
-
-if /I "%~1"=="clean" (
-  echo Xoa thu muc build...
-  if exist build rmdir /s /q build
+if errorlevel 1 (
+    echo [ERROR] cmake not found in PATH. Install: winget install Kitware.CMake
+    exit /b 1
 )
 
-REM ---- Tim include dir (thu muc cha cua "cryptopp") de chuyen cho CMake module ----
-set "INC=%CRYPTOPP_INCLUDE_DIR%"
-if not "%INC%"=="" goto :inc_ok
-for %%I in ("%CRYPTOPP_ROOT%\..") do set "PARENT=%%~fI"
-if exist "%PARENT%\cryptopp\aes.h" set "INC=%PARENT%"
-if "%INC%"=="" if exist "%CRYPTOPP_ROOT%\include\cryptopp\aes.h" set "INC=%CRYPTOPP_ROOT%\include"
-if "%INC%"=="" if exist "%CRYPTOPP_ROOT%\include\aes.h" set "INC=%CRYPTOPP_ROOT%\include"
-if "%INC%"=="" goto :no_inc
-:inc_ok
-
-REM ---- Tim file .lib (x64, Release) de chuyen cho CMake module ----
-set "LIBFILE=%CRYPTOPP_LIBRARY%"
-if not "%LIBFILE%"=="" goto :lib_ok
-for %%F in ("%CRYPTOPP_ROOT%\x64\Output\Release\cryptlib.lib" "%CRYPTOPP_ROOT%\library\msvc\cryptlib.lib" "%CRYPTOPP_ROOT%\library\msvc\cryptopp.lib") do (
-  if exist "%%~F" if "!LIBFILE!"=="" set "LIBFILE=%%~F"
-)
-if "!LIBFILE!"=="" if exist "%CRYPTOPP_ROOT%\library\msvc" (
-  for /r "%CRYPTOPP_ROOT%\library\msvc" %%F in (*.lib) do if "!LIBFILE!"=="" set "LIBFILE=%%F"
-)
-if "!LIBFILE!"=="" goto :no_lib
-:lib_ok
-
-REM ---- Doi \ thanh / cho CMake ----
-set "INC_CM=!INC:\=/!"
-set "LIB_CM=!LIBFILE:\=/!"
-
-REM ---- Chon generator: Luon dung Visual Studio generator neu co cl (MSVC) ----
-set "GEN="
-REM Neu co cl thi dung generator mac dinh (Visual Studio), khong dung Ninja
-where ninja >nul 2>nul
-if not errorlevel 1 (
-    REM Co ninja nhung uu tien MSVC neu dang trong x64 Native Tools
+REM Set compiler-specific variables
+if /I "%COMPILER%"=="msvc" (
+    set "BUILD_DIR=build_windows_msvc"
+    set "GENERATOR=-G \"Visual Studio 18 2026\" -A x64"
+    set "CMAKE_CXX_COMPILER="
+    set "OPENSSL_ROOT_DIR=D:/UIT/NT219/libs/openssl/msvc"
+    if "%MSVC_RUNTIME%"=="" set "MSVC_RUNTIME=MultiThreaded"
+    set "RUNTIME_FLAG=-DCMAKE_MSVC_RUNTIME_LIBRARY=%MSVC_RUNTIME%"
+    REM Check for cl.exe
     where cl >nul 2>nul
-    if errorlevel 1 set "GEN=-G Ninja"
+    if errorlevel 1 (
+        echo [ERROR] MSVC compiler (cl.exe) not found.
+        echo Run from "x64 Native Tools Command Prompt for VS 2022"
+        exit /b 1
+    )
+)
+
+if /I "%COMPILER%"=="gcc" (
+    set "BUILD_DIR=build_windows_gcc"
+    set "GENERATOR=-G \"MinGW Makefiles\""
+    set "CMAKE_CXX_COMPILER=-DCMAKE_CXX_COMPILER=g++.exe"
+    set "OPENSSL_ROOT_DIR=D:/UIT/NT219/libs/openssl/gcc"
+    set "RUNTIME_FLAG="
+    where g++.exe >nul 2>nul
+    if errorlevel 1 (
+        echo [ERROR] g++.exe not found in PATH.
+        echo Use MSYS2 mingw64 shell: C:\msys64\mingw64\bin\g++.exe
+        exit /b 1
+    )
+)
+
+if /I "%COMPILER%"=="clang" (
+    set "BUILD_DIR=build_windows_clang"
+    set "GENERATOR=-G \"MinGW Makefiles\""
+    set "CMAKE_CXX_COMPILER=-DCMAKE_CXX_COMPILER=clang++.exe"
+    set "OPENSSL_ROOT_DIR=D:/UIT/NT219/libs/openssl/clang"
+    set "RUNTIME_FLAG="
+    where clang++.exe >nul 2>nul
+    if errorlevel 1 (
+        echo [ERROR] clang++.exe not found in PATH.
+        echo Use MSYS2 mingw64 shell: C:\msys64\mingw64\bin\clang++.exe
+        exit /b 1
+    )
+)
+
+REM Default Crypto++ root (FindCryptoPP.cmake will auto-detect compiler-specific libs)
+if "%CRYPTOPP_ROOT%"=="" set "CRYPTOPP_ROOT=D:/UIT/NT219/libs/cryptopp"
+
+echo.
+echo ================================================================================
+echo Building Lab 1 - AES Tool
+echo Compiler: %COMPILER%
+echo Build dir: %BUILD_DIR%
+echo Crypto++ root: %CRYPTOPP_ROOT%
+echo OpenSSL root: %OPENSSL_ROOT_DIR%
+echo ================================================================================
+echo.
+
+REM Configure
+echo == 1/4 Configure ==
+cmake -S . -B "%BUILD_DIR%" %GENERATOR% %CMAKE_CXX_COMPILER% ^
+    -DCMAKE_BUILD_TYPE=Release ^
+    -DCRYPTOPP_ROOT_DIR="%CRYPTOPP_ROOT%" ^
+    -DOPENSSL_ROOT_DIR="%OPENSSL_ROOT_DIR%" ^
+    %RUNTIME_FLAG%
+if errorlevel 1 (
+    echo [ERROR] Configure failed.
+    exit /b 1
+)
+
+REM Build
+echo == 2/4 Build ==
+cmake --build "%BUILD_DIR%" --config Release
+if errorlevel 1 (
+    echo [ERROR] Build failed.
+    exit /b 1
+)
+
+REM Test
+echo == 3/4 Test (ctest) ==
+pushd "%BUILD_DIR%"
+ctest -C Release --output-on-failure
+set "CTEST_RC=!ERRORLEVEL!"
+popd
+if not "!CTEST_RC!"=="0" (
+    echo [ERROR] Tests failed.
+    exit /b 1
+)
+
+REM KAT
+echo == 4/4 KAT (Known Answer Tests) ==
+set "EXE=%BUILD_DIR%\aestool.exe"
+if not exist "!EXE!" set "EXE=%BUILD_DIR%\Release\aestool.exe"
+if not exist "!EXE!" (
+    echo [ERROR] Executable not found: !EXE!
+    exit /b 1
+)
+"!EXE!" --kat kat\vectors.json
+if errorlevel 1 (
+    echo [ERROR] KAT failed.
+    exit /b 1
 )
 
 echo.
-echo Crypto++ include : !INC_CM!
-echo Crypto++ library : !LIB_CM!
-echo MSVC runtime     : %MSVC_RUNTIME%
-echo Generator        : %GEN%
-echo.
-
-echo == 1/4 Cau hinh ==
-set "OPENSSL_ROOT_DIR=D:/UIT/NT219/libs/openssl/msvc"
-cmake -S . -B build %GEN% -DCMAKE_BUILD_TYPE=Release -DCRYPTOPP_INCLUDE_DIR="!INC_CM!" -DCRYPTOPP_LIBRARY="!LIB_CM!" -DCMAKE_MSVC_RUNTIME_LIBRARY=%MSVC_RUNTIME%
-if errorlevel 1 goto :fail
-
-echo == 2/4 Build ==
-cmake --build build --config Release
-if errorlevel 1 goto :fail
-
-echo == 3/4 ctest ==
-pushd build
-ctest -C Release --output-on-failure
-set "RC=!ERRORLEVEL!"
-popd
-if not "!RC!"=="0" goto :fail
-
-echo == 4/4 KAT ==
-set "EXE=build\lab1\Release\aestool.exe"
-if not exist "!EXE!" set "EXE=build\lab1\aestool.exe"
-"!EXE!" --kat lab1\kat\vectors.json
-if errorlevel 1 goto :fail
-
-echo.
-echo Xong. Binary: %CD%\!EXE!
+echo ================================================================================
+echo SUCCESS! Binary: %CD%\!EXE!
+echo ================================================================================
 exit /b 0
-
-:no_cl
-echo [LOI] Khong thay "cl". Hay mo "x64 Native Tools Command Prompt for VS" roi chay lai.
-exit /b 1
-:no_cmake
-echo [LOI] Khong thay "cmake" trong PATH. Cai dat bang: winget install Kitware.CMake
-exit /b 1
-:no_inc
-echo [LOI] Khong tim thay cryptopp\aes.h hoac aes.h. Dat CRYPTOPP_INCLUDE_DIR la thu muc CHA cua thu muc "cryptopp".
-echo        Da thu: "%PARENT%\cryptopp\aes.h", "%CRYPTOPP_ROOT%\include\cryptopp\aes.h", "%CRYPTOPP_ROOT%\include\aes.h"
-exit /b 1
-:no_lib
-echo [LOI] Khong tim thay file .lib cua Crypto++ ban x64 Release trong "%CRYPTOPP_ROOT%".
-echo        Dat bien CRYPTOPP_LIBRARY=duong\dan\toi\cryptlib.lib roi chay lai.
-exit /b 1
-:fail
-echo.
-echo [LOI] Build/test that bai. Xem thong bao phia tren. Thu "scripts\build_windows.bat clean".
-echo        Neu loi LNK2038 RuntimeLibrary: dat MSVC_RUNTIME=MultiThreadedDLL roi chay "clean".
-exit /b 1

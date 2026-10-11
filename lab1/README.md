@@ -1,240 +1,211 @@
 # Lab 1: Symmetric Encryption with Crypto++
 
-## Overview
-Command-line tool `aestool` implementing AES symmetric encryption with multiple modes using Crypto++ library.
+## Objective
+Implement AES symmetric encryption/decryption using Crypto++ library with multiple modes (ECB, CBC, GCM, CTR) and compare performance with OpenSSL.
 
-## Supported Modes
-| Mode | Type | Key Size | IV/Nonce Size | Notes |
-|------|------|----------|---------------|-------|
-| ECB | Block | 128/192/256 | N/A | ⚠ Warning, limited to 16KB without `--allow-ecb` |
-| CBC | Block | 128/192/256 | 16 bytes | PKCS#7 padding |
-| CFB | Stream | 128/192/256 | 16 bytes | No padding |
-| OFB | Stream | 128/192/256 | 16 bytes | No padding |
-| CTR | Stream | 128/192/256 | 16 bytes | No padding |
-| XTS | Block | 256/512 | 16 bytes (tweak) | No padding, ≥16 bytes input |
-| CCM | AEAD | 128/192/256 | 7-13 bytes | Tag: 4/8/16 bytes |
-| GCM | AEAD | 128/192/256 | 12 bytes | Tag: 16 bytes |
+## Topics Covered
+- AES block cipher (128/192/256-bit keys)
+- Block cipher modes: ECB, CBC, CFB, OFB, CTR, GCM, CCM
+- Key derivation (PBKDF2)
+- Authenticated encryption (GCM, CCM)
+- Performance benchmarking
 
 ## Dependencies
-- **Crypto++** 8.7+ (built with `/MT` on Windows)
-- **OpenSSL** 3.0+ (for KAT vectors only)
-- **CMake** 3.20+
-- **C++17** compatible compiler (MSVC, GCC, Clang)
+- **Crypto++**: `D:\UIT\NT219\libs\cryptopp\` (Windows) / `~/Desktop/nt219lib/cryptopp/` (Linux)
+  - Headers: `include/`
+  - Libraries per compiler: `library/{msvc,gcc,clang}/` (Windows) / `{gcc,clang}/lib/` (Linux)
+- **OpenSSL**: `D:\UIT\NT219\libs\openssl\` (Windows) / `~/Desktop/nt219lib/openssl/` (Linux)
+  - Per compiler: `{msvc,gcc,clang}/{include,lib,lib64}/`
 
-### Windows
-- Visual Studio 2022+ (MSVC)
-- Or MinGW-w64 (GCC 11+)
-
-### Linux
-- Ubuntu 20.04/22.04/24.04 LTS
-- `build-essential cmake git libcrypto++-dev`
-
----
+## Source Structure
+```
+lab1/
+├── CMakeLists.txt
+├── src/
+│   ├── aescore.hpp       # Core AES wrapper interface
+│   ├── aescore.cpp       # Implementation using Crypto++
+│   ├── cryptopp_all.hpp  # Unified Crypto++ headers
+│   └── main.cpp          # CLI tool entry point
+├── tests/
+│   └── test_core.cpp     # Unit tests (Catch2)
+├── kat/
+│   └── vectors.json      # NIST KAT test vectors
+├── scripts/
+│   ├── build_windows.bat # Windows build script (MSVC/GCC/Clang)
+│   └── build_linux.sh    # Linux build script (GCC/Clang)
+└── build_<platform>_<compiler>/  # Build output (created during build)
+```
 
 ## Building
 
-### Windows (MSVC)
-```cmd
-REM Open "x64 Native Tools Command Prompt for VS 2022"
-cd crypto-labs\lab1\scripts
-build_windows.bat
-```
+### Option 1: Using Build Scripts (Recommended)
 
-Optional: clean rebuild
-```cmd
-build_windows.bat clean
-```
-
-Output: `build\lab1\Release\aestool.exe`
-
-### Linux
+#### Windows (MSYS2 mingw64 shell)
 ```bash
-cd crypto-labs
-./lab1/scripts/build_linux.sh
+# From lab1/ directory
+cd lab1
+
+# MSVC (requires x64 Native Tools Command Prompt for VS)
+scripts\build_windows.bat msvc
+
+# GCC (MinGW-w64)
+scripts\build_windows.bat gcc
+
+# Clang (MSYS2 mingw64)
+scripts\build_windows.bat clang
+
+# Clean all build dirs
+scripts\build_windows.bat clean
 ```
 
-Optional flags:
+#### Linux (Ubuntu/Kali)
 ```bash
-./lab1/scripts/build_linux.sh --clean       # clean rebuild
-./lab1/scripts/build_linux.sh --install-deps # install deps via apt (sudo)
+# From lab1/ directory
+cd lab1
+
+# GCC
+scripts/build_linux.sh gcc
+
+# Clang
+scripts/build_linux.sh clang
+
+# Clean build dir
+scripts/build_linux.sh gcc --clean
 ```
 
-Custom Crypto++ path:
-```bash
-CRYPTOPP_ROOT=/opt/cryptopp ./lab1/scripts/build_linux.sh
-# or
-CRYPTOPP_INCLUDE_DIR=/opt/cryptopp/include CRYPTOPP_LIBRARY=/opt/cryptopp/lib/libcryptopp.a \
-  ./lab1/scripts/build_linux.sh
-```
+### Option 2: Manual CMake Commands
 
-Output: `build/lab1/aestool`
-
-### Manual CMake (both platforms)
+#### Windows - MSVC (x64 Native Tools Command Prompt)
 ```bash
-mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
+cd lab1
+mkdir build_windows_msvc && cd build_windows_msvc
+cmake .. -G "Visual Studio 18 2026" -A x64 \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCRYPTOPP_ROOT_DIR="D:/UIT/NT219/libs/cryptopp" \
+  -DOPENSSL_ROOT_DIR="D:/UIT/NT219/libs/openssl/msvc" \
+  -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
 cmake --build . --config Release
 ```
 
-Windows: add `-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded`
-
----
-
-## CLI Usage
-
-### Key Generation
+#### Windows - GCC (MSYS2 mingw64 shell)
 ```bash
-# 256-bit key, raw binary
-aestool keygen --bits 256 --out key.bin
-
-# 256-bit key, hex format with header
-aestool keygen --bits 256 --hex --out key.hex
+cd lab1
+mkdir build_windows_gcc && cd build_windows_gcc
+cmake .. -G "MinGW Makefiles" \
+  -DCMAKE_CXX_COMPILER=g++.exe \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCRYPTOPP_ROOT_DIR="D:/UIT/NT219/libs/cryptopp" \
+  -DOPENSSL_ROOT_DIR="D:/UIT/NT219/libs/openssl/gcc"
+cmake --build .
 ```
 
-### Encryption
+#### Windows - Clang (MSYS2 mingw64 shell)
 ```bash
-# Basic AES-256-GCM
-aestool encrypt --mode gcm --aead --key key.bin --in msg.txt --out ct.bin
-
-# With auto-generated nonce, show hex output
-aestool encrypt --mode ctr --key key.bin --text "Hello World"
-
-# With explicit nonce file
-aestool encrypt --mode gcm --aead --key key.bin --nonce nonce.bin --in msg.txt --out ct.bin
-
-# CCM with custom tag length
-aestool encrypt --mode ccm --aead --key key.bin --tag-len 8 --in msg.txt --out ct.bin
-
-# ECB (requires --allow-ecb for >16KB)
-aestool encrypt --mode ecb --allow-ecb --key key.bin --in large.bin --out ct.bin
+cd lab1
+mkdir build_windows_clang && cd build_windows_clang
+cmake .. -G "MinGW Makefiles" \
+  -DCMAKE_CXX_COMPILER=clang++.exe \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCRYPTOPP_ROOT_DIR="D:/UIT/NT219/libs/cryptopp" \
+  -DOPENSSL_ROOT_DIR="D:/UIT/NT219/libs/openssl/clang"
+cmake --build .
 ```
 
-### Decryption
+#### Linux - GCC
 ```bash
-# With sidecar JSON (auto-loads IV/tag/AAD)
-aestool decrypt --mode gcm --aead --key key.bin --in ct.bin --out msg.txt
-
-# Explicit tag and IV
-aestool decrypt --mode gcm --aead --key key.bin --iv nonce.bin --tag-hex <tag> --in ct.bin --out msg.txt
-
-# Output to stdout
-aestool decrypt --mode ctr --key key.bin --iv nonce.bin --text <ciphertext_hex> --encode hex
+cd lab1
+mkdir build_ubuntu_gcc && cd build_ubuntu_gcc
+cmake .. \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCRYPTOPP_ROOT_DIR="$HOME/Desktop/nt219lib/cryptopp" \
+  -DOPENSSL_ROOT_DIR="$HOME/Desktop/nt219lib/openssl/gcc"
+cmake --build .
 ```
 
-### Known Answer Tests (KAT)
+#### Linux - Clang
 ```bash
-aestool --kat lab1/kat/vectors.json
-# or
-aestool kat --kat lab1/kat/vectors.json
+cd lab1
+mkdir build_ubuntu_clang && cd build_ubuntu_clang
+cmake .. -DCMAKE_CXX_COMPILER=clang++ \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCRYPTOPP_ROOT_DIR="$HOME/Desktop/nt219lib/cryptopp" \
+  -DOPENSSL_ROOT_DIR="$HOME/Desktop/nt219lib/openssl/clang"
+cmake --build .
 ```
 
-### Benchmark
-```bash
-# Full benchmark (30 runs, 6 sizes, 8 modes)
-aestool bench --out bench.csv
-
-# Quick benchmark
-aestool bench --quick --out bench.csv
-
-# Plot results (requires Python: pandas, matplotlib)
-python3 lab1/scripts/plot_bench.py bench.csv
-```
-
----
-
-## Security Features
-
-### Misuse Prevention
-- **ECB**: Warning + blocked for files >16KB (override with `--allow-ecb`)
-- **IV/Nonce**: Validated per mode; auto-generated via `AutoSeededRandomPool` if omitted
-- **Nonce Reuse**: Registry `.aestool_nonces` prevents key+nonce reuse in CTR/CCM/GCM
-- **AEAD**: Tag verification mandatory; fail-closed on auth failure
-- **Fail Closed**: All errors abort without writing plaintext
-
-### Key/IV Handling
-- Keys: raw binary or hex (with `AESKEY-HEX\n` header)
-- IV/Nonce: file (raw or hex) or direct hex string
-- AAD: file (`--aad`) or string (`--aad-text`)
-
-### Sidecar JSON Header
-Generated on encrypt, auto-loaded on decrypt:
-```json
-{
-  "alg": "AES-256-GCM",
-  "mode": "gcm",
-  "iv": "hex...",
-  "aad": "hex...",
-  "tag": "hex...",
-  "tag_len": "16"
-}
-```
-
----
-
-## Testing
+## Usage
 
 ```bash
-# Unit tests (Catch2)
-ctest -C Release -R unit_tests
+# Help
+./aestool --help
 
-# KAT vectors (NIST SP 800-38A, GCM, CCM, XTS)
-ctest -C Release -R nist_kat
-# or
-./build/lab1/Release/aestool.exe --kat lab1/kat/vectors.json
+# Encrypt
+./aestool encrypt --key <hex_key> --iv <hex_iv> --mode cbc --in plaintext.txt --out ciphertext.bin
 
-# Negative CLI tests
-ctest -C Release -R cli_negative
+# Decrypt
+./aestool decrypt --key <hex_key> --iv <hex_iv> --mode cbc --in ciphertext.bin --out decrypted.txt
+
+# Run NIST KAT
+./aestool --kat kat/vectors.json
+
+# Benchmark
+./aestool bench --mode gcm --size 1048576 --iterations 1000
 ```
 
-Expected: 9/9 KAT pass, all unit tests pass, all negative tests pass.
+## Supported Modes
+| Mode | IV/Nonce | Auth Tag | Use Case |
+|------|----------|----------|----------|
+| ECB | No | No | Legacy only (NOT recommended) |
+| CBC | 16 bytes | No | General purpose |
+| CFB | 16 bytes | No | Stream-like |
+| OFB | 16 bytes | No | Stream-like |
+| CTR | 16 bytes | No | Parallelizable |
+| GCM | 12 bytes | 16 bytes | **Recommended** (AEAD) |
+| CCM | 12 bytes | 16 bytes | AEAD (constrained) |
 
----
+## Running Tests
 
-## Benchmarking
-
-Measures throughput (MB/s) and latency (µs/op) across:
-- Sizes: 1KB, 4KB, 16KB, 256KB, 1MB, 8MB
-- Modes: all 8 modes (encrypt/decrypt)
-- Runs: 30 (default), statistical analysis (mean/median/sd/CI95)
-
-Output CSV format:
-```csv
-mode,dir,size_bytes,ops_per_block,runs,thr_mean_MBps,thr_median_MBps,thr_sd,thr_ci95,lat_mean_us,lat_median_us,lat_sd,lat_ci95
+```bash
+# From build directory
+cd build_<platform>_<compiler>
+ctest --output-on-failure
 ```
 
----
+Tests include:
+- Unit tests (Catch2, fetched automatically)
+- NIST KAT (Known Answer Tests) - 9 vectors
+- CLI negative testing
 
-## Project Structure
-```
-lab1/
-├── CMakeLists.txt          # Build config
-├── build.md                # Build guide
-├── README.md               # This file
-├── kat/
-│   └── vectors.json        # NIST KAT vectors
-├── scripts/
-│   ├── build_windows.bat   # Windows build script
-│   ├── build_linux.sh      # Linux build script
-│   └── plot_bench.py       # Plotting script
-├── src/
-│   ├── main.cpp            # CLI entry point
-│   ├── aescore.hpp         # Core API
-│   ├── aescore.cpp         # Crypto++ implementations
-│   └── cryptopp_all.hpp    # Crypto++ headers
-└── tests/
-    ├── test_core.cpp       # Unit tests (Catch2)
-    └── cli_negative.cmake  # Negative CLI tests
-```
+## Verified Build Matrix
 
----
+| Platform | Compiler | Config | Build | KAT Tests |
+|----------|----------|--------|-------|-----------|
+| Windows | MSVC (VS 2026) | Release | ✅ | ✅ 9/9 pass |
+| Windows | GCC 16.2 (mingw64) | Release | ✅ | ✅ 9/9 pass |
+| Windows | Clang 22.1 (mingw64) | Release | ✅ | ✅ (builds OK) |
+| Linux | GCC | Release | ⏳ | ⏳ |
+| Linux | Clang | Release | ⏳ | ⏳ |
 
-## Known Limitations
-- XTS: no authentication (integrity not protected)
-- Nonce registry: local file only (not distributed)
-- Benchmark: single-threaded, user-space timing
-- No hardware AES-NI detection (Crypto++ handles automatically)
+## Cross-Platform Latency Comparison
 
----
+After building on all target platforms, run benchmarks and record:
 
-## License
-Academic use only. Part of NT219 Cryptography Labs.
+| Platform | Compiler | Mode | Block Size | Ops/sec | Latency (ns/op) |
+|----------|----------|------|------------|---------|-----------------|
+| Windows | MSVC | GCM | 16KB | TBD | TBD |
+| Windows | GCC | GCM | 16KB | TBD | TBD |
+| Windows | Clang | GCM | 16KB | TBD | TBD |
+| Ubuntu | GCC | GCM | 16KB | TBD | TBD |
+| Ubuntu | Clang | GCM | 16KB | TBD | TBD |
+
+## Implementation Notes
+- Uses Crypto++ for primary implementation
+- OpenSSL used for comparison benchmarking
+- All crypto operations use constant-time implementations where available
+- Keys/IVs handled via `SecByteBlock` for secure memory management
+
+## References
+- [Crypto++ AES Documentation](https://www.cryptopp.com/wiki/AES)
+- [NIST SP 800-38A](https://csrc.nist.gov/publications/detail/sp/800-38a/final) - Block Cipher Modes
+- [NIST SP 800-38D](https://csrc.nist.gov/publications/detail/sp/800-38d/final) - GCM
+- [RFC 5116](https://tools.ietf.org/html/rfc5116) - AEAD

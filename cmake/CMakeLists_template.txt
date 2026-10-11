@@ -1,0 +1,130 @@
+# =============================================================================
+# TEMPLATE CMakeLists.txt for Lab N
+# Copy this file to labN/CMakeLists.txt and customize:
+# - project() name
+# - Source files
+# - Dependencies (CryptoPP, OpenSSL, etc.)
+# =============================================================================
+
+cmake_minimum_required(VERSION 3.20)
+project(labN_name LANGUAGES CXX)
+
+# -----------------------------------------------------------------------------
+# Project Configuration
+# -----------------------------------------------------------------------------
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# -----------------------------------------------------------------------------
+# Platform & Compiler Detection
+# -----------------------------------------------------------------------------
+if(WIN32)
+    set(PLATFORM_NAME "windows")
+else()
+    set(PLATFORM_NAME "ubuntu")
+endif()
+
+if(MSVC)
+    set(COMPILER_NAME "msvc")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    set(COMPILER_NAME "clang")
+else()
+    set(COMPILER_NAME "gcc")
+endif()
+
+message(STATUS "Platform: ${PLATFORM_NAME}, Compiler: ${COMPILER_NAME}")
+message(STATUS "Suggested build dir: ${CMAKE_SOURCE_DIR}/build_${PLATFORM_NAME}_${COMPILER_NAME}/")
+
+# -----------------------------------------------------------------------------
+# Module Path (for FindCryptoPP.cmake)
+# -----------------------------------------------------------------------------
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake")
+
+# -----------------------------------------------------------------------------
+# Find Dependencies
+# -----------------------------------------------------------------------------
+
+# --- Crypto++ (if needed) ---
+# find_package(CryptoPP REQUIRED)
+
+# --- OpenSSL (if needed) ---
+if(WIN32)
+    if(MSVC)
+        set(OPENSSL_ROOT_DIR "D:/UIT/NT219/libs/openssl/msvc" CACHE PATH "OpenSSL root dir" FORCE)
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        set(OPENSSL_ROOT_DIR "D:/UIT/NT219/libs/openssl/clang" CACHE PATH "OpenSSL root dir" FORCE)
+    else()
+        set(OPENSSL_ROOT_DIR "D:/UIT/NT219/libs/openssl/gcc" CACHE PATH "OpenSSL root dir" FORCE)
+    endif()
+else()
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        set(OPENSSL_ROOT_DIR "$ENV{HOME}/Desktop/nt219lib/openssl/clang" CACHE PATH "OpenSSL root dir" FORCE)
+    else()
+        set(OPENSSL_ROOT_DIR "$ENV{HOME}/Desktop/nt219lib/openssl/gcc" CACHE PATH "OpenSSL root dir" FORCE)
+    endif()
+endif()
+
+# find_package(OpenSSL REQUIRED)
+
+# Threads (often needed)
+find_package(Threads REQUIRED)
+
+# -----------------------------------------------------------------------------
+# Compiler Warning Flags
+# -----------------------------------------------------------------------------
+if(MSVC)
+    add_compile_options(/W4 /permissive- /utf-8)
+else()
+    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+endif()
+
+# -----------------------------------------------------------------------------
+# Targets
+# -----------------------------------------------------------------------------
+
+# Example: Static library
+# add_library(labN_core STATIC src/labN_core.cpp)
+# target_include_directories(labN_core PUBLIC
+#     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+# )
+# target_link_libraries(labN_core PUBLIC
+#     CryptoPP::CryptoPP    # if using Crypto++
+#     OpenSSL::Crypto       # if using OpenSSL
+#     OpenSSL::SSL          # if using OpenSSL
+#     Threads::Threads
+# )
+
+# Example: Executable
+# add_executable(labN_tool src/main.cpp)
+# target_link_libraries(labN_tool PRIVATE labN_core)
+
+# -----------------------------------------------------------------------------
+# Tests (Optional)
+# -----------------------------------------------------------------------------
+option(BUILD_TESTS "Build unit tests" ON)
+
+if(BUILD_TESTS)
+    enable_testing()
+    
+    # Fetch Catch2
+    include(FetchContent)
+    FetchContent_Declare(Catch2
+        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+        GIT_TAG v3.5.3
+    )
+    FetchContent_MakeAvailable(Catch2)
+    
+    # Example test target
+    # if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests/test_core.cpp")
+    #     add_executable(test_core tests/test_core.cpp)
+    #     target_link_libraries(test_core PRIVATE labN_core Catch2::Catch2WithMain)
+    #     add_test(NAME unit_tests COMMAND test_core)
+    # endif()
+endif()
