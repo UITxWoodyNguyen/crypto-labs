@@ -117,7 +117,8 @@ cd lab1
 mkdir build_ubuntu_gcc && cd build_ubuntu_gcc
 cmake .. \
   -DCMAKE_BUILD_TYPE=Release \
-  -DCRYPTOPP_ROOT_DIR="$HOME/Desktop/nt219lib/cryptopp" \
+  -DCryptoPP_INCLUDE_DIR="$HOME/Desktop/nt219lib/cryptopp/gcc/include" \
+  -DCryptoPP_LIBRARY="$HOME/Desktop/nt219lib/cryptopp/gcc/lib/libcryptopp.a" \
   -DOPENSSL_ROOT_DIR="$HOME/Desktop/nt219lib/openssl/gcc"
 cmake --build .
 ```
@@ -126,9 +127,10 @@ cmake --build .
 ```bash
 cd lab1
 mkdir build_ubuntu_clang && cd build_ubuntu_clang
-cmake .. -DCMAKE_CXX_COMPILER=clang++ \
+cmake .. \
   -DCMAKE_BUILD_TYPE=Release \
-  -DCRYPTOPP_ROOT_DIR="$HOME/Desktop/nt219lib/cryptopp" \
+  -DCryptoPP_INCLUDE_DIR="$HOME/Desktop/nt219lib/cryptopp/clang/include" \
+  -DCryptoPP_LIBRARY="$HOME/Desktop/nt219lib/cryptopp/clang/lib/libcryptopp.a" \
   -DOPENSSL_ROOT_DIR="$HOME/Desktop/nt219lib/openssl/clang"
 cmake --build .
 ```

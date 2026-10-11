@@ -1,0 +1,2 @@
+WARNING: ECB leaks plaintext patterns and is NOT semantically secure. Do not use for real data.
+ERROR: ECB blocked for inputs > 16 KiB (override with --allow-ecb)

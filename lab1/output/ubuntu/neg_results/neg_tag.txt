@@ -1,0 +1,1 @@
+ERROR: header mode does not match --mode
