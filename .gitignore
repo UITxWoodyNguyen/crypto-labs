@@ -4,8 +4,8 @@ build_linux/
 build_windows_msvc/
 build_windows_gcc/
 build_windows_clang/
-build_linux_gcc/
-build_linux_clang/
+build_ubuntu_gcc/
+build_ubuntu_clang/
 bin/
 lib/
 out/
@@ -27,7 +27,6 @@ out/
 *.obj
 
 # Generated test artifacts & large files
-*.bin
 *.enc
 *.dec
 *.sig
