@@ -1,0 +1,10 @@
+[PASS] SP800-38A F.1.1 ECB-AES128 (4 blocks)
+[PASS] SP800-38A F.2.1 CBC-AES128
+[PASS] SP800-38A F.3.13 CFB128-AES128
+[PASS] SP800-38A F.4.1 OFB-AES128
+[PASS] SP800-38A F.5.1 CTR-AES128
+[PASS] GCM Test Case 2 (AES-128, 1 block zero)
+[PASS] GCM Test Case 4 (AES-128, AAD)
+[PASS] SP800-38C Appendix C Example 1 (CCM, Tlen=4)
+[PASS] IEEE 1619 XTS-AES128 vector 1
+---- KAT summary: 9 passed, 0 failed, 9 total
