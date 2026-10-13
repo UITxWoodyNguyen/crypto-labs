@@ -1,6 +1,6 @@
 # Lab 1: Comprehensive Ubuntu Execution Guide (`lab_ubuntu_runguide.md`)
 
-> **Note:** All commands are tailored specifically for the environment on Ubuntu, with output directories correctly aligned to `crypto-labs/lab1/output/ubuntu`.
+> **Note:** All commands are tailored specifically for the environment on Ubuntu. Test data is **shared** between OSes via `output/key_bin`; OS-specific outputs go to `output/ubuntu`.
 
 ---
 
@@ -12,7 +12,7 @@ Run all commands from the repository root: `/home/dell/home-crypto/crypto-labs/l
 cd /home/dell/home-crypto/crypto-labs/lab1
 
 # Create all required output directories
-mkdir -p output/ubuntu/key_bin
+mkdir -p output/key_bin
 mkdir -p output/ubuntu/neg_results
 mkdir -p output/ubuntu/benchmarks
 ```
@@ -76,26 +76,29 @@ ctest --output-on-failure > /home/dell/home-crypto/crypto-labs/lab1/output/ubunt
 
 ---
 
-## 5. Prepare Test Data for Negative Testing
+## 5. Prepare Test Data for Negative Testing (Shared between OSes)
 
-Generate keys, IVs, plaintexts, and ciphertexts in `output/ubuntu/key_bin/`:
+Generate keys, IVs, plaintexts, and ciphertexts in `output/key_bin/`. **Only generate once** — the same files are reused by the Windows guide.
 
 ```bash
 cd /home/dell/home-crypto/crypto-labs/lab1
 
 # 1. Generate keys & IVs
-head -c 32 /dev/urandom > output/ubuntu/key_bin/key.bin
-head -c 32 /dev/urandom > output/ubuntu/key_bin/key_wrong.bin
-head -c 16 /dev/urandom > output/ubuntu/key_bin/iv.bin
-head -c 16 /dev/urandom > output/ubuntu/key_bin/iv_wrong.bin
-head -c 8 /dev/urandom > output/ubuntu/key_bin/short_iv.bin
+head -c 32 /dev/urandom > output/key_bin/key.bin
+head -c 32 /dev/urandom > output/key_bin/key_wrong.bin
+head -c 16 /dev/urandom > output/key_bin/iv.bin
+head -c 16 /dev/urandom > output/key_bin/iv_wrong.bin
+head -c 8  /dev/urandom > output/key_bin/short_iv.bin
 
 # 2. Generate sample plaintext
-echo "Hello World plaintext for testing negative cases" > output/ubuntu/key_bin/plain.txt
+echo "Hello World plaintext for testing negative cases" > output/key_bin/plain.txt
 
 # 3. Encrypt plain text to create valid ciphertext (CBC & GCM)
-./build_ubuntu_gcc/aestool encrypt --mode cbc --key output/ubuntu/key_bin/key.bin --in output/ubuntu/key_bin/plain.txt --out output/ubuntu/key_bin/ct.bin
-./build_ubuntu_gcc/aestool encrypt --mode gcm --aead --key output/ubuntu/key_bin/key.bin --in output/ubuntu/key_bin/plain.txt --out output/ubuntu/key_bin/ct_gcm.bin
+./build_ubuntu_gcc/aestool encrypt --mode cbc --key output/key_bin/key.bin --in output/key_bin/plain.txt --out output/key_bin/ct.bin
+./build_ubuntu_gcc/aestool encrypt --mode gcm --aead --key output/key_bin/key.bin --in output/key_bin/plain.txt --out output/key_bin/ct_gcm.bin
+
+# 4. Large payload for ECB policy test
+dd if=/dev/zero of=output/key_bin/large.bin bs=1K count=32
 ```
 
 ---
@@ -108,20 +111,19 @@ Run negative tests and capture outputs into `output/ubuntu/neg_results/`:
 cd /home/dell/home-crypto/crypto-labs/lab1
 
 # 1. Test wrong key
-./build_ubuntu_gcc/aestool decrypt --mode cbc --key output/ubuntu/key_bin/key_wrong.bin --in output/ubuntu/key_bin/ct.bin --out output/ubuntu/key_bin/out.txt 2>&1 | tee output/ubuntu/neg_results/neg_key.txt
+./build_ubuntu_gcc/aestool decrypt --mode cbc --key output/key_bin/key_wrong.bin --in output/key_bin/ct.bin --out output/key_bin/out.txt 2>&1 | tee output/ubuntu/neg_results/neg_key.txt
 
 # 2. Test wrong IV
-./build_ubuntu_gcc/aestool decrypt --mode cbc --key output/ubuntu/key_bin/key.bin --iv output/ubuntu/key_bin/iv_wrong.bin --in output/ubuntu/key_bin/ct.bin --out output/ubuntu/key_bin/out.txt 2>&1 | tee output/ubuntu/neg_results/neg_iv.txt
+./build_ubuntu_gcc/aestool decrypt --mode cbc --key output/key_bin/key.bin --iv output/key_bin/iv_wrong.bin --in output/key_bin/ct.bin --out output/key_bin/out.txt 2>&1 | tee output/ubuntu/neg_results/neg_iv.txt
 
 # 3. Test wrong AEAD Tag (GCM)
-./build_ubuntu_gcc/aestool decrypt --mode gcm --aead --key output/ubuntu/key_bin/key.bin --in output/ubuntu/key_bin/ct_gcm.bin --out output/ubuntu/key_bin/out.txt 2>&1 | tee output/ubuntu/neg_results/neg_tag.txt
+./build_ubuntu_gcc/aestool decrypt --mode gcm --aead --key output/key_bin/key.bin --in output/key_bin/ct_gcm.bin --out output/key_bin/out.txt 2>&1 | tee output/ubuntu/neg_results/neg_tag.txt
 
 # 4. Test wrong IV length
-./build_ubuntu_gcc/aestool encrypt --mode cbc --key output/ubuntu/key_bin/key.bin --iv output/ubuntu/key_bin/short_iv.bin --in output/ubuntu/key_bin/plain.txt --out output/ubuntu/key_bin/ct.bin 2>&1 | tee output/ubuntu/neg_results/neg_ivlen.txt
+./build_ubuntu_gcc/aestool encrypt --mode cbc --key output/key_bin/key.bin --iv output/key_bin/short_iv.bin --in output/key_bin/plain.txt --out output/key_bin/ct.bin 2>&1 | tee output/ubuntu/neg_results/neg_ivlen.txt
 
 # 5. Test ECB policy restriction on large payload without --allow-ecb
-dd if=/dev/zero of=output/ubuntu/key_bin/large.bin bs=1K count=32
-./build_ubuntu_gcc/aestool encrypt --mode ecb --key output/ubuntu/key_bin/key.bin --in output/ubuntu/key_bin/large.bin --out output/ubuntu/key_bin/ct.bin 2>&1 | tee output/ubuntu/neg_results/neg_ecb.txt
+./build_ubuntu_gcc/aestool encrypt --mode ecb --key output/key_bin/key.bin --in output/key_bin/large.bin --out output/key_bin/ct.bin 2>&1 | tee output/ubuntu/neg_results/neg_ecb.txt
 ```
 
 ---
@@ -139,10 +141,10 @@ cd /home/dell/home-crypto/crypto-labs/lab1
 echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
 
 # Run Benchmarks (GCC) — covers all modes & all 6 block sizes
-./build_ubuntu_gcc/aestool bench --key output/ubuntu/key_bin/key.bin --runs 1000 --out output/ubuntu/benchmarks/bench_ubuntu_gcc.csv
+./build_ubuntu_gcc/aestool bench --key output/key_bin/key.bin --runs 1000 --out output/ubuntu/benchmarks/bench_ubuntu_gcc.csv
 
 # Run Benchmarks (Clang) — covers all modes & all 6 block sizes
-./build_ubuntu_clang/aestool bench --key output/ubuntu/key_bin/key.bin --runs 1000 --out output/ubuntu/benchmarks/bench_ubuntu_clang.csv
+./build_ubuntu_clang/aestool bench --key output/key_bin/key.bin --runs 1000 --out output/ubuntu/benchmarks/bench_ubuntu_clang.csv
 ```
 
 `plot_bench.py` run:
