@@ -1,0 +1,1 @@
+plaintext -> output\windows\key_bin\out.txt

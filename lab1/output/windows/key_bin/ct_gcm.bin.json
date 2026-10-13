@@ -1,0 +1,8 @@
+{
+  "alg": "AES-256-GCM",
+  "mode": "gcm",
+  "iv": "f9e18897d1d61a6ae13f5dd0",
+  "aad": "",
+  "tag": "7b09e006e2a86a3bbde3f9c2f7a9afa1",
+  "tag_len": "16"
+}
