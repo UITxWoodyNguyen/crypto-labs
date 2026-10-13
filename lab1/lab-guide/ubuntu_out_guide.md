@@ -130,22 +130,19 @@ dd if=/dev/zero of=output/ubuntu/key_bin/large.bin bs=1K count=32
 
 Set CPU frequency governor to `performance` and benchmark modes:
 
+> **Note:** The `bench` subcommand in `aestool` is pre-configured to sweep **all modes** (encrypt + decrypt) across **6 block sizes** in a single run. Only `--runs` and `--out` are effective flags — `--mode` and `--size` are ignored.
+
 ```bash
 cd /home/dell/home-crypto/crypto-labs/lab1
 
 # Set governor to performance mode for consistent measurement
 echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
 
-# Run Benchmarks (GCC)
-./build_ubuntu_gcc/aestool bench --mode gcm --key output/ubuntu/key_bin/key.bin --size 1024 --runs 1000 --out output/ubuntu/benchmarks/bench_ubuntu_gcc_gcm_1KB.csv
-./build_ubuntu_gcc/aestool bench --mode gcm --key output/ubuntu/key_bin/key.bin --size 4096 --runs 1000 --out output/ubuntu/benchmarks/bench_ubuntu_gcc_gcm_4KB.csv
-./build_ubuntu_gcc/aestool bench --mode gcm --key output/ubuntu/key_bin/key.bin --size 16384 --runs 1000 --out output/ubuntu/benchmarks/bench_ubuntu_gcc_gcm_16KB.csv
-./build_ubuntu_gcc/aestool bench --mode gcm --key output/ubuntu/key_bin/key.bin --size 262144 --runs 100 --out output/ubuntu/benchmarks/bench_ubuntu_gcc_gcm_256KB.csv
-./build_ubuntu_gcc/aestool bench --mode gcm --key output/ubuntu/key_bin/key.bin --size 1048576 --runs 50 --out output/ubuntu/benchmarks/bench_ubuntu_gcc_gcm_1MB.csv
-./build_ubuntu_gcc/aestool bench --mode gcm --key output/ubuntu/key_bin/key.bin --size 8388608 --runs 20 --out output/ubuntu/benchmarks/bench_ubuntu_gcc_gcm_8MB.csv
+# Run Benchmarks (GCC) — covers all modes & all 6 block sizes
+./build_ubuntu_gcc/aestool bench --key output/ubuntu/key_bin/key.bin --runs 1000 --out output/ubuntu/benchmarks/bench_ubuntu_gcc.csv
 
-# Run Benchmarks (Clang)
-./build_ubuntu_clang/aestool bench --mode gcm --key output/ubuntu/key_bin/key.bin --size 16384 --runs 1000 --out output/ubuntu/benchmarks/bench_ubuntu_clang_gcm_16KB.csv
+# Run Benchmarks (Clang) — covers all modes & all 6 block sizes
+./build_ubuntu_clang/aestool bench --key output/ubuntu/key_bin/key.bin --runs 1000 --out output/ubuntu/benchmarks/bench_ubuntu_clang.csv
 ```
 
 `plot_bench.py` run:

@@ -1,0 +1,466 @@
+% ============================================================
+%  NT219: Cryptography & Applications
+%  Laboratory Series (Labs 1–6) — Report Template
+%  Lab 1: Symmetric Encryption with Crypto++
+% ============================================================
+\documentclass[12pt, a4paper]{report}
+
+% ---------- Encoding & language ----------
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+
+% ---------- Page layout ----------
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% ---------- Math, graphics, tables ----------
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% ---------- Code listings ----------
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{red!70!black},
+  showstringspaces=false
+}
+
+% ---------- Hyperlinks & TOC ----------
+\usepackage[hidelinks]{hyperref}
+\usepackage{tocloft}
+\renewcommand{\cftchapfont}{\bfseries}
+\renewcommand{\cftchappagefont}{\bfseries}
+
+% ---------- Headers & footers ----------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small NT219 -- Cryptography \& Applications}
+\fancyhead[R]{\small Lab 1}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ---------- Custom commands ----------
+\newcommand{\studentname}{[Họ và tên]}
+\newcommand{\studentid}{[MSSV]}
+\newcommand{\classcode}{[Mã lớp]}
+\newcommand{\instructor}{[Tên giảng viên / TA]}
+\newcommand{\groupmembers}{[Danh sách thành viên]}
+\newcommand{\submissiondate}{[dd/mm/yyyy]}
+\newcommand{\archive}{MSV.All6labs.rar}
+
+% ============================================================
+\begin{document}
+
+% ============================================================
+%  A. HEADER / TRANG BÌA
+% ============================================================
+\begin{titlepage}
+\centering
+\vspace*{1cm}
+
+{\large TRƯỜNG ĐẠI HỌC CÔNG NGHỆ THÔNG TIN, ĐHQG-HCM}\\[0.3cm]
+{\large [Khoa / Bộ môn]}\\[2cm]
+
+\rule{\linewidth}{0.5pt}\\[0.5cm]
+{\Huge\bfseries BÁO CÁO THỰC HÀNH}\\[0.4cm]
+{\Large NT219: CRYPTOGRAPHY \& APPLICATIONS}\\[0.3cm]
+{\large LABORATORY SERIES (LABS 1--6)}\\[0.5cm]
+\rule{\linewidth}{0.5pt}\\[1.5cm]
+
+{\LARGE\bfseries Lab 1: Symmetric Encryption with Crypto++}\\[0.3cm]
+{\large (AES: ECB, CBC, OFB, CFB, CTR, XTS, CCM, GCM)}\\[2cm]
+
+\begin{tabular}{ll}
+\textbf{Sinh viên thực hiện:} & \studentname \\
+\textbf{MSSV:}                & \studentid \\
+\textbf{Lớp:}                 & \classcode \\
+\textbf{Giảng viên / TA:}     & \instructor \\
+\textbf{Nhóm (nếu có):}       & \groupmembers \\
+\textbf{Ngày nộp:}            & \submissiondate \\
+\textbf{Mã nguồn / archive:}  & \archive \\
+\end{tabular}
+
+\vfill
+\end{titlepage}
+
+% ============================================================
+%  FRONT MATTER
+% ============================================================
+\pagenumbering{roman}
+
+% ---------- Table of contents ----------
+\tableofcontents
+\listoffigures
+\listoftables
+\clearpage
+
+% ---------- Academic integrity statement ----------
+\chapter*{Cam kết liêm chính học thuật}
+\addcontentsline{toc}{chapter}{Cam kết liêm chính học thuật}
+Em/nhóm cam kết:
+\begin{itemize}
+  \item Tự thực hiện toàn bộ bài lab, không sao chép mã nguồn của người khác.
+  \item Trích dẫn đầy đủ thư viện Crypto++ và các nguồn Known Answer Test (KAT).
+  \item Các demo tấn công chỉ thực hiện trên dữ liệu tự tạo, không nhắm vào hệ thống thật.
+  \item Các key xuất hiện trong repository chỉ là key thử nghiệm, không dùng cho mục đích thực tế.
+\end{itemize}
+
+\vspace{1cm}
+\begin{flushright}
+\begin{tabular}{c}
+\textit{[Họ và tên]} \\
+\textit{Ngày: \submissiondate}
+\end{tabular}
+\end{flushright}
+\clearpage
+
+% ---------- AI / tool assistance declaration ----------
+\chapter*{Khai báo hỗ trợ AI / công cụ}
+\addcontentsline{toc}{chapter}{Khai báo hỗ trợ AI / công cụ}
+Ghi rõ các công cụ AI hoặc hỗ trợ bên ngoài đã sử dụng (nếu có), phạm vi sử dụng, và cách kiểm chứng kết quả. Nếu không sử dụng, ghi ``Không sử dụng''.
+\clearpage
+
+% ---------- Self-assessment table ----------
+\chapter*{Bảng tự chấm điểm}
+\addcontentsline{toc}{chapter}{Bảng tự chấm điểm}
+
+\begin{table}[H]
+\centering
+\caption{Bảng tự chấm điểm Lab 1 theo thang điểm của đề}
+\begin{tabular}{p{7cm} c p{4cm}}
+\toprule
+\textbf{Tiêu chí} & \textbf{Điểm tối đa} & \textbf{Tự đánh giá} \\
+\midrule
+Correctness và KAT                & 25 & \\
+Security hygiene                  & 15 & \\
+UX và thiết kế I/O                & 10 & \\
+Phương pháp đo hiệu năng          & 20 & \\
+Build đa nền tảng                 & 10 & \\
+Chất lượng báo cáo                & 20 & \\
+\midrule
+\textbf{Tổng}                     & \textbf{100} & \\
+\bottomrule
+\end{tabular}
+\end{table}
+\clearpage
+
+% ============================================================
+%  MAIN MATTER
+% ============================================================
+\pagenumbering{arabic}
+
+% ============================================================
+%  CHAPTER: LAB 1
+% ============================================================
+\chapter{Lab 1: Symmetric Encryption with Crypto++}
+\label{chap:lab1}
+
+% ------------------------------------------------------------
+\section{Mục tiêu và chuẩn đầu ra}
+\label{sec:objectives}
+
+\subsection{Mục tiêu của Lab 1}
+Liệt kê 6 chuẩn đầu ra theo đề bài.
+
+\subsection{Ràng buộc}
+Chỉ dùng Crypto++, không dùng OpenSSL; build trên Windows và Linux.
+
+\subsection{Phạm vi}
+8 mode AES, AEAD, chống dùng sai, KAT, benchmark.
+
+% ------------------------------------------------------------
+\section{Thiết kế và cài đặt}
+\label{sec:design}
+
+\subsection{Kiến trúc tổng thể}
+\begin{figure}[H]
+\centering
+\fbox{\parbox[c][5cm][c]{0.8\linewidth}{\centering \textit{Hình 1: Sơ đồ kiến trúc — CLI, lõi \texttt{aescore}, Crypto++, file lưu trữ}}}
+\caption{Kiến trúc tổng thể của chương trình.}
+\label{fig:architecture}
+\end{figure}
+
+\subsection{Cấu trúc project và hệ thống build}
+CMake, out-of-source, MSVC, MinGW64, Ubuntu.
+
+\subsection{Giao diện dòng lệnh}
+\begin{table}[H]
+\centering
+\caption{Bảng tham số CLI của chương trình}
+\label{tab:cli}
+\begin{tabular}{lll}
+\toprule
+\textbf{Lệnh / Tham số} & \textbf{Mô tả} & \textbf{Mã thoát} \\
+\midrule
+\texttt{encrypt}   & Mã hóa dữ liệu          & 0/1/2/3 \\
+\texttt{decrypt}   & Giải mã dữ liệu         & 0/1/2/3 \\
+\texttt{keygen}    & Sinh khóa               & 0/1/2/3 \\
+\texttt{--kat}     & Chạy Known Answer Tests & 0/1/2/3 \\
+\texttt{bench}     & Đo hiệu năng            & 0/1/2/3 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Định dạng dữ liệu}
+Ciphertext thô, sidecar JSON (\texttt{alg, mode, iv, aad, tag}), file key (thô hoặc \texttt{AESKEY-HEX}); quy ước độ dài key và IV theo mode.
+
+\subsection{Xử lý khóa, IV và nonce}
+Sinh bằng \texttt{AutoSeededRandomPool}, lưu vào sidecar.
+
+\subsection{Xử lý AEAD}
+GCM, CCM, tách tag, AAD, tag 4/8/16 của CCM.
+
+% ------------------------------------------------------------
+\section{Thiết kế bảo mật và chống dùng sai}
+\label{sec:security}
+
+\subsection{Mô hình đe dọa và các kịch bản dùng sai}
+
+\subsection{Hạn chế với ECB}
+Cảnh báo, chặn trên 16 KiB, \texttt{--allow-ecb}.
+
+\subsection{Kiểm tra IV/nonce}
+Độ dài đúng theo mode, từ chối IV sai.
+
+\subsection{Chống tái sử dụng nonce}
+Logic phát hiện: \texttt{SHA-256(key | mode | iv)}, file \texttt{.aestool\_nonces}, các giới hạn.
+
+\subsection{Fail closed}
+Không ghi file khi xác thực lỗi, thông báo lỗi không lộ nguyên nhân, phân loại mã thoát.
+
+% ------------------------------------------------------------
+\section{Phương pháp và kết quả kiểm thử}
+\label{sec:testing}
+
+\subsection{Known Answer Tests}
+\begin{table}[H]
+\centering
+\caption{Bảng 1: 9 vector KAT và kết quả}
+\label{tab:kat}
+\begin{tabular}{clllc}
+\toprule
+\textbf{\#} & \textbf{Mode} & \textbf{Nguồn} & \textbf{Mô tả} & \textbf{Kết quả} \\
+\midrule
+1 & ECB & NIST SP 800-38A & Vector chuẩn & PASS/FAIL \\
+2 & CBC & NIST SP 800-38A & Vector chuẩn & PASS/FAIL \\
+3 & CFB & NIST SP 800-38A & Vector chuẩn & PASS/FAIL \\
+4 & OFB & NIST SP 800-38A & Vector chuẩn & PASS/FAIL \\
+5 & CTR & NIST SP 800-38A & Vector chuẩn & PASS/FAIL \\
+6 & GCM & GCM spec (McGrew \& Viega) & Vector chuẩn & PASS/FAIL \\
+7 & CCM & NIST SP 800-38C & Vector chuẩn & PASS/FAIL \\
+8 & XTS & IEEE 1619 & Vector chuẩn & PASS/FAIL \\
+9 & --- & --- & Vector bổ sung & PASS/FAIL \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{KAT runner \texttt{--kat}}
+Định dạng JSON, tổng kết.
+
+\subsection{Kiểm thử âm}
+\begin{table}[H]
+\centering
+\caption{Bảng 2: Kiểm thử âm}
+\label{tab:negative}
+\begin{tabular}{p{4.5cm} p{3.5cm} p{3.5cm} c}
+\toprule
+\textbf{Trường hợp} & \textbf{Mong đợi} & \textbf{Thực tế} & \textbf{Mã thoát} \\
+\midrule
+Sai key             & Từ chối & & \\
+Sai IV              & Từ chối & & \\
+Sửa ciphertext non-AEAD & Từ chối & & \\
+Sửa ciphertext AEAD & Từ chối & & \\
+Tag sai             & Từ chối & & \\
+IV sai độ dài       & Từ chối & & \\
+Hex/base64/JSON hỏng & Từ chối & & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Unit test và \texttt{ctest}}
+3 nhóm: \texttt{unit\_tests}, \texttt{nist\_kat}, \texttt{cli\_negative}; kết quả trên Windows và Linux.
+
+\subsection{Ảnh chụp màn hình minh chứng}
+Cảnh báo ECB, nonce reuse bị từ chối, tag sai.
+
+% ------------------------------------------------------------
+\section{Đánh giá hiệu năng}
+\label{sec:performance}
+
+\subsection{Bảng phần cứng và môi trường}
+CPU, nhân/luồng, RAM, ổ đĩa, OS, compiler và cờ biên dịch, power plan / CPU governor.
+
+\subsection{Giao thức đo}
+Warm-up, kích thước payload (1 KB, 4 KB, 16 KB, 256 KB, 1 MB, 8 MB), khối thao tác, số lần chạy, key và IV ngẫu nhiên, phạm vi đo.
+
+\subsection{Phương pháp thống kê}
+Mean, median, độ lệch chuẩn, khoảng tin cậy 95\% (ghi rõ xấp xỉ giá trị $t$).
+
+\subsection{Kết quả}
+\begin{table}[H]
+\centering
+\caption{Bảng 3: Throughput và latency}
+\label{tab:bench}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Mode} & \textbf{Payload} & \textbf{Throughput (MB/s)} & \textbf{Latency (ms)} & \textbf{SD} \\
+\midrule
+ECB & 1 KB  & & & \\
+CBC & 1 KB  & & & \\
+\vdots & \vdots & \vdots & \vdots & \vdots \\
+GCM & 8 MB  & & & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox[c][4cm][c]{0.8\linewidth}{\centering \textit{Hình 2: Đồ thị throughput có error bar}}}
+\caption{Throughput theo kích thước payload.}
+\label{fig:throughput}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox[c][4cm][c]{0.8\linewidth}{\centering \textit{Hình 3: Đồ thị latency có error bar}}}
+\caption{Latency theo kích thước payload.}
+\label{fig:latency}
+\end{figure}
+
+\subsection{Các so sánh bắt buộc}
+\begin{itemize}
+  \item Windows so với Linux (Hình 4: lưới so sánh, tỷ lệ so với baseline, bảng tổng kết có cột ý nghĩa thống kê).
+  \item Stream mode so với block mode.
+  \item AEAD so với non-AEAD.
+  \item Overhead của tag (GCM, CCM).
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox[c][4cm][c]{0.8\linewidth}{\centering \textit{Hình 4: So sánh Windows vs Linux}}}
+\caption{So sánh hiệu năng giữa Windows và Linux.}
+\label{fig:winlinux}
+\end{figure}
+
+\subsection{Diễn giải}
+Lập lịch OS, overhead system call, cache, ảnh hưởng tăng tốc phần cứng (AES-NI), nguyên nhân chênh lệch giữa các nền tảng.
+
+% ------------------------------------------------------------
+\section{Phân tích bảo mật}
+\label{sec:security-analysis}
+
+\subsection{Mức mode}
+\begin{itemize}
+  \item ECB không an toàn (ví dụ pattern).
+  \item Rủi ro padding oracle của CBC.
+  \item Thảm họa khi dùng lại nonce trong CTR (keystream reuse).
+  \item Đảm bảo của AEAD so với non-AEAD.
+  \item Vì sao GCM cần nonce duy nhất.
+  \item XTS không có tính toàn vẹn.
+\end{itemize}
+
+\subsection{Mức cài đặt}
+Sinh ngẫu nhiên đúng cách, lưu IV an toàn, xác minh tag, xử lý lỗi fail closed, rủi ro lưu key trong \texttt{std::string} chưa xóa an toàn khỏi bộ nhớ.
+
+\subsection{Cân nhắc đa nền tảng}
+\begin{itemize}
+  \item Nguồn RNG: Linux \texttt{getrandom}/\texttt{/dev/urandom}, Windows CNG \texttt{BCryptGenRandom}.
+  \item Hành vi file system: ghi file, kết thúc dòng, đường dẫn.
+  \item Nguyên nhân khác biệt hiệu năng.
+\end{itemize}
+
+\subsection{Hạn chế của cài đặt}
+Đọc toàn bộ file vào RAM, nonce registry chỉ bắt trùng IV chính xác, JSON parser tối giản.
+
+% ------------------------------------------------------------
+\section{Thảo luận}
+\label{sec:discussion}
+
+\subsection{Lỗi phát hiện và đã sửa}
+
+\subsection{So sánh giữa các nền tảng và compiler}
+MSVC, MinGW64, GCC trên Ubuntu.
+
+\subsection{Đánh đổi bảo mật và hiệu năng}
+
+% ------------------------------------------------------------
+\section{Kết luận và hướng phát triển}
+\label{sec:conclusion}
+
+\subsection{Kết luận}
+Các điểm chính rút ra, bài học kinh nghiệm.
+
+\subsection{Hướng phát triển}
+Stream I/O cho file lớn, xóa key an toàn, thư viện \texttt{.dll}/\texttt{.so} kèm GUI (bonus +5).
+
+% ============================================================
+%  APPENDICES
+% ============================================================
+\appendix
+\chapter{Phụ lục Lab 1}
+\label{app:lab1}
+
+\section*{P1. Ví dụ dùng CLI}
+\addcontentsline{toc}{section}{P1. Ví dụ dùng CLI}
+
+\section*{P2. Log build và \texttt{ctest}}
+\addcontentsline{toc}{section}{P2. Log build và ctest}
+
+\section*{P3. Độ phủ KAT và tóm tắt unit test}
+\addcontentsline{toc}{section}{P3. Độ phủ KAT và tóm tắt unit test}
+
+\section*{P4. Mẫu file CSV benchmark và sidecar JSON}
+\addcontentsline{toc}{section}{P4. Mẫu file CSV benchmark và sidecar JSON}
+
+\section*{P5. Tham khảo}
+\addcontentsline{toc}{section}{P5. Tham khảo}
+\begin{itemize}
+  \item NIST SP 800-38A
+  \item NIST SP 800-38C
+  \item GCM spec (McGrew và Viega)
+  \item IEEE 1619
+  \item Tài liệu Crypto++
+  \item FIPS-197
+\end{itemize}
+
+% ============================================================
+%  MAPPING TO GRADING RUBRIC (optional)
+% ============================================================
+\chapter*{Ánh xạ outline với thang điểm Lab 1}
+\addcontentsline{toc}{chapter}{Ánh xạ outline với thang điểm Lab 1}
+
+\begin{table}[H]
+\centering
+\caption{Ánh xạ giữa thang điểm và phần báo cáo}
+\begin{tabular}{p{6cm} p{8cm}}
+\toprule
+\textbf{Thang điểm (đề)} & \textbf{Phần báo cáo chứng minh} \\
+\midrule
+Correctness và KAT (25)          & Mục 4.1, 4.2 \\
+Security hygiene (15)            & Mục 3, 6 \\
+UX và thiết kế I/O (10)          & Mục 2.3, 2.4 \\
+Phương pháp đo hiệu năng (20)    & Mục 5 \\
+Build đa nền tảng (10)           & Mục 2.2, phụ lục P2 \\
+Chất lượng báo cáo (20)          & Toàn bộ chương, cấu trúc và diễn giải \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}
