@@ -36,3 +36,5 @@ out/
 # Python venv (nếu dùng script benchmark/GUI)
 venv/
 __pycache__/
+
+.aestool_nonces
