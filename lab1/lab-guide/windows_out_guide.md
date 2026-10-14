@@ -174,11 +174,11 @@ powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c   # High Performance GU
 ```powershell
 cd D:\UIT\NT219\crypto-labs\lab1
 
-mkdir output\windows\benchmarks\graph -Force
+mkdir output\windows\benchmarks\plots -Force
 
 # Loop through each CSV and write results to the graph directory
 Get-ChildItem output\windows\benchmarks\*.csv | ForEach-Object {
-    python scripts\plot_bench.py $_.FullName --out-dir output\windows\benchmarks\graph --platform windows
+    python scripts\plot_bench.py $_.FullName --out-dir output\windows\benchmarks\plots --platform windows
 }
 ```
 

@@ -152,11 +152,12 @@ echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governo
 ```bash
 cd ~/crypto-labs/lab1
 
-mkdir -p output/ubuntu/benchmarks/graph
+# if /plots not available
+mkdir -p output/ubuntu/benchmarks/plots
 
-# Vòng lặp chạy script cho từng file CSV và đẩy kết quả ra thư mục graph
+# Vòng lặp chạy script cho từng file CSV và đẩy kết quả ra thư mục plot
 for csv_file in output/ubuntu/benchmarks/*.csv; do
-    python3 scripts/plot_bench.py "$csv_file" --out-dir output/ubuntu/benchmarks/graph --platform linux
+    python3 scripts/plot_bench.py "$csv_file" --out-dir output/ubuntu/benchmarks/plots --platform linux
 done
 ```
 
