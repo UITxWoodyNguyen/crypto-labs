@@ -1,1 +1,1 @@
-plaintext -> output/key_bin/out.txt
+ERROR: missing IV/nonce (no --iv and no header)
