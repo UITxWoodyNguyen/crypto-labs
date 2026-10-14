@@ -9,6 +9,7 @@ build_ubuntu_clang/
 bin/
 lib/
 out/
+lab-guide/
 
 # IDE files
 .vscode/
