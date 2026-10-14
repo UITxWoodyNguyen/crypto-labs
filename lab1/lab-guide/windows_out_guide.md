@@ -138,11 +138,45 @@ cd D:\UIT\NT219\crypto-labs\lab1
 # 1. Test wrong key
 cmd /c ".\build_windows_gcc\aestool.exe decrypt --mode cbc --key output\key_bin\key_wrong.bin --in output\key_bin\ct.bin --out output\key_bin\out.txt 2>&1" | Tee-Object -FilePath output\windows\neg_results\neg_key.txt
 
-# 2. Test wrong IV
-cmd /c ".\build_windows_gcc\aestool.exe decrypt --mode cbc --key output\key_bin\key.bin --iv output\key_bin\iv_wrong.bin --in output\key_bin\ct.bin --out output\key_bin\out.txt 2>&1" | Tee-Object -FilePath output\windows\neg_results\neg_iv.txt
+# 2. Test wrong IV (CBC) — CBC has no integrity check, so the tool WILL succeed
+#    but the first plaintext block will be corrupted. Verify by comparing
+#    the output with the original plaintext.
+cmd /c ".\build_windows_gcc\aestool.exe decrypt --mode cbc --key output\key_bin\key.bin --iv output\key_bin\iv_wrong.bin --in output\key_bin\ct.bin --out output\key_bin\out_iv_wrong.txt 2>&1" | Tee-Object -FilePath output\windows\neg_results\neg_iv.txt
 
-# 3. Test wrong AEAD Tag (GCM)
-cmd /c ".\build_windows_gcc\aestool.exe decrypt --mode gcm --aead --key output\key_bin\key.bin --in output\key_bin\ct_gcm.bin --out output\key_bin\out.txt 2>&1" | Tee-Object -FilePath output\windows\neg_results\neg_tag.txt
+# Verify: output must differ from original plaintext
+fc.exe output\key_bin\plain.txt output\key_bin\out_iv_wrong.txt
+if ($LASTEXITCODE -ne 0) {
+    "PASS: wrong IV corrupted the plaintext (block 0 is garbage, as expected for CBC)"
+} else {
+    "FAIL: wrong IV had no effect on plaintext (unexpected!)"
+}
+
+# 3. Test wrong AEAD Tag (GCM) — the tool must reject a corrupted tag.
+#    First, create a copy of the valid ciphertext with the last byte flipped
+#    (this byte lies inside the 16-byte GCM tag).
+$labRoot = "D:\UIT\NT219\crypto-labs\lab1"
+$badTagPath = Join-Path $labRoot "output\key_bin\ct_gcm_badtag.bin"
+$goodPath   = Join-Path $labRoot "output\key_bin\ct_gcm.bin"
+
+Copy-Item $goodPath $badTagPath -Force
+
+$bytes = [System.IO.File]::ReadAllBytes($badTagPath)
+$bytes[$bytes.Length - 1] = $bytes[$bytes.Length - 1] -bxor 0xFF
+[System.IO.File]::WriteAllBytes($badTagPath, $bytes)
+
+"Created corrupted-tag ciphertext: $badTagPath"
+
+# Decrypt the corrupted ciphertext — must fail with tag verification error
+cmd /c ".\build_windows_gcc\aestool.exe decrypt --mode gcm --aead --key output\key_bin\key.bin --in output\key_bin\ct_gcm_badtag.bin --out output\key_bin\out_badtag.txt 2>&1" | Tee-Object -FilePath output\windows\neg_results\neg_tag.txt
+
+# Verify fail-closed behaviour
+if ($LASTEXITCODE -ne 0 -and -not (Test-Path output\key_bin\out_badtag.txt)) {
+    "PASS: GCM rejected corrupted tag (exit=$LASTEXITCODE, no plaintext written)" `
+        | Tee-Object -FilePath output\windows\neg_results\neg_tag.txt -Append
+} else {
+    "FAIL: GCM accepted corrupted tag!" `
+        | Tee-Object -FilePath output\windows\neg_results\neg_tag.txt -Append
+}
 
 # 4. Test wrong IV length
 cmd /c ".\build_windows_gcc\aestool.exe encrypt --mode cbc --key output\key_bin\key.bin --iv output\key_bin\short_iv.bin --in output\key_bin\plain.txt --out output\key_bin\ct.bin 2>&1" | Tee-Object -FilePath output\windows\neg_results\neg_ivlen.txt
@@ -178,7 +212,7 @@ mkdir output\windows\benchmarks\plots -Force
 
 # Loop through each CSV and write results to the graph directory
 Get-ChildItem output\windows\benchmarks\*.csv | ForEach-Object {
-    python scripts\plot_bench.py $_.FullName --out-dir output\windows\benchmarks\plots --platform windows
+    python scripts\plot_bench.py $_.FullName --out-dir output\windows\plots --platform windows
 }
 ```
 

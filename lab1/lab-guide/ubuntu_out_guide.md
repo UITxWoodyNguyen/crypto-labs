@@ -113,11 +113,55 @@ cd /home/dell/home-crypto/crypto-labs/lab1
 # 1. Test wrong key
 ./build_ubuntu_gcc/aestool decrypt --mode cbc --key output/key_bin/key_wrong.bin --in output/key_bin/ct.bin --out output/key_bin/out.txt 2>&1 | tee output/ubuntu/neg_results/neg_key.txt
 
-# 2. Test wrong IV
-./build_ubuntu_gcc/aestool decrypt --mode cbc --key output/key_bin/key.bin --iv output/key_bin/iv_wrong.bin --in output/key_bin/ct.bin --out output/key_bin/out.txt 2>&1 | tee output/ubuntu/neg_results/neg_iv.txt
+# 2. Test wrong IV (CBC) — CBC has no integrity check, so the tool WILL succeed
+#    but the first plaintext block will be corrupted. Verify by comparing
+#    the output with the original plaintext.
+./build_ubuntu_gcc/aestool decrypt --mode cbc \
+    --key output/key_bin/key.bin \
+    --iv  output/key_bin/iv_wrong.bin \
+    --in  output/key_bin/ct.bin \
+    --out output/key_bin/out_iv_wrong.txt 2>&1 \
+    | tee output/ubuntu/neg_results/neg_iv.txt
 
-# 3. Test wrong AEAD Tag (GCM)
-./build_ubuntu_gcc/aestool decrypt --mode gcm --aead --key output/key_bin/key.bin --in output/key_bin/ct_gcm.bin --out output/key_bin/out.txt 2>&1 | tee output/ubuntu/neg_results/neg_tag.txt
+# Verify: output must differ from original plaintext
+if ! cmp -s output/key_bin/plain.txt output/key_bin/out_iv_wrong.txt; then
+    echo "PASS: wrong IV corrupted the plaintext (block 0 is garbage, as expected for CBC)" \
+        | tee -a output/ubuntu/neg_results/neg_iv.txt
+else
+    echo "FAIL: wrong IV had no effect on plaintext (unexpected!)" \
+        | tee -a output/ubuntu/neg_results/neg_iv.txt
+fi
+
+# 3. Test wrong AEAD Tag (GCM) — the tool must reject a corrupted tag.
+#    First, create a copy of the valid ciphertext with the last byte flipped
+#    (this byte lies inside the 16-byte GCM tag).
+cp output/key_bin/ct_gcm.bin output/key_bin/ct_gcm_badtag.bin
+python3 - <<'EOF'
+path = "output/key_bin/ct_gcm_badtag.bin"
+with open(path, "rb") as f:
+    data = bytearray(f.read())
+data[-1] ^= 0xFF
+with open(path, "wb") as f:
+    f.write(data)
+print(f"Corrupted last byte of {path}")
+EOF
+
+# Decrypt the corrupted ciphertext — must fail with tag verification error
+./build_ubuntu_gcc/aestool decrypt --mode gcm --aead \
+    --key output/key_bin/key.bin \
+    --in  output/key_bin/ct_gcm_badtag.bin \
+    --out output/key_bin/out_badtag.txt 2>&1 \
+    | tee output/ubuntu/neg_results/neg_tag.txt
+RC=${PIPESTATUS[0]}
+
+# Verify fail-closed behaviour
+if [ "$RC" -ne 0 ] && [ ! -f output/key_bin/out_badtag.txt ]; then
+    echo "PASS: GCM rejected corrupted tag (exit=$RC, no plaintext written)" \
+        | tee -a output/ubuntu/neg_results/neg_tag.txt
+else
+    echo "FAIL: GCM accepted corrupted tag! (exit=$RC)" \
+        | tee -a output/ubuntu/neg_results/neg_tag.txt
+fi
 
 # 4. Test wrong IV length
 ./build_ubuntu_gcc/aestool encrypt --mode cbc --key output/key_bin/key.bin --iv output/key_bin/short_iv.bin --in output/key_bin/plain.txt --out output/key_bin/ct.bin 2>&1 | tee output/ubuntu/neg_results/neg_ivlen.txt
