@@ -1,1 +1,1 @@
-ERROR: missing IV/nonce (no --iv and no header)
+ERROR: decryption failed

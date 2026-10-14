@@ -1,1 +1,1 @@
-ERROR: header mode does not match --mode
+plaintext -> output/ubuntu/key_bin/out.txt
