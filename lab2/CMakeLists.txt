@@ -94,7 +94,7 @@ if(WIN32)
     target_link_libraries(aes_pure PUBLIC bcrypt)   # OS CSPRNG (BCryptGenRandom)
 endif()
 
-# Build info printed by `aes_pure_tool bench` (hardware/compiler table in the report)
+# Build info printed by `aestool bench` (hardware/compiler table in the report)
 string(TOUPPER "${CMAKE_BUILD_TYPE}" _bt)
 set(AESP_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_${_bt}}")
 string(STRIP "${AESP_FLAGS}" AESP_FLAGS)
@@ -102,11 +102,11 @@ target_compile_definitions(aes_pure PRIVATE
     AESP_BUILD_TYPE="${CMAKE_BUILD_TYPE}"
     AESP_BUILD_FLAGS="${AESP_FLAGS}")
 
-add_executable(aes_pure_tool src/main.cpp)
-target_link_libraries(aes_pure_tool PRIVATE aes_pure)
-lab2_warnings(aes_pure_tool)
+add_executable(aestool src/main.cpp)
+target_link_libraries(aestool PRIVATE aes_pure)
+lab2_warnings(aestool)
 if(WIN32)
-    target_link_libraries(aes_pure_tool PRIVATE shell32)   # CommandLineToArgvW (UTF-8 argv)
+    target_link_libraries(aestool PRIVATE shell32)   # CommandLineToArgvW (UTF-8 argv)
 endif()
 
 # ---------------------------------------------------------------------------
@@ -132,10 +132,10 @@ if(BUILD_TESTS)
     lab2_warnings(aes_tests)
 
     add_test(NAME unit_tests COMMAND aes_tests)
-    add_test(NAME kat_runner COMMAND aes_pure_tool --kat ${CMAKE_CURRENT_SOURCE_DIR}/kat/vectors.json)
+    add_test(NAME kat_runner COMMAND aestool --kat ${CMAKE_CURRENT_SOURCE_DIR}/kat/vectors.json)
     add_test(NAME cli_end_to_end
         COMMAND ${CMAKE_COMMAND}
-                -DTOOL=$<TARGET_FILE:aes_pure_tool>
+                -DTOOL=$<TARGET_FILE:aestool>
                 -DWORK=${CMAKE_CURRENT_BINARY_DIR}/e2e_work
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_e2e.cmake)
 endif()
