@@ -27,6 +27,9 @@ lab-guide/
 *.o
 *.obj
 
+# Hidden latex files
+*.tex
+
 # Generated test artifacts & large files
 *.enc
 *.dec
