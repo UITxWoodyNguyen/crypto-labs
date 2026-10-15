@@ -1,97 +1,97 @@
 platform,baseline,mode,dir,size_bytes,base_MBps,cmp_MBps,ratio,diff_pct,significant
-Windows,Ubuntu,ecb,dec,1024,580.84,336.69,0.58,-42.0,True
-Windows,Ubuntu,ecb,dec,4096,1408.33,953.75,0.677,-32.3,True
-Windows,Ubuntu,ecb,dec,16384,2065.83,1567.12,0.759,-24.1,True
-Windows,Ubuntu,ecb,dec,262144,2360.75,2077.76,0.88,-12.0,True
-Windows,Ubuntu,ecb,dec,1048576,2382.39,954.56,0.401,-59.9,True
-Windows,Ubuntu,ecb,dec,8388608,1977.94,805.25,0.407,-59.3,True
-Windows,Ubuntu,cbc,dec,1024,520.95,237.86,0.457,-54.3,True
-Windows,Ubuntu,cbc,dec,4096,1278.16,650.83,0.509,-49.1,True
-Windows,Ubuntu,cbc,dec,16384,1904.71,1256.33,0.66,-34.0,True
-Windows,Ubuntu,cbc,dec,262144,2420.58,1750.53,0.723,-27.7,True
-Windows,Ubuntu,cbc,dec,1048576,2394.7,1038.91,0.434,-56.6,True
-Windows,Ubuntu,cbc,dec,8388608,1569.81,795.89,0.507,-49.3,True
-Windows,Ubuntu,ofb,dec,1024,244.32,130.15,0.533,-46.7,True
-Windows,Ubuntu,ofb,dec,4096,465.83,344.69,0.74,-26.0,True
-Windows,Ubuntu,ofb,dec,16384,624.25,493.7,0.791,-20.9,True
-Windows,Ubuntu,ofb,dec,262144,776.35,579.51,0.746,-25.4,True
-Windows,Ubuntu,ofb,dec,1048576,784.23,503.0,0.641,-35.9,True
-Windows,Ubuntu,ofb,dec,8388608,621.28,458.7,0.738,-26.2,True
-Windows,Ubuntu,cfb,dec,1024,441.64,311.91,0.706,-29.4,True
-Windows,Ubuntu,cfb,dec,4096,988.15,757.95,0.767,-23.3,True
-Windows,Ubuntu,cfb,dec,16384,1323.37,1027.67,0.777,-22.3,True
-Windows,Ubuntu,cfb,dec,262144,1527.92,1350.58,0.884,-11.6,True
-Windows,Ubuntu,cfb,dec,1048576,1455.36,900.4,0.619,-38.1,True
-Windows,Ubuntu,cfb,dec,8388608,1433.02,695.49,0.485,-51.5,True
-Windows,Ubuntu,ctr,dec,1024,407.75,272.64,0.669,-33.1,True
-Windows,Ubuntu,ctr,dec,4096,1132.24,898.89,0.794,-20.6,True
-Windows,Ubuntu,ctr,dec,16384,1710.35,1365.29,0.798,-20.2,True
-Windows,Ubuntu,ctr,dec,262144,2265.84,1683.19,0.743,-25.7,True
-Windows,Ubuntu,ctr,dec,1048576,2331.61,1177.23,0.505,-49.5,True
-Windows,Ubuntu,ctr,dec,8388608,1671.18,784.86,0.47,-53.0,True
-Windows,Ubuntu,xts,dec,1024,312.99,189.06,0.604,-39.6,True
-Windows,Ubuntu,xts,dec,4096,656.73,451.4,0.687,-31.3,True
-Windows,Ubuntu,xts,dec,16384,921.6,672.02,0.729,-27.1,True
-Windows,Ubuntu,xts,dec,262144,946.33,668.28,0.706,-29.4,True
-Windows,Ubuntu,xts,dec,1048576,804.19,551.07,0.685,-31.5,True
-Windows,Ubuntu,xts,dec,8388608,773.84,523.93,0.677,-32.3,True
-Windows,Ubuntu,ccm,dec,1024,232.35,129.03,0.555,-44.5,True
-Windows,Ubuntu,ccm,dec,4096,410.54,284.06,0.692,-30.8,True
-Windows,Ubuntu,ccm,dec,16384,499.09,358.81,0.719,-28.1,True
-Windows,Ubuntu,ccm,dec,262144,580.49,409.24,0.705,-29.5,True
-Windows,Ubuntu,ccm,dec,1048576,589.79,310.62,0.527,-47.3,True
-Windows,Ubuntu,ccm,dec,8388608,526.79,227.29,0.431,-56.9,True
-Windows,Ubuntu,gcm,dec,1024,317.26,140.18,0.442,-55.8,True
-Windows,Ubuntu,gcm,dec,4096,833.43,409.28,0.491,-50.9,True
-Windows,Ubuntu,gcm,dec,16384,1065.66,813.2,0.763,-23.7,True
-Windows,Ubuntu,gcm,dec,262144,1103.89,1194.61,1.082,8.2,True
-Windows,Ubuntu,gcm,dec,1048576,1370.23,600.12,0.438,-56.2,True
-Windows,Ubuntu,gcm,dec,8388608,1106.0,575.09,0.52,-48.0,True
-Windows,Ubuntu,ecb,enc,1024,943.92,277.5,0.294,-70.6,True
-Windows,Ubuntu,ecb,enc,4096,2334.88,870.6,0.373,-62.7,True
-Windows,Ubuntu,ecb,enc,16384,3200.39,1433.81,0.448,-55.2,True
-Windows,Ubuntu,ecb,enc,262144,3528.95,1612.37,0.457,-54.3,True
-Windows,Ubuntu,ecb,enc,1048576,779.34,738.38,0.947,-5.3,True
-Windows,Ubuntu,ecb,enc,8388608,462.31,674.61,1.459,45.9,True
-Windows,Ubuntu,cbc,enc,1024,334.59,175.8,0.525,-47.5,True
-Windows,Ubuntu,cbc,enc,4096,566.58,392.92,0.693,-30.7,True
-Windows,Ubuntu,cbc,enc,16384,651.01,464.06,0.713,-28.7,True
-Windows,Ubuntu,cbc,enc,262144,752.14,548.6,0.729,-27.1,True
-Windows,Ubuntu,cbc,enc,1048576,683.19,379.56,0.556,-44.4,True
-Windows,Ubuntu,cbc,enc,8388608,653.96,333.54,0.51,-49.0,True
-Windows,Ubuntu,ofb,enc,1024,313.15,180.59,0.577,-42.3,True
-Windows,Ubuntu,ofb,enc,4096,548.89,409.28,0.746,-25.4,True
-Windows,Ubuntu,ofb,enc,16384,681.15,488.26,0.717,-28.3,True
-Windows,Ubuntu,ofb,enc,262144,753.92,498.7,0.661,-33.9,True
-Windows,Ubuntu,ofb,enc,1048576,659.93,435.49,0.66,-34.0,True
-Windows,Ubuntu,ofb,enc,8388608,631.87,375.08,0.594,-40.6,True
-Windows,Ubuntu,cfb,enc,1024,332.82,227.53,0.684,-31.6,True
-Windows,Ubuntu,cfb,enc,4096,546.23,459.26,0.841,-15.9,True
-Windows,Ubuntu,cfb,enc,16384,651.21,555.42,0.853,-14.7,True
-Windows,Ubuntu,cfb,enc,262144,649.76,549.12,0.845,-15.5,True
-Windows,Ubuntu,cfb,enc,1048576,677.49,601.04,0.887,-11.3,True
-Windows,Ubuntu,cfb,enc,8388608,698.72,513.05,0.734,-26.6,True
-Windows,Ubuntu,ctr,enc,1024,443.13,123.25,0.278,-72.2,True
-Windows,Ubuntu,ctr,enc,4096,1169.35,463.46,0.396,-60.4,True
-Windows,Ubuntu,ctr,enc,16384,1778.42,909.19,0.511,-48.9,True
-Windows,Ubuntu,ctr,enc,262144,1627.09,1830.73,1.125,12.5,True
-Windows,Ubuntu,ctr,enc,1048576,1817.51,1018.72,0.561,-43.9,True
-Windows,Ubuntu,ctr,enc,8388608,1670.29,916.91,0.549,-45.1,True
-Windows,Ubuntu,xts,enc,1024,310.75,124.44,0.4,-60.0,True
-Windows,Ubuntu,xts,enc,4096,640.26,297.42,0.465,-53.5,True
-Windows,Ubuntu,xts,enc,16384,768.31,482.89,0.629,-37.1,True
-Windows,Ubuntu,xts,enc,262144,800.93,704.06,0.879,-12.1,True
-Windows,Ubuntu,xts,enc,1048576,953.88,571.01,0.599,-40.1,True
-Windows,Ubuntu,xts,enc,8388608,785.88,485.9,0.618,-38.2,True
-Windows,Ubuntu,ccm,enc,1024,361.53,131.45,0.364,-63.6,True
-Windows,Ubuntu,ccm,enc,4096,511.06,303.52,0.594,-40.6,True
-Windows,Ubuntu,ccm,enc,16384,495.92,374.05,0.754,-24.6,True
-Windows,Ubuntu,ccm,enc,262144,556.92,438.6,0.788,-21.2,True
-Windows,Ubuntu,ccm,enc,1048576,555.43,250.78,0.452,-54.8,True
-Windows,Ubuntu,ccm,enc,8388608,290.23,223.46,0.77,-23.0,True
-Windows,Ubuntu,gcm,enc,1024,457.18,134.7,0.295,-70.5,True
-Windows,Ubuntu,gcm,enc,4096,1104.25,489.34,0.443,-55.7,True
-Windows,Ubuntu,gcm,enc,16384,1242.47,906.62,0.73,-27.0,True
-Windows,Ubuntu,gcm,enc,262144,1385.87,1132.47,0.817,-18.3,True
-Windows,Ubuntu,gcm,enc,1048576,1417.03,446.94,0.315,-68.5,True
-Windows,Ubuntu,gcm,enc,8388608,412.56,457.15,1.108,10.8,True
+Ubuntu GCC,Windows GCC,ecb,dec,1024,336.69,580.84,1.725,72.5,True
+Ubuntu GCC,Windows GCC,ecb,dec,4096,953.75,1408.33,1.477,47.7,True
+Ubuntu GCC,Windows GCC,ecb,dec,16384,1567.12,2065.83,1.318,31.8,True
+Ubuntu GCC,Windows GCC,ecb,dec,262144,2077.76,2360.75,1.136,13.6,True
+Ubuntu GCC,Windows GCC,ecb,dec,1048576,954.56,2382.39,2.496,149.6,True
+Ubuntu GCC,Windows GCC,ecb,dec,8388608,805.25,1977.94,2.456,145.6,True
+Ubuntu GCC,Windows GCC,cbc,dec,1024,237.86,520.95,2.19,119.0,True
+Ubuntu GCC,Windows GCC,cbc,dec,4096,650.83,1278.16,1.964,96.4,True
+Ubuntu GCC,Windows GCC,cbc,dec,16384,1256.33,1904.71,1.516,51.6,True
+Ubuntu GCC,Windows GCC,cbc,dec,262144,1750.53,2420.58,1.383,38.3,True
+Ubuntu GCC,Windows GCC,cbc,dec,1048576,1038.91,2394.7,2.305,130.5,True
+Ubuntu GCC,Windows GCC,cbc,dec,8388608,795.89,1569.81,1.972,97.2,True
+Ubuntu GCC,Windows GCC,ofb,dec,1024,130.15,244.32,1.877,87.7,True
+Ubuntu GCC,Windows GCC,ofb,dec,4096,344.69,465.83,1.351,35.1,True
+Ubuntu GCC,Windows GCC,ofb,dec,16384,493.7,624.25,1.264,26.4,True
+Ubuntu GCC,Windows GCC,ofb,dec,262144,579.51,776.35,1.34,34.0,True
+Ubuntu GCC,Windows GCC,ofb,dec,1048576,503.0,784.23,1.559,55.9,True
+Ubuntu GCC,Windows GCC,ofb,dec,8388608,458.7,621.28,1.354,35.4,True
+Ubuntu GCC,Windows GCC,cfb,dec,1024,311.91,441.64,1.416,41.6,True
+Ubuntu GCC,Windows GCC,cfb,dec,4096,757.95,988.15,1.304,30.4,True
+Ubuntu GCC,Windows GCC,cfb,dec,16384,1027.67,1323.37,1.288,28.8,True
+Ubuntu GCC,Windows GCC,cfb,dec,262144,1350.58,1527.92,1.131,13.1,True
+Ubuntu GCC,Windows GCC,cfb,dec,1048576,900.4,1455.36,1.616,61.6,True
+Ubuntu GCC,Windows GCC,cfb,dec,8388608,695.49,1433.02,2.06,106.0,True
+Ubuntu GCC,Windows GCC,ctr,dec,1024,272.64,407.75,1.496,49.6,True
+Ubuntu GCC,Windows GCC,ctr,dec,4096,898.89,1132.24,1.26,26.0,True
+Ubuntu GCC,Windows GCC,ctr,dec,16384,1365.29,1710.35,1.253,25.3,True
+Ubuntu GCC,Windows GCC,ctr,dec,262144,1683.19,2265.84,1.346,34.6,True
+Ubuntu GCC,Windows GCC,ctr,dec,1048576,1177.23,2331.61,1.981,98.1,True
+Ubuntu GCC,Windows GCC,ctr,dec,8388608,784.86,1671.18,2.129,112.9,True
+Ubuntu GCC,Windows GCC,xts,dec,1024,189.06,312.99,1.655,65.5,True
+Ubuntu GCC,Windows GCC,xts,dec,4096,451.4,656.73,1.455,45.5,True
+Ubuntu GCC,Windows GCC,xts,dec,16384,672.02,921.6,1.371,37.1,True
+Ubuntu GCC,Windows GCC,xts,dec,262144,668.28,946.33,1.416,41.6,True
+Ubuntu GCC,Windows GCC,xts,dec,1048576,551.07,804.19,1.459,45.9,True
+Ubuntu GCC,Windows GCC,xts,dec,8388608,523.93,773.84,1.477,47.7,True
+Ubuntu GCC,Windows GCC,ccm,dec,1024,129.03,232.35,1.801,80.1,True
+Ubuntu GCC,Windows GCC,ccm,dec,4096,284.06,410.54,1.445,44.5,True
+Ubuntu GCC,Windows GCC,ccm,dec,16384,358.81,499.09,1.391,39.1,True
+Ubuntu GCC,Windows GCC,ccm,dec,262144,409.24,580.49,1.418,41.8,True
+Ubuntu GCC,Windows GCC,ccm,dec,1048576,310.62,589.79,1.899,89.9,True
+Ubuntu GCC,Windows GCC,ccm,dec,8388608,227.29,526.79,2.318,131.8,True
+Ubuntu GCC,Windows GCC,gcm,dec,1024,140.18,317.26,2.263,126.3,True
+Ubuntu GCC,Windows GCC,gcm,dec,4096,409.28,833.43,2.036,103.6,True
+Ubuntu GCC,Windows GCC,gcm,dec,16384,813.2,1065.66,1.31,31.0,True
+Ubuntu GCC,Windows GCC,gcm,dec,262144,1194.61,1103.89,0.924,-7.6,True
+Ubuntu GCC,Windows GCC,gcm,dec,1048576,600.12,1370.23,2.283,128.3,True
+Ubuntu GCC,Windows GCC,gcm,dec,8388608,575.09,1106.0,1.923,92.3,True
+Ubuntu GCC,Windows GCC,ecb,enc,1024,277.5,943.92,3.402,240.2,True
+Ubuntu GCC,Windows GCC,ecb,enc,4096,870.6,2334.88,2.682,168.2,True
+Ubuntu GCC,Windows GCC,ecb,enc,16384,1433.81,3200.39,2.232,123.2,True
+Ubuntu GCC,Windows GCC,ecb,enc,262144,1612.37,3528.95,2.189,118.9,True
+Ubuntu GCC,Windows GCC,ecb,enc,1048576,738.38,779.34,1.055,5.5,True
+Ubuntu GCC,Windows GCC,ecb,enc,8388608,674.61,462.31,0.685,-31.5,True
+Ubuntu GCC,Windows GCC,cbc,enc,1024,175.8,334.59,1.903,90.3,True
+Ubuntu GCC,Windows GCC,cbc,enc,4096,392.92,566.58,1.442,44.2,True
+Ubuntu GCC,Windows GCC,cbc,enc,16384,464.06,651.01,1.403,40.3,True
+Ubuntu GCC,Windows GCC,cbc,enc,262144,548.6,752.14,1.371,37.1,True
+Ubuntu GCC,Windows GCC,cbc,enc,1048576,379.56,683.19,1.8,80.0,True
+Ubuntu GCC,Windows GCC,cbc,enc,8388608,333.54,653.96,1.961,96.1,True
+Ubuntu GCC,Windows GCC,ofb,enc,1024,180.59,313.15,1.734,73.4,True
+Ubuntu GCC,Windows GCC,ofb,enc,4096,409.28,548.89,1.341,34.1,True
+Ubuntu GCC,Windows GCC,ofb,enc,16384,488.26,681.15,1.395,39.5,True
+Ubuntu GCC,Windows GCC,ofb,enc,262144,498.7,753.92,1.512,51.2,True
+Ubuntu GCC,Windows GCC,ofb,enc,1048576,435.49,659.93,1.515,51.5,True
+Ubuntu GCC,Windows GCC,ofb,enc,8388608,375.08,631.87,1.685,68.5,True
+Ubuntu GCC,Windows GCC,cfb,enc,1024,227.53,332.82,1.463,46.3,True
+Ubuntu GCC,Windows GCC,cfb,enc,4096,459.26,546.23,1.189,18.9,True
+Ubuntu GCC,Windows GCC,cfb,enc,16384,555.42,651.21,1.172,17.2,True
+Ubuntu GCC,Windows GCC,cfb,enc,262144,549.12,649.76,1.183,18.3,True
+Ubuntu GCC,Windows GCC,cfb,enc,1048576,601.04,677.49,1.127,12.7,True
+Ubuntu GCC,Windows GCC,cfb,enc,8388608,513.05,698.72,1.362,36.2,True
+Ubuntu GCC,Windows GCC,ctr,enc,1024,123.25,443.13,3.595,259.5,True
+Ubuntu GCC,Windows GCC,ctr,enc,4096,463.46,1169.35,2.523,152.3,True
+Ubuntu GCC,Windows GCC,ctr,enc,16384,909.19,1778.42,1.956,95.6,True
+Ubuntu GCC,Windows GCC,ctr,enc,262144,1830.73,1627.09,0.889,-11.1,True
+Ubuntu GCC,Windows GCC,ctr,enc,1048576,1018.72,1817.51,1.784,78.4,True
+Ubuntu GCC,Windows GCC,ctr,enc,8388608,916.91,1670.29,1.822,82.2,True
+Ubuntu GCC,Windows GCC,xts,enc,1024,124.44,310.75,2.497,149.7,True
+Ubuntu GCC,Windows GCC,xts,enc,4096,297.42,640.26,2.153,115.3,True
+Ubuntu GCC,Windows GCC,xts,enc,16384,482.89,768.31,1.591,59.1,True
+Ubuntu GCC,Windows GCC,xts,enc,262144,704.06,800.93,1.138,13.8,True
+Ubuntu GCC,Windows GCC,xts,enc,1048576,571.01,953.88,1.671,67.1,True
+Ubuntu GCC,Windows GCC,xts,enc,8388608,485.9,785.88,1.617,61.7,True
+Ubuntu GCC,Windows GCC,ccm,enc,1024,131.45,361.53,2.75,175.0,True
+Ubuntu GCC,Windows GCC,ccm,enc,4096,303.52,511.06,1.684,68.4,True
+Ubuntu GCC,Windows GCC,ccm,enc,16384,374.05,495.92,1.326,32.6,True
+Ubuntu GCC,Windows GCC,ccm,enc,262144,438.6,556.92,1.27,27.0,True
+Ubuntu GCC,Windows GCC,ccm,enc,1048576,250.78,555.43,2.215,121.5,True
+Ubuntu GCC,Windows GCC,ccm,enc,8388608,223.46,290.23,1.299,29.9,True
+Ubuntu GCC,Windows GCC,gcm,enc,1024,134.7,457.18,3.394,239.4,True
+Ubuntu GCC,Windows GCC,gcm,enc,4096,489.34,1104.25,2.257,125.7,True
+Ubuntu GCC,Windows GCC,gcm,enc,16384,906.62,1242.47,1.37,37.0,True
+Ubuntu GCC,Windows GCC,gcm,enc,262144,1132.47,1385.87,1.224,22.4,True
+Ubuntu GCC,Windows GCC,gcm,enc,1048576,446.94,1417.03,3.17,217.0,True
+Ubuntu GCC,Windows GCC,gcm,enc,8388608,457.15,412.56,0.902,-9.8,True

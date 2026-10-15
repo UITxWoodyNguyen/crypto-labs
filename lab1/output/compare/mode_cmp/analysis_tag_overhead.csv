@@ -1,0 +1,13 @@
+platform,dir,mode,fixed_us_per_op,ns_per_byte,equiv_MBps,delta_fixed_us_vs_ctr,delta_ns_per_byte_vs_ctr,per_byte_overhead_pct_vs_ctr
+Windows GCC,enc,ctr,8.4839,1.1144,897.3798,,,
+Windows GCC,enc,gcm,6.3566,2.2414,446.1483,-2.1273,1.1271,101.1394
+Windows GCC,enc,ccm,3.3361,4.8017,208.2591,-5.1477,3.6874,330.896
+Ubuntu GCC,enc,ctr,1.6971,0.6116,1635.081,,,
+Ubuntu GCC,enc,gcm,-0.4846,2.7078,369.3064,-2.1817,2.0962,342.7437
+Ubuntu GCC,enc,ccm,-0.9909,3.7461,266.9438,-2.6879,3.1345,512.5188
+Windows GCC,dec,ctr,2.3244,1.424,702.247,,,
+Windows GCC,dec,gcm,5.7213,1.7735,563.8547,3.3969,0.3495,24.544
+Windows GCC,dec,ccm,3.2336,4.7195,211.8881,0.9091,3.2955,231.4236
+Ubuntu GCC,dec,ctr,1.905,0.6316,1583.1576,,,
+Ubuntu GCC,dec,gcm,2.2646,0.9415,1062.1368,0.3596,0.3098,49.054
+Ubuntu GCC,dec,ccm,2.4094,1.9565,511.1073,0.5043,1.3249,209.7505
