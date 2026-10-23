@@ -12,8 +12,8 @@
 #include <openssl/evp.h>
 #endif
 #ifdef AESP_HAVE_CRYPTOPP
-#include <cryptopp/aes.h>
-#include <cryptopp/modes.h>
+#include <aes.h>
+#include <modes.h>
 #endif
 
 using namespace std;
@@ -78,7 +78,7 @@ XvalSummary run_xval(const std::string& which, std::size_t random_cases, std::os
       const std::size_t len = lens[idx];
       Bytes key = random_bytes(16), iv = random_bytes(16), data = random_bytes(len);
       if (idx % 3 == 1) {  // force carries: low 8 bytes near 2^64 boundary, carry runs into upper half
-        std::fill(iv.begin() + 8, iv.end(), 0xFF);
+        std::fill(iv.begin() + 8, iv.end(), uint8_t(0xFF));
         iv[15] = static_cast<uint8_t>(0xF0 + (idx % 8));
         iv[7] = 0x00;
       } else if (idx % 3 == 2) {  // carry across the low 32 bits

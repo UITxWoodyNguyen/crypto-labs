@@ -204,7 +204,7 @@ TEST_CASE("CTR counter is a 128-bit big-endian integer with carry", "[ctr][count
     REQUIRE(std::equal(expect.begin(), expect.end(), ks.begin() + 16 * i));
   }
   uint8_t c[16];
-  std::fill(c, c + 16, 0xFF);
+  std::fill(c, c + 16, static_cast<uint8_t>(0xFF));
   REQUIRE(ctr_increment(c));  // wraps to zero
   REQUIRE(std::all_of(c, c + 16, [](uint8_t v) { return v == 0; }));
 }

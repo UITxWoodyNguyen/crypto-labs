@@ -76,7 +76,6 @@ case "$COMPILER" in
 esac
 
 # Default library roots
-CRYPTOPP_ROOT="${CRYPTOPP_ROOT:-$HOME/Desktop/nt219lib/cryptopp}"
 OPENSSL_ROOT="${OPENSSL_ROOT_DIR:-$HOME/Desktop/nt219lib/openssl/$OPENSSL_COMPILER_SUBDIR}"
 
 # Clean if requested
@@ -87,7 +86,6 @@ echo "==========================================================================
 echo "Building Lab 2 - AES-128-CTR (aestool)"
 echo "Compiler: $COMPILER"
 echo "Build dir: $BUILD_DIR"
-echo "Crypto++ root: $CRYPTOPP_ROOT"
 echo "OpenSSL root: $OPENSSL_ROOT"
 echo "================================================================================"
 echo
@@ -97,7 +95,6 @@ echo "== 1/4 Configure =="
 cmake -S . -B "$BUILD_DIR" \
     ${CMAKE_CXX_COMPILER} \
     -DCMAKE_BUILD_TYPE=Release \
-    -DCRYPTOPP_ROOT_DIR="$CRYPTOPP_ROOT" \
     -DOPENSSL_ROOT_DIR="$OPENSSL_ROOT"
 if [[ $? -ne 0 ]]; then
     echo "[ERROR] Configure failed."

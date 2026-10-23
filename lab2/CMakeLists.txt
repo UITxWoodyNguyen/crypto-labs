@@ -46,12 +46,9 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake")
 # Find Dependencies
 # =============================================================================
 
-# --- Crypto++ (optional reference implementation for cross-validation) ---
-find_package(CryptoPP QUIET)
-
 # --- OpenSSL (reference implementation for cross-validation and benchmarking) ---
-# OpenSSL provides CMake config files in lib/cmake/OpenSSL or lib64/cmake/OpenSSL
-# Hint paths for different platforms/compilers (same as Lab 1)
+# Lab 2 is a from-scratch AES-128 core. OpenSSL is linked strictly as a reference
+# implementation for cross-validation (xval) and benchmark comparisons.
 if(WIN32)
     if(MSVC)
         set(OPENSSL_ROOT_DIR "D:/UIT/NT219/libs/openssl/msvc" CACHE PATH "OpenSSL root dir" FORCE)
@@ -79,6 +76,7 @@ find_package(Threads REQUIRED)
 option(LAB2_WERROR "Treat warnings as errors (GCC/Clang)" ON)
 if(MSVC)
     add_compile_options(/W4 /permissive- /utf-8)
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
 else()
     add_compile_options(-Wall -Wextra -Wpedantic)
     if(LAB2_WERROR)
@@ -113,11 +111,6 @@ target_link_libraries(aes_pure PRIVATE
     OpenSSL::SSL
 )
 target_compile_definitions(aes_pure PRIVATE AESP_HAVE_OPENSSL=1)
-
-if(CryptoPP_FOUND)
-    target_link_libraries(aes_pure PRIVATE CryptoPP::CryptoPP)
-    target_compile_definitions(aes_pure PRIVATE AESP_HAVE_CRYPTOPP=1)
-endif()
 
 if(WIN32)
     target_link_libraries(aes_pure PUBLIC bcrypt)   # OS CSPRNG (BCryptGenRandom)

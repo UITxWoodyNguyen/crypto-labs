@@ -120,15 +120,11 @@ if /I "%COMPILER%"=="clang" (
     )
 )
 
-REM Default Crypto++ root (FindCryptoPP.cmake will auto-detect compiler-specific libs)
-if "%CRYPTOPP_ROOT%"=="" set "CRYPTOPP_ROOT=D:/UIT/NT219/libs/cryptopp"
-
 echo.
 echo ================================================================================
 echo Building Lab 2 - AES-128-CTR (aestool)
 echo Compiler: %COMPILER%
 echo Build dir: %BUILD_DIR%
-echo Crypto++ root: %CRYPTOPP_ROOT%
 echo OpenSSL root: %OPENSSL_ROOT_DIR%
 echo ================================================================================
 echo.
@@ -137,7 +133,6 @@ REM Configure
 echo == 1/4 Configure ==
 cmake -S . -B "%BUILD_DIR%" %GENERATOR% %CMAKE_CXX_COMPILER% ^
     -DCMAKE_BUILD_TYPE=Release ^
-    -DCRYPTOPP_ROOT_DIR="%CRYPTOPP_ROOT%" ^
     -DOPENSSL_ROOT_DIR="%OPENSSL_ROOT_DIR%" ^
     %RUNTIME_FLAG%
 if errorlevel 1 (
