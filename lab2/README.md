@@ -1,6 +1,6 @@
 # Lab 2 — AES-128 in pure C++ (CTR mode, FIPS-197)
 
-`aes_pure_tool`: an AES-128 block cipher written from scratch (FIPS-197) with CTR mode (NIST SP 800-38A).
+`aestool`: an AES-128 block cipher written from scratch (FIPS-197) with CTR mode (NIST SP 800-38A).
 **No external crypto library is used in the core.** OpenSSL is linked *only* for cross-validation and
 benchmark comparison (`xval`, `bench`).
 
@@ -51,16 +51,16 @@ Helper scripts: `scripts/build.sh`, `scripts/build.bat`.
 
 ## Quick start
 ```bash
-./aes_pure_tool keygen --out key.bin
-./aes_pure_tool encrypt --mode ctr --key key.bin --in msg.bin --out ct.bin      # also writes ct.bin.iv
-./aes_pure_tool decrypt --mode ctr --key key.bin --in ct.bin  --out msg2.bin    # reads ct.bin.iv
+./aestool keygen --out key.bin
+./aestool encrypt --mode ctr --key key.bin --in msg.bin --out ct.bin      # also writes ct.bin.iv
+./aestool decrypt --mode ctr --key key.bin --in ct.bin  --out msg2.bin    # reads ct.bin.iv
 # explicit IV (as in the assignment)
-./aes_pure_tool ivgen --out iv.bin
-./aes_pure_tool encrypt --mode ctr --key key.bin --iv iv.bin --in msg.bin --out ct.bin
+./aestool ivgen --out iv.bin
+./aestool encrypt --mode ctr --key key.bin --iv iv.bin --in msg.bin --out ct.bin
 # screen output (hex), UTF-8 text
-./aes_pure_tool encrypt --key-hex 2b7e151628aed2a6abf7158809cf4f3c --text "xin chào"
-./aes_pure_tool --kat ../kat/vectors.json        # PASS/FAIL per case + summary
-./aes_pure_tool xval --ref all                    # compare with OpenSSL
+./aestool encrypt --key-hex 2b7e151628aed2a6abf7158809cf4f3c --text "xin chào"
+./aestool --kat ../kat/vectors.json        # PASS/FAIL per case + summary
+./aestool xval --ref all                    # compare with OpenSSL
 ```
 
 ## Command reference

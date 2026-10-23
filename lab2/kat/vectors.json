@@ -1,0 +1,167 @@
+{
+  "description": "AES-128 / CTR Known Answer Tests for aestool (Lab 2). Sources: FIPS-197, NIST AESAVS (ECB KAT set), NIST SP 800-38A; extra vectors cross-generated with OpenSSL where marked.",
+  "aes128_block": [
+    {
+      "id": "fips197-appendix-b",
+      "source": "FIPS-197 Appendix B",
+      "key": "2b7e151628aed2a6abf7158809cf4f3c",
+      "plaintext": "3243f6a8885a308d313198a2e0370734",
+      "ciphertext": "3925841d02dc09fbdc118597196a0b32"
+    },
+    {
+      "id": "fips197-appendix-c1",
+      "source": "FIPS-197 Appendix C.1 (AES-128)",
+      "key": "000102030405060708090a0b0c0d0e0f",
+      "plaintext": "00112233445566778899aabbccddeeff",
+      "ciphertext": "69c4e0d86a7b0430d8cdb78070b4c55a"
+    },
+    {
+      "id": "aesavs-gfsbox-0",
+      "source": "AESAVS ECBGFSbox128 #0",
+      "key": "00000000000000000000000000000000",
+      "plaintext": "f34481ec3cc627bacd5dc3fb08f273e6",
+      "ciphertext": "0336763e966d92595a567cc9ce537f5e"
+    },
+    {
+      "id": "aesavs-gfsbox-1",
+      "source": "AESAVS ECBGFSbox128 #1",
+      "key": "00000000000000000000000000000000",
+      "plaintext": "9798c4640bad75c7c3227db910174e72",
+      "ciphertext": "a9a1631bf4996954ebc093957b234589"
+    },
+    {
+      "id": "aesavs-keysbox-0",
+      "source": "AESAVS ECBKeySbox128 #0",
+      "key": "10a58869d74be5a374cf867cfb473859",
+      "plaintext": "00000000000000000000000000000000",
+      "ciphertext": "6d251e6944b051e04eaa6fb4dbf78465"
+    },
+    {
+      "id": "aesavs-vartxt-0",
+      "source": "AESAVS ECBVarTxt128 #0",
+      "key": "00000000000000000000000000000000",
+      "plaintext": "80000000000000000000000000000000",
+      "ciphertext": "3ad78e726c1ec02b7ebfe92b23d9ec34"
+    },
+    {
+      "id": "aesavs-varkey-0",
+      "source": "AESAVS ECBVarKey128 #0",
+      "key": "80000000000000000000000000000000",
+      "plaintext": "00000000000000000000000000000000",
+      "ciphertext": "0edd33d3c621e546455bd8ba1418bec8"
+    }
+  ],
+  "aes128_ctr": [
+    {
+      "id": "sp800-38a-f51-4blocks",
+      "source": "NIST SP 800-38A F.5.1 CTR-AES128.Encrypt (4 blocks)",
+      "key": "2b7e151628aed2a6abf7158809cf4f3c",
+      "iv": "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
+      "plaintext": "6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710",
+      "ciphertext": "874d6191b620e3261bef6864990db6ce9806f66b7970fdff8617187bb9fffdff5ae4df3edbd5d35e5b4f09020db03eab1e031dda2fbe03d1792170a0f3009cee"
+    },
+    {
+      "id": "sp800-38a-f51-prefix-1B",
+      "source": "NIST SP 800-38A F.5.1, first 1 bytes (partial final block; prefix property)",
+      "key": "2b7e151628aed2a6abf7158809cf4f3c",
+      "iv": "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
+      "plaintext": "6b",
+      "ciphertext": "87"
+    },
+    {
+      "id": "sp800-38a-f51-prefix-15B",
+      "source": "NIST SP 800-38A F.5.1, first 15 bytes (partial final block; prefix property)",
+      "key": "2b7e151628aed2a6abf7158809cf4f3c",
+      "iv": "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
+      "plaintext": "6bc1bee22e409f96e93d7e11739317",
+      "ciphertext": "874d6191b620e3261bef6864990db6"
+    },
+    {
+      "id": "sp800-38a-f51-prefix-17B",
+      "source": "NIST SP 800-38A F.5.1, first 17 bytes (partial final block; prefix property)",
+      "key": "2b7e151628aed2a6abf7158809cf4f3c",
+      "iv": "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
+      "plaintext": "6bc1bee22e409f96e93d7e117393172aae",
+      "ciphertext": "874d6191b620e3261bef6864990db6ce98"
+    },
+    {
+      "id": "sp800-38a-f51-prefix-37B",
+      "source": "NIST SP 800-38A F.5.1, first 37 bytes (partial final block; prefix property)",
+      "key": "2b7e151628aed2a6abf7158809cf4f3c",
+      "iv": "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
+      "plaintext": "6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a3",
+      "ciphertext": "874d6191b620e3261bef6864990db6ce9806f66b7970fdff8617187bb9fffdff5ae4df3edb"
+    },
+    {
+      "id": "sp800-38a-f51-prefix-63B",
+      "source": "NIST SP 800-38A F.5.1, first 63 bytes (partial final block; prefix property)",
+      "key": "2b7e151628aed2a6abf7158809cf4f3c",
+      "iv": "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
+      "plaintext": "6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c37",
+      "ciphertext": "874d6191b620e3261bef6864990db6ce9806f66b7970fdff8617187bb9fffdff5ae4df3edbd5d35e5b4f09020db03eab1e031dda2fbe03d1792170a0f3009c"
+    },
+    {
+      "id": "empty-message",
+      "source": "empty input -> empty output",
+      "key": "2b7e151628aed2a6abf7158809cf4f3c",
+      "iv": "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
+      "plaintext": "",
+      "ciphertext": ""
+    },
+    {
+      "id": "carry-low-byte",
+      "source": "cross-generated with OpenSSL 3 aes-128-ctr (counter carry test, not a NIST vector)",
+      "key": "2b7e151628aed2a6abf7158809cf4f3c",
+      "iv": "00112233445566778899aabbccddeefe",
+      "plaintext": "030a11181f262d343b424950575e656c737a81888f969da4abb2b9c0c7ced5dce3eaf1f8ff060d141b222930373e454c535a61686f767d848b9299a0a7aeb5bcc3cad1d8dfe6",
+      "ciphertext": "34670883e7323c4c5a40f09881d83a40fe8e68224a51ca9e8c6a6995112a0397275e80db1838a0eeee2a2552f3333b3d213e27402c563fca166f7a15e6c354075989067254ee"
+    },
+    {
+      "id": "carry-16bit",
+      "source": "cross-generated with OpenSSL 3 aes-128-ctr (counter carry test, not a NIST vector)",
+      "key": "2b7e151628aed2a6abf7158809cf4f3c",
+      "iv": "0123456789abcdef0123456789abfffe",
+      "plaintext": "030a11181f262d343b424950575e656c737a81888f969da4abb2b9c0c7ced5dce3eaf1f8ff060d141b222930373e454c535a61686f767d848b9299a0a7aeb5bcc3cad1d8dfe6edf4fb020910171e252c333a41484f565d646b727980878e959ca3aab1b8",
+      "ciphertext": "50bf87b0d0370f583721c3fa410bac69a8e12d72280d90f3eddb173d1869e4c55f5f4aadb42f0033c4ddf7db2658fbd2139a7ba581dab413e8474e9c8c4570514279bdd7bb37dab11453c2966dfaabea630a2d5a8736114132cc55e1cd6d69b163f29c7a"
+    },
+    {
+      "id": "carry-64bit",
+      "source": "cross-generated with OpenSSL 3 aes-128-ctr (counter carry test, not a NIST vector)",
+      "key": "2b7e151628aed2a6abf7158809cf4f3c",
+      "iv": "0001020304050607fffffffffffffff0",
+      "plaintext": "030a11181f262d343b424950575e656c737a81888f969da4abb2b9c0c7ced5dce3eaf1f8ff060d141b222930373e454c535a61686f767d848b9299a0a7aeb5bcc3cad1d8dfe6edf4fb020910171e252c333a41484f565d646b727980878e959ca3aab1b8bfc6cdd4dbe2e9f0f7fe050c131a21282f363d444b525960676e757c838a91989fa6adb4bbc2c9d0d7dee5ecf3fa01080f161d242b323940474e555c636a71787f868d949ba2a9b0b7bec5ccd3dae1e8eff6fd040b121920272e353c434a51585f666d747b828990979ea5acb3bac1c8cfd6dde4ebf2f900070e151c232a31383f464d545b626970777e858c939aa1a8afb6bdc4cbd2d9e0e7eef5fc030a11181f262d343b424950575e656c737a81888f969da4abb2b9c0c7ced5dce3eaf1f8ff060d141b222930373e454c535a61686f767d848b9299a0a7aeb5bcc3cad1d8dfe6edf4fb020910171e252c333a41484f565d646b727980878e959ca3aab1b8bfc6cdd4dbe2e9f0f7fe050c131a21282f363d444b525960676e757c838a91989fa6adb4bbc2c9d0d7dee5ec",
+      "ciphertext": "e43b879f8096ea3de851020eec92a19106233146921dbc717cc36ddafd56631d858831423f6bb887f20f6ab8f142a7885e2d754ee0918840ade137dcdf228cefe6568902eedd25dd28c024d5f5b08ee265cc2d83b7c00f35f4b20d33f94d093a3adc40cd41d4ebfb6008ba1986d7eec41ceb95c7f00f1b58ddef4c0b871ac3be31256199b7a211a22f2c68488697b97e3ac302368c847b976b9011043a3cad0f7d6a3cf48d78f9f1a69c09593c578256491343f3336968806b4ccd2cc8d5c0d508b69458e293bcef99606cea48cb66eb6cd56739e53b7472b4a53108787c401ac8327617cd6a5f9263a7db975f5388acae1207251f455e02a5ad012156258c86298280ca26b2b6de05e6bf912820cc3b79a8f7312b5996b142011135bc34699533b865ce0d0bbe2c2a4cf00df9cf8f6c9a71f33146a61998f687b899c0f746f40bd0776770dcd29d2df05884fd0146a9510ee3653d8644c8173a20bfff21c30110f15169daccd702a8cbf346a597214aec5952d91b178f2c701237e129eb913ae0e1451486ed0428b85149de64238662"
+    },
+    {
+      "id": "carry-96bit",
+      "source": "cross-generated with OpenSSL 3 aes-128-ctr (counter carry test, not a NIST vector)",
+      "key": "2b7e151628aed2a6abf7158809cf4f3c",
+      "iv": "aabbccddeeff001122334455fffffffe",
+      "plaintext": "030a11181f262d343b424950575e656c737a81888f969da4abb2b9c0c7ced5dce3eaf1f8ff060d141b222930373e454c535a61686f767d848b9299a0a7aeb5bcc3cad1d8dfe6edf4fb02091017",
+      "ciphertext": "3bc182e9689c6ec006581c0289a6086d347f5f09ef1f6d963797f47e56ce07613497536219741b8e63fe10e6be8ae698eb6453a677147273a5d08868f7fa36c32cf34bc0eaa616df4de22c7f6f"
+    }
+  ],
+  "aes128_ctr_errors": [
+    {
+      "id": "iv-all-ff-two-blocks",
+      "key": "2b7e151628aed2a6abf7158809cf4f3c",
+      "iv": "ffffffffffffffffffffffffffffffff",
+      "length": 17,
+      "expect": "counter_overflow"
+    },
+    {
+      "id": "iv-ff..fe-three-blocks",
+      "key": "2b7e151628aed2a6abf7158809cf4f3c",
+      "iv": "fffffffffffffffffffffffffffffffe",
+      "length": 33,
+      "expect": "counter_overflow"
+    },
+    {
+      "id": "iv-all-ff-33-bytes",
+      "key": "2b7e151628aed2a6abf7158809cf4f3c",
+      "iv": "ffffffffffffffffffffffffffffffff",
+      "length": 33,
+      "expect": "counter_overflow"
+    }
+  ]
+}
