@@ -292,12 +292,37 @@ int cmd_crypt(const Args& a, bool encrypt) {
 }
 
 int cmd_kat(const Args& a) {
-  const KatSummary s = run_kat_file(a.get("kat"), a.flag("verbose"), std::cout);
+  const std::string kat_path = resolve_input_path(a.get("kat")).string();
+  std::string out_path = a.get("out");
+  if (out_path.empty()) {
+    out_path = (get_os_output_dir() / "kat" / "result.txt").string();
+  }
+  std::ostringstream ss;
+  const KatSummary s = run_kat_file(kat_path, a.flag("verbose"), ss);
+  const std::string out_str = ss.str();
+  std::cout << out_str << std::flush;
+  try {
+    write_file(out_path, reinterpret_cast<const uint8_t*>(out_str.data()), out_str.size(), true);
+  } catch (const std::exception&) {
+    if (a.has("out")) throw;
+  }
   return s.ok() ? 0 : static_cast<int>(ExitCode::KatFailed);
 }
 
 int cmd_xval(const Args& a) {
-  const XvalSummary s = run_xval(a.get("ref", "all"), parse_count(a.get("cases", "50"), "--cases"), std::cout);
+  std::string out_path = a.get("out");
+  if (out_path.empty()) {
+    out_path = (get_os_output_dir() / "xval" / "result.txt").string();
+  }
+  std::ostringstream ss;
+  const XvalSummary s = run_xval(a.get("ref", "all"), parse_count(a.get("cases", "50"), "--cases"), ss);
+  const std::string out_str = ss.str();
+  std::cout << out_str << std::flush;
+  try {
+    write_file(out_path, reinterpret_cast<const uint8_t*>(out_str.data()), out_str.size(), true);
+  } catch (const std::exception&) {
+    if (a.has("out")) throw;
+  }
   return s.failed == 0 ? 0 : static_cast<int>(ExitCode::KatFailed);
 }
 
@@ -327,6 +352,14 @@ int cmd_bench(const Args& a) {
     else if (d != "both") usage_error("--dir must be enc|dec|both");
   }
   o.csv_path = a.get("csv");
+  if (o.csv_path.empty()) {
+    o.csv_path = (get_os_output_dir() / "bench" / "result.csv").string();
+  } else {
+    std::filesystem::path cp = to_path(o.csv_path);
+    if (!cp.is_absolute() && !cp.has_parent_path()) {
+      o.csv_path = (get_os_output_dir() / "bench" / cp).string();
+    }
+  }
   run_bench(o, std::cout);
   return 0;
 }

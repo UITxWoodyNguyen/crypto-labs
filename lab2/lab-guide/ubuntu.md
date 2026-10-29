@@ -84,7 +84,7 @@ Sau khi build xong, các file nằm trong thư mục build:
 cd build_ubuntu_gcc
 ctest --output-on-failure          # 3 test: unit_tests, kat_runner, cli_end_to_end
 ./aes_tests                        # chi tiết unit test (Catch2)
-./aestool --kat ../kat/vectors.json            # KAT: PASS/FAIL từng case + tổng kết
+./aestool --kat ../kat/vectors.json            # KAT: PASS/FAIL từng case + tự động lưu Output/ubuntu/kat/result.txt
 ./aestool --kat ../kat/vectors.json --verbose
 ./aestool xval --ref openssl --cases 50        # đối chiếu với OpenSSL
 ```
@@ -138,7 +138,7 @@ sudo cpupower frequency-set -g performance               # hoặc: sudo cpufreq-
 Chạy (từ thư mục build):
 
 ```bash
-./aestool bench --sizes 1MiB,100MiB --runs 30 --csv bench_ubuntu_gcc.csv
+./aestool bench --sizes 1MiB,100MiB --runs 30 --csv ../Output/ubuntu/bench/bench_ubuntu.csv
 # thêm 1GiB nếu đủ RAM:  --sizes 1MiB,100MiB,1GiB
 # backend computed rất chậm (~1 MB/s), chỉ nên đo size nhỏ:
 ./aestool bench --sizes 64KiB,1MiB --backends computed --runs 30
@@ -147,7 +147,7 @@ Chạy (từ thư mục build):
 Vẽ biểu đồ:
 
 ```bash
-python3 ../scripts/plot_bench.py bench_ubuntu_gcc.csv plot_ubuntu_gcc
+python3 ../scripts/plot_bench.py ../Output/ubuntu/bench/bench_ubuntu.csv ../Output/ubuntu/bench/plot_ubuntu
 # sinh ra plot_ubuntu_gcc_throughput.png và plot_ubuntu_gcc_latency.png
 ```
 

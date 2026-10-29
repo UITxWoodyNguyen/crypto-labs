@@ -61,7 +61,7 @@ Bytes ctr_crypt(const Aes128& aes, const uint8_t iv[16], const Bytes& data) {
 void ctr_crypt_file(const Aes128& aes, const uint8_t iv[16], const std::string& in_path,
                     const std::string& out_path, bool overwrite) {
   namespace fs = std::filesystem;
-  const fs::path in = to_path(in_path), out = to_path(out_path);
+  const fs::path in = resolve_input_path(in_path), out = to_path(out_path);
   std::error_code ec;
   if (fs::exists(out, ec)) {
     if (fs::exists(in, ec) && fs::equivalent(in, out, ec))
@@ -74,6 +74,9 @@ void ctr_crypt_file(const Aes128& aes, const uint8_t iv[16], const std::string& 
   if (!fin) throw Error(ExitCode::Io, "cannot open input file '" + in_path + "'");
   fs::path tmp = out;
   tmp += ".tmp";
+  if (out.has_parent_path()) {
+    fs::create_directories(out.parent_path(), ec);
+  }
   std::ofstream fout(tmp, std::ios::binary | std::ios::trunc);
   if (!fout) throw Error(ExitCode::Io, "cannot create output file '" + out_path + "'");
 

@@ -217,7 +217,13 @@ void run_bench(const BenchOptions& opt, std::ostream& os) {
   }
 
   if (!opt.csv_path.empty()) {
-    std::ofstream f(to_path(opt.csv_path), std::ios::trunc);
+    namespace fs = std::filesystem;
+    const fs::path cp = to_path(opt.csv_path);
+    std::error_code ec;
+    if (cp.has_parent_path()) {
+      fs::create_directories(cp.parent_path(), ec);
+    }
+    std::ofstream f(cp, std::ios::trunc);
     if (!f) throw Error(ExitCode::Io, "cannot create CSV file '" + opt.csv_path + "'");
     f << "implementation,direction,size_bytes,ops_per_run,runs,mean_MBps,median_MBps,stddev_MBps,ci95_lo_MBps,"
          "ci95_hi_MBps,mean_ms_per_op,median_ms_per_op,stddev_ms_per_op,ci95_lo_ms,ci95_hi_ms\n";

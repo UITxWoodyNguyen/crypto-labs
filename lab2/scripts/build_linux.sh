@@ -124,7 +124,8 @@ if [[ ! -f "$EXE" ]]; then
     echo "[ERROR] Executable not found: $EXE"
     exit 1
 fi
-"$EXE" --kat kat/vectors.json
+mkdir -p Output/ubuntu/kat
+"$EXE" --kat kat/vectors.json --out Output/ubuntu/kat/result.txt
 if [[ $? -ne 0 ]]; then
     echo "[ERROR] KAT failed."
     exit 1

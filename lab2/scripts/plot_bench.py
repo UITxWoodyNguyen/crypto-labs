@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 """Plot throughput (MB/s, 95% CI error bars) and latency from `aestool bench --csv`.
 Usage: python3 scripts/plot_bench.py bench.csv [out_prefix]   (needs matplotlib)"""
-import csv, sys
+import csv, os, sys
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 rows = list(csv.DictReader(open(sys.argv[1])))
-prefix = sys.argv[2] if len(sys.argv) > 2 else "bench"
+prefix = sys.argv[2] if len(sys.argv) > 2 else os.path.splitext(sys.argv[1])[0]
+prefix_dir = os.path.dirname(os.path.abspath(prefix))
+if prefix_dir:
+    os.makedirs(prefix_dir, exist_ok=True)
 sizes = sorted({int(r["size_bytes"]) for r in rows})
 impls = sorted({r["implementation"] for r in rows})
 label = lambda n: f"{n >> 20} MiB" if n >= 1 << 20 else f"{n >> 10} KiB"

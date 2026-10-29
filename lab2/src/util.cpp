@@ -17,6 +17,7 @@
 #elif defined(__linux__)
 #include <sys/random.h>
 #include <cerrno>
+#include <unistd.h>
 #else
 #include <stdlib.h>
 #endif
@@ -214,8 +215,125 @@ bool file_exists(const std::string& path) {
   return std::filesystem::exists(to_path(path), ec);
 }
 
+std::filesystem::path get_executable_dir() {
+  std::error_code ec;
+#if defined(_WIN32)
+  wchar_t buf[MAX_PATH];
+  DWORD len = GetModuleFileNameW(nullptr, buf, MAX_PATH);
+  if (len > 0 && len < MAX_PATH) {
+    return std::filesystem::path(buf).parent_path();
+  }
+#elif defined(__linux__)
+  char buf[1024];
+  ssize_t len = readlink("/proc/self/exe", buf, sizeof(buf) - 1);
+  if (len > 0 && len < static_cast<ssize_t>(sizeof(buf))) {
+    buf[len] = '\0';
+    return std::filesystem::path(buf).parent_path();
+  }
+#endif
+  return std::filesystem::current_path(ec);
+}
+
+std::filesystem::path get_project_root() {
+  namespace fs = std::filesystem;
+  std::error_code ec;
+  fs::path cur = fs::current_path(ec);
+  for (int i = 0; i < 6; ++i) {
+    if (fs::exists(cur / "kat" / "vectors.json", ec) ||
+        (fs::exists(cur / "CMakeLists.txt", ec) && fs::exists(cur / "src" / "aes128.cpp", ec))) {
+      return cur;
+    }
+    if (cur == cur.parent_path()) break;
+    cur = cur.parent_path();
+  }
+
+  fs::path exe = get_executable_dir();
+  for (int i = 0; i < 6; ++i) {
+    if (fs::exists(exe / "kat" / "vectors.json", ec) ||
+        (fs::exists(exe / "CMakeLists.txt", ec) && fs::exists(exe / "src" / "aes128.cpp", ec))) {
+      return exe;
+    }
+    if (exe == exe.parent_path()) break;
+    exe = exe.parent_path();
+  }
+
+  return fs::current_path(ec);
+}
+
+std::filesystem::path get_os_output_dir() {
+  namespace fs = std::filesystem;
+#if defined(_WIN32)
+  const char* os_name = "windows";
+#else
+  const char* os_name = "ubuntu";
+#endif
+  return get_project_root() / "Output" / os_name;
+}
+
+std::filesystem::path resolve_input_path(const std::string& path) {
+  namespace fs = std::filesystem;
+  std::error_code ec;
+  fs::path p = to_path(path);
+  if (fs::exists(p, ec) && !fs::is_directory(p, ec)) {
+    return p;
+  }
+  if (p.is_relative()) {
+    fs::path cand = p;
+    for (int i = 0; i < 4; ++i) {
+      cand = fs::path("..") / cand;
+      if (fs::exists(cand, ec) && !fs::is_directory(cand, ec)) {
+        return cand;
+      }
+    }
+
+    fs::path exe_dir = get_executable_dir();
+    fs::path base = exe_dir;
+    for (int i = 0; i < 5; ++i) {
+      fs::path p_cand = (base / p).lexically_normal();
+      if (fs::exists(p_cand, ec) && !fs::is_directory(p_cand, ec)) {
+        return p_cand;
+      }
+      if (base == base.parent_path()) break;
+      base = base.parent_path();
+    }
+
+    fs::path root = get_project_root();
+    fs::path p_root = (root / p).lexically_normal();
+    if (fs::exists(p_root, ec) && !fs::is_directory(p_root, ec)) {
+      return p_root;
+    }
+
+    fs::path stripped = p;
+    while (!stripped.empty() && stripped.has_relative_path()) {
+      auto it = stripped.begin();
+      if (it != stripped.end() && *it == "..") {
+        fs::path next;
+        ++it;
+        for (; it != stripped.end(); ++it) {
+          next /= *it;
+        }
+        stripped = next;
+        if (!stripped.empty() && fs::exists(root / stripped, ec) && !fs::is_directory(root / stripped, ec)) {
+          return root / stripped;
+        }
+      } else {
+        break;
+      }
+    }
+
+    if (p.filename() == "vectors.json") {
+      fs::path kat_vec = root / "kat" / "vectors.json";
+      if (fs::exists(kat_vec, ec)) {
+        return kat_vec;
+      }
+    }
+  }
+  return p;
+}
+
 Bytes read_file(const std::string& path, std::size_t max_bytes) {
-  std::ifstream f(to_path(path), std::ios::binary);
+  const std::filesystem::path resolved = resolve_input_path(path);
+  std::ifstream f(resolved, std::ios::binary);
   if (!f) throw Error(ExitCode::Io, "cannot open input file '" + path + "'");
   f.seekg(0, std::ios::end);
   const std::streamoff size = f.tellg();
@@ -245,6 +363,9 @@ void write_file(const std::string& path, const uint8_t* d, std::size_t n, bool o
   std::error_code ec;
   if (!overwrite && fs::exists(out, ec))
     throw Error(ExitCode::Io, "output file '" + path + "' already exists (use --force to overwrite)");
+  if (out.has_parent_path()) {
+    fs::create_directories(out.parent_path(), ec);
+  }
   fs::path tmp = out;
   tmp += ".tmp";
   {

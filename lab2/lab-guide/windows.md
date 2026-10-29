@@ -101,7 +101,7 @@ Ví dụ với MinGW (`cd build_windows_gcc`). Với MSVC thay `aestool.exe` b�
 ```bat
 ctest --output-on-failure                                :: 3 test: unit_tests, kat_runner, cli_end_to_end
 aes_tests.exe                                            :: chi tiết unit test (Catch2)
-aestool.exe --kat ..\kat\vectors.json              :: KAT: PASS/FAIL từng case + tổng kết
+aestool.exe --kat ..\kat\vectors.json              :: KAT: PASS/FAIL từng case + tự động lưu Output\windows\kat\result.txt
 aestool.exe --kat ..\kat\vectors.json --verbose
 aestool.exe xval --ref openssl --cases 50          :: đối chiếu với OpenSSL
 ```
@@ -162,7 +162,7 @@ aestool.exe decrypt --key key.bin --iv-hex 00 --in ct.bin --out x.txt --quiet
 echo exit=%ERRORLEVEL%
 
 :: 5) Tràn counter -> bị từ chối (exit 5)
-aestool.exe encrypt --key key.bin --iv-hex ffffffffffffffffffffffffffffffff --in msg.txt --out o.bin --quiet
+aestool.exe encrypt --key key.bin --iv-hex ffffffffffffffffffffffffffffffff --text "two blocks of data here !!!!!!!!!" --out o.bin --quiet
 echo exit=%ERRORLEVEL%
 ```
 
@@ -175,7 +175,7 @@ Chuẩn bị để kết quả công bằng:
 - Luôn dùng build **Release**.
 
 ```bat
-aestool.exe bench --sizes 1MiB,100MiB --runs 30 --csv bench_windows_gcc.csv
+aestool.exe bench --sizes 1MiB,100MiB --runs 30 --csv ..\Output\windows\bench\bench_windows.csv
 :: thêm 1GiB nếu đủ RAM:   --sizes 1MiB,100MiB,1GiB
 :: backend computed rất chậm (~1 MB/s), chỉ đo size nhỏ:
 aestool.exe bench --sizes 64KiB,1MiB --backends computed --runs 30
@@ -184,7 +184,7 @@ aestool.exe bench --sizes 64KiB,1MiB --backends computed --runs 30
 Vẽ biểu đồ (từ thư mục build):
 
 ```bat
-python ..\scripts\plot_bench.py bench_windows_gcc.csv plot_windows_gcc
+python ..\scripts\plot_bench.py ..\Output\windows\bench\bench_windows.csv ..\Output\windows\bench\plot_windows
 ```
 
 Phần header `bench` in ra (CPU, RAM, OS, compiler, flags) dùng để điền bảng phần cứng trong báo cáo. Trên Windows, CPU lấy từ biến môi trường; RAM hiển thị "unknown" nên bạn điền tay (Task Manager → Performance).

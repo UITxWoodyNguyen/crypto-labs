@@ -1,8 +1,8 @@
 # LAB 2 — Yêu cầu (dịch từ đề gốc) và toàn bộ lệnh cần chạy để lấy đủ điểm
 
-> Dựa trên **đề chính thức trong PDF** (Lab 2 + phần "Common Requirements"). Tên CLI giữ là `aes_pure_tool`.
+> Dựa trên **đề chính thức trong PDF** (Lab 2 + phần "Common Requirements"). Tên CLI giữ là `aestool`.
 > Mục 1–3: yêu cầu. Mục 4: bảng đối chiếu rubric → bằng chứng. Mục 5 (Ubuntu) và Mục 6 (Windows): **mọi lệnh cần chạy**. Mục 7: phần phải tự viết trong báo cáo (không có lệnh nào làm thay được).
-> Quy ước: chạy mọi lệnh từ thư mục gốc dự án `lab2/` (nơi có `CMakeLists.txt`). Log/bằng chứng lưu vào `evidence/`.
+> Quy ước: chạy mọi lệnh từ thư mục gốc dự án `lab2/` (nơi có `CMakeLists.txt`). Log/bằng chứng lưu vào `Output/ubuntu/`.
 
 ---
 
@@ -27,8 +27,8 @@
 
 ### 2.3. CLI và I/O
 ```
-aes_pure_tool encrypt --mode ctr --key key.bin --iv iv.bin --in msg.bin --out ct.bin
-aes_pure_tool decrypt --mode ctr --key key.bin --iv iv.bin --in ct.bin  --out msg.bin
+aestool encrypt --mode ctr --key key.bin --iv iv.bin --in msg.bin --out ct.bin
+aestool decrypt --mode ctr --key key.bin --iv iv.bin --in ct.bin  --out msg.bin
 ```
 - Input/output raw binary; tùy chọn hex để debug; **key đúng 16 byte, IV đúng 16 byte**.
 - Phải kiểm tra (fail closed): độ dài key sai, độ dài IV sai, **tràn counter**, lỗi I/O file. Mọi input sai phải dừng an toàn.
@@ -93,7 +93,7 @@ aes_pure_tool decrypt --mode ctr --key key.bin --iv iv.bin --in ct.bin  --out ms
 sudo apt update
 sudo apt install -y build-essential cmake git libssl-dev pkg-config catch2 clang python3-matplotlib xxd
 cmake --version      # phải >= 3.20
-mkdir -p evidence work release/ubuntu
+mkdir -p Output/ubuntu/kat Output/ubuntu/bench Output/ubuntu/xval Output/ubuntu/bin work
 ```
 
 ### 5.1. Thông tin hệ thống (điền bảng phần cứng trong báo cáo)
@@ -102,18 +102,18 @@ mkdir -p evidence work release/ubuntu
   echo "== CPU"; lscpu
   echo "== RAM"; free -h
   echo "== Compilers"; g++ --version | head -1; clang++ --version | head -1; cmake --version | head -1; openssl version
-} 2>&1 | tee evidence/ubuntu_sysinfo.txt
+} 2>&1 | tee Output/ubuntu/ubuntu_sysinfo.txt
 sudo apt install -y linux-tools-common linux-tools-generic   # nếu chưa có cpupower
 sudo cpupower frequency-set -g performance                    # cố định governor trước khi đo
-cpupower frequency-info -p | tee -a evidence/ubuntu_sysinfo.txt
+cpupower frequency-info -p | tee -a Output/ubuntu/ubuntu_sysinfo.txt
 ```
 
 ### 5.2. Build + ctest (GCC và Clang)
 ```bash
 # Cách A: script
 chmod +x scripts/*.sh
-scripts/build.sh gcc   2>&1 | tee evidence/ubuntu_gcc_build_ctest.txt
-scripts/build.sh clang 2>&1 | tee evidence/ubuntu_clang_build_ctest.txt
+scripts/build.sh gcc   2>&1 | tee Output/ubuntu/ubuntu_gcc_build_ctest.txt
+scripts/build.sh clang 2>&1 | tee Output/ubuntu/ubuntu_clang_build_ctest.txt
 
 # Cách B: thủ công (out-of-source)
 mkdir build_ubuntu_gcc && cd build_ubuntu_gcc
@@ -126,22 +126,22 @@ cd ..
 # (Tùy chọn, tăng điểm chất lượng) ASan + UBSan
 mkdir build_ubuntu_asan && cd build_ubuntu_asan
 cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-sanitize-recover=undefined"
-cmake --build . -j"$(nproc)" && ctest --output-on-failure 2>&1 | tee ../evidence/ubuntu_asan_ctest.txt
+cmake --build . -j"$(nproc)" && ctest --output-on-failure 2>&1 | tee ../Output/ubuntu/ubuntu_asan_ctest.txt
 cd ..
 ```
 
 ### 5.3. KAT + unit test (đặt biến cho gọn; đổi `build_ubuntu_clang` để chạy lại cho Clang)
 ```bash
-B=build_ubuntu_gcc ; T=$B/aes_pure_tool
-$B/aes_tests 2>&1 | tee evidence/ubuntu_gcc_unit_tests.txt
-$T --kat kat/vectors.json            | tee evidence/ubuntu_gcc_kat.txt
-$T --kat kat/vectors.json --verbose  > evidence/ubuntu_gcc_kat_verbose.txt
+B=build_ubuntu_gcc ; T=$B/aestool
+$B/aes_tests 2>&1 | tee Output/ubuntu/ubuntu_gcc_unit_tests.txt
+$T --kat kat/vectors.json            | tee Output/ubuntu/ubuntu_gcc_kat.txt
+$T --kat kat/vectors.json --verbose  > Output/ubuntu/ubuntu_gcc_kat_verbose.txt
 echo "exit=$?"
 ```
 
 ### 5.4. Cross-validation
 ```bash
-$T xval --ref openssl --cases 200 | tee evidence/ubuntu_gcc_xval.txt
+$T xval --ref openssl --cases 200 | tee Output/ubuntu/ubuntu_gcc_xval.txt
 
 # Đối chiếu độc lập bằng chính lệnh `openssl enc` (cùng key + IV)
 head -c 100000 /dev/urandom > work/msg.bin
@@ -149,12 +149,12 @@ K=2b7e151628aed2a6abf7158809cf4f3c ; IV=f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
 rm -f work/ct.bin work/ct_ossl.bin
 $T encrypt --key-hex $K --iv-hex $IV --in work/msg.bin --out work/ct.bin --quiet
 openssl enc -aes-128-ctr -K $K -iv $IV -in work/msg.bin -out work/ct_ossl.bin
-cmp work/ct.bin work/ct_ossl.bin && echo "MATCHES OPENSSL" | tee evidence/ubuntu_openssl_cli_match.txt
+cmp work/ct.bin work/ct_ossl.bin && echo "MATCHES OPENSSL" | tee Output/ubuntu/ubuntu_openssl_cli_match.txt
 ```
 
 ### 5.5. Negative tests + hành vi fail-closed
 ```bash
-bash scripts/demo.sh $PWD/$T 2>&1 | tee evidence/ubuntu_negative_tests.txt
+bash scripts/demo.sh $PWD/$T 2>&1 | tee Output/ubuntu/ubuntu_negative_tests.txt
 
 # Key/IV sai độ dài, mode không hỗ trợ, ghi đè, tràn counter — kiểm tra exit code
 {
@@ -165,7 +165,7 @@ $T encrypt --key-hex $K --iv-hex ffffffffffffffffffffffffffffffff --in work/msg.
 $T encrypt --mode gcm --key-hex $K --text hi;                                  echo "bad mode       exit=$? (mong đợi 2)"
 $T encrypt --key-hex $K --in work/khong_ton_tai.bin --out work/x.bin;          echo "missing input  exit=$? (mong đợi 4)"
 $T decrypt --key-hex $K --iv-hex 00000000000000000000000000000000 --text zz --in-encode hex; echo "bad hex  exit=$? (mong đợi 3)"
-} 2>&1 | tee evidence/ubuntu_failclosed.txt
+} 2>&1 | tee Output/ubuntu/ubuntu_failclosed.txt
 
 # KAT file hỏng / vector sai phải làm runner FAIL
 echo '{ not json' > work/bad.json ; $T --kat work/bad.json ; echo "malformed json exit=$? (mong đợi 3)"
@@ -178,9 +178,9 @@ $T --kat work/bad_kat.json | tail -3 ; echo "wrong vector exit=${PIPESTATUS[0]} 
 rm -f work/big.* work/k.bin
 head -c 1073741824 /dev/urandom > work/big.bin             # 1 GiB
 $T keygen --out work/k.bin --quiet
-{ time $T encrypt --key work/k.bin --in work/big.bin --out work/big.enc --quiet --sbox ttable ; } 2>&1 | tee evidence/ubuntu_big_encrypt.txt
-{ time $T decrypt --key work/k.bin --in work/big.enc --out work/big.dec --quiet --sbox ttable ; } 2>&1 | tee evidence/ubuntu_big_decrypt.txt
-sha256sum work/big.bin work/big.dec | tee evidence/ubuntu_big_sha256.txt      # 2 hash phải giống nhau
+{ time $T encrypt --key work/k.bin --in work/big.bin --out work/big.enc --quiet --sbox ttable ; } 2>&1 | tee Output/ubuntu/ubuntu_big_encrypt.txt
+{ time $T decrypt --key work/k.bin --in work/big.enc --out work/big.dec --quiet --sbox ttable ; } 2>&1 | tee Output/ubuntu/ubuntu_big_decrypt.txt
+sha256sum work/big.bin work/big.dec | tee Output/ubuntu/ubuntu_big_sha256.txt      # 2 hash phải giống nhau
 rm -f work/big.*
 ```
 
@@ -188,34 +188,34 @@ rm -f work/big.*
 ```bash
 # Lõi: table + ttable so với OpenSSL, size 1 MiB và 100 MiB, N=30, warm-up 1.5 s (mặc định)
 $T bench --sizes 1MiB,100MiB --backends table,ttable --ref openssl --runs 30 \
-         --csv evidence/bench_ubuntu_gcc.csv | tee evidence/bench_ubuntu_gcc.txt
+         --csv Output/ubuntu/bench_ubuntu_gcc.csv | tee Output/ubuntu/bench_ubuntu_gcc.txt
 
 # Backend computed (S-box tính toán, ~1 MB/s): chỉ đo size nhỏ
 $T bench --sizes 64KiB,1MiB --backends computed --ref none --runs 30 \
-         --csv evidence/bench_ubuntu_gcc_computed.csv | tee evidence/bench_ubuntu_gcc_computed.txt
+         --csv Output/ubuntu/bench_ubuntu_gcc_computed.csv | tee Output/ubuntu/bench_ubuntu_gcc_computed.txt
 
 # Làm đúng chữ "~1000 phép toán / khối" cho size nhỏ
 $T bench --sizes 1MiB --backends ttable --ref openssl --runs 30 --ops 1000 \
-         --csv evidence/bench_ubuntu_gcc_ops1000.csv | tee evidence/bench_ubuntu_gcc_ops1000.txt
+         --csv Output/ubuntu/bench_ubuntu_gcc_ops1000.csv | tee Output/ubuntu/bench_ubuntu_gcc_ops1000.txt
 
 # 1 GiB (nếu khả thi; rất lâu; ghi rõ trong báo cáo nếu giảm số lần chạy)
 $T bench --sizes 1GiB --backends ttable --ref openssl --runs 30 --dir enc \
-         --csv evidence/bench_ubuntu_gcc_1gib.csv | tee evidence/bench_ubuntu_gcc_1gib.txt
+         --csv Output/ubuntu/bench_ubuntu_gcc_1gib.csv | tee Output/ubuntu/bench_ubuntu_gcc_1gib.txt
 ```
 Ghi nhận trong báo cáo: header `bench` in ra (CPU, RAM, OS, compiler, flags), chỉ số mean/median/stddev/CI95.
 
 ### 5.8. Biểu đồ
 ```bash
-python3 scripts/plot_bench.py evidence/bench_ubuntu_gcc.csv evidence/plot_ubuntu_gcc
-# -> evidence/plot_ubuntu_gcc_throughput.png, evidence/plot_ubuntu_gcc_latency.png
-python3 scripts/plot_bench.py evidence/bench_ubuntu_gcc_computed.csv evidence/plot_ubuntu_gcc_computed
+python3 scripts/plot_bench.py Output/ubuntu/bench_ubuntu_gcc.csv Output/ubuntu/plot_ubuntu_gcc
+# -> Output/ubuntu/plot_ubuntu_gcc_throughput.png, Output/ubuntu/plot_ubuntu_gcc_latency.png
+python3 scripts/plot_bench.py Output/ubuntu/bench_ubuntu_gcc_computed.csv Output/ubuntu/plot_ubuntu_gcc_computed
 ```
 
 ### 5.9. Đóng gói binary + nộp
 ```bash
-cp build_ubuntu_gcc/aes_pure_tool   release/ubuntu/aes_pure_tool_gcc
-cp build_ubuntu_clang/aes_pure_tool release/ubuntu/aes_pure_tool_clang
-ldd release/ubuntu/aes_pure_tool_gcc | tee evidence/ubuntu_ldd.txt      # ghi nhận phụ thuộc (libcrypto)
+cp build_ubuntu_gcc/aestool   release/ubuntu/aestool_gcc
+cp build_ubuntu_clang/aestool release/ubuntu/aestool_clang
+ldd release/ubuntu/aestool_gcc | tee Output/ubuntu/ubuntu_ldd.txt      # ghi nhận phụ thuộc (libcrypto)
 sudo cpupower frequency-set -g powersave   # (tuỳ chọn) trả governor về như cũ
 # Nén (loại thư mục build và file tạm)
 cd .. && zip -r lab2_submit.zip lab2 -x "lab2/build_*/*" "lab2/work/*"
@@ -232,7 +232,7 @@ cd .. && zip -r lab2_submit.zip lab2 -x "lab2/build_*/*" "lab2/work/*"
 CMake ≥ 3.20, Git, Visual Studio Build Tools (C++), MinGW-w64, (tuỳ chọn) LLVM + Ninja, Python + matplotlib (`pip install matplotlib`), và các bản OpenSSL riêng cho từng compiler tại
 `D:\UIT\NT219\libs\openssl\{msvc,gcc,clang}` (hoặc truyền `-DOPENSSL_ROOT_DIR=...`).
 ```bat
-mkdir evidence work release\windows
+mkdir Output\windows\kat Output\windows\bench Output\windows\xval Output\windows\bin work
 cmake --version
 ```
 
@@ -241,17 +241,17 @@ cmake --version
 (systeminfo | findstr /B /C:"OS Name" /C:"OS Version" /C:"Total Physical Memory" ^
  & powershell -NoProfile -Command "Get-CimInstance Win32_Processor | Select-Object Name,NumberOfCores,NumberOfLogicalProcessors | Format-List" ^
  & cl 2^>^&1 ^| findstr /C:"Version" ^
- & g++ --version ^& clang++ --version ^& cmake --version) > evidence\windows_sysinfo.txt 2>&1
+ & g++ --version ^& clang++ --version ^& cmake --version) > Output\windows\windows_sysinfo.txt 2>&1
 powercfg /setactive SCHEME_MIN
-powercfg /getactivescheme >> evidence\windows_sysinfo.txt
+powercfg /getactivescheme >> Output\windows\windows_sysinfo.txt
 ```
 (Nếu lệnh gộp ở trên phức tạp, chạy riêng từng lệnh và ghi tay vào bảng phần cứng của báo cáo.)
 
 ### 6.2. Build + ctest (MSVC, MinGW, Clang)
 ```bat
 :: Cách A: script
-scripts\build.bat msvc  > evidence\windows_msvc_build_ctest.txt 2>&1
-scripts\build.bat mingw > evidence\windows_mingw_build_ctest.txt 2>&1
+scripts\build.bat msvc  > Output\windows\windows_msvc_build_ctest.txt 2>&1
+scripts\build.bat mingw > Output\windows\windows_mingw_build_ctest.txt 2>&1
 
 :: Cách B: thủ công — MSVC
 mkdir build_windows_msvc & cd build_windows_msvc
@@ -278,21 +278,21 @@ cd ..
 ### 6.3. KAT + unit test (đặt biến theo toolchain đang kiểm thử)
 ```bat
 :: MSVC:
-set T=build_windows_msvc\Release\aes_pure_tool.exe
+set T=build_windows_msvc\Release\aestool.exe
 set U=build_windows_msvc\Release\aes_tests.exe
-:: MinGW:  set T=build_windows_gcc\aes_pure_tool.exe   & set U=build_windows_gcc\aes_tests.exe
-:: Clang:  set T=build_windows_clang\aes_pure_tool.exe & set U=build_windows_clang\aes_tests.exe
+:: MinGW:  set T=build_windows_gcc\aestool.exe   & set U=build_windows_gcc\aes_tests.exe
+:: Clang:  set T=build_windows_clang\aestool.exe & set U=build_windows_clang\aes_tests.exe
 
-%U% > evidence\windows_msvc_unit_tests.txt 2>&1
-%T% --kat kat\vectors.json > evidence\windows_msvc_kat.txt
-%T% --kat kat\vectors.json --verbose > evidence\windows_msvc_kat_verbose.txt
+%U% > Output\windows\windows_msvc_unit_tests.txt 2>&1
+%T% --kat kat\vectors.json > Output\windows\windows_msvc_kat.txt
+%T% --kat kat\vectors.json --verbose > Output\windows\windows_msvc_kat_verbose.txt
 echo exit=%ERRORLEVEL%
 ```
 Đổi tên file `windows_msvc_*` thành `windows_mingw_*` / `windows_clang_*` khi lặp lại.
 
 ### 6.4. Cross-validation
 ```bat
-%T% xval --ref openssl --cases 200 > evidence\windows_msvc_xval.txt
+%T% xval --ref openssl --cases 200 > Output\windows\windows_msvc_xval.txt
 
 :: Đối chiếu bằng openssl.exe (nếu có trong PATH hoặc dùng đường dẫn đầy đủ tới bin\openssl.exe)
 powershell -NoProfile -Command "$b=New-Object byte[] 100000; (New-Object Random).NextBytes($b); [IO.File]::WriteAllBytes('work\msg.bin',$b)"
@@ -301,8 +301,8 @@ set IV=f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
 del work\ct.bin work\ct_ossl.bin 2>nul
 %T% encrypt --key-hex %K% --iv-hex %IV% --in work\msg.bin --out work\ct.bin --quiet
 openssl enc -aes-128-ctr -K %K% -iv %IV% -in work\msg.bin -out work\ct_ossl.bin
-fc /b work\ct.bin work\ct_ossl.bin > evidence\windows_openssl_cli_match.txt
-type evidence\windows_openssl_cli_match.txt
+fc /b work\ct.bin work\ct_ossl.bin > Output\windows\windows_openssl_cli_match.txt
+type Output\windows\windows_openssl_cli_match.txt
 ```
 (`fc` in "FC: no differences encountered" là đạt.)
 
@@ -351,8 +351,8 @@ echo == KAT file hong (mong doi exit 3)
 echo { not json> work\bad.json
 %T% --kat work\bad.json
 echo exit=%ERRORLEVEL%
-) > evidence\windows_msvc_negative_tests.txt 2>&1
-type evidence\windows_msvc_negative_tests.txt
+) > Output\windows\windows_msvc_negative_tests.txt 2>&1
+type Output\windows\windows_msvc_negative_tests.txt
 
 :: Vector KAT sai phải làm runner FAIL (exit 6)
 powershell -NoProfile -Command "(Get-Content kat\vectors.json -Raw) -replace '69c4e0d86a7b0430d8cdb78070b4c55a','00000000000000000000000000000000' | Set-Content work\bad_kat.json"
@@ -366,34 +366,34 @@ Ciphertext bị sửa **không bị phát hiện**: sửa 1 byte của `work\ct2
 del work\big.* work\k.bin 2>nul
 powershell -NoProfile -Command "$b=New-Object byte[] 1GB; (New-Object Random).NextBytes($b); [IO.File]::WriteAllBytes('work\big.bin',$b)"
 %T% keygen --out work\k.bin --quiet
-powershell -NoProfile -Command "Measure-Command { & '%T%' encrypt --key work\k.bin --in work\big.bin --out work\big.enc --quiet --sbox ttable } | Select-Object TotalSeconds" > evidence\windows_big_encrypt.txt
-powershell -NoProfile -Command "Measure-Command { & '%T%' decrypt --key work\k.bin --in work\big.enc --out work\big.dec --quiet --sbox ttable } | Select-Object TotalSeconds" > evidence\windows_big_decrypt.txt
-(certutil -hashfile work\big.bin SHA256 & certutil -hashfile work\big.dec SHA256) > evidence\windows_big_sha256.txt
-type evidence\windows_big_sha256.txt
+powershell -NoProfile -Command "Measure-Command { & '%T%' encrypt --key work\k.bin --in work\big.bin --out work\big.enc --quiet --sbox ttable } | Select-Object TotalSeconds" > Output\windows\windows_big_encrypt.txt
+powershell -NoProfile -Command "Measure-Command { & '%T%' decrypt --key work\k.bin --in work\big.enc --out work\big.dec --quiet --sbox ttable } | Select-Object TotalSeconds" > Output\windows\windows_big_decrypt.txt
+(certutil -hashfile work\big.bin SHA256 & certutil -hashfile work\big.dec SHA256) > Output\windows\windows_big_sha256.txt
+type Output\windows\windows_big_sha256.txt
 del work\big.*
 ```
 (Hai giá trị SHA-256 phải giống nhau.)
 
 ### 6.7. Benchmark (lặp lại cho từng toolchain, đổi tên file)
 ```bat
-%T% bench --sizes 1MiB,100MiB --backends table,ttable --ref openssl --runs 30 --csv evidence\bench_windows_msvc.csv > evidence\bench_windows_msvc.txt
-%T% bench --sizes 64KiB,1MiB --backends computed --ref none --runs 30 --csv evidence\bench_windows_msvc_computed.csv > evidence\bench_windows_msvc_computed.txt
-%T% bench --sizes 1MiB --backends ttable --ref openssl --runs 30 --ops 1000 --csv evidence\bench_windows_msvc_ops1000.csv > evidence\bench_windows_msvc_ops1000.txt
+%T% bench --sizes 1MiB,100MiB --backends table,ttable --ref openssl --runs 30 --csv Output\windows\bench_windows_msvc.csv > Output\windows\bench_windows_msvc.txt
+%T% bench --sizes 64KiB,1MiB --backends computed --ref none --runs 30 --csv Output\windows\bench_windows_msvc_computed.csv > Output\windows\bench_windows_msvc_computed.txt
+%T% bench --sizes 1MiB --backends ttable --ref openssl --runs 30 --ops 1000 --csv Output\windows\bench_windows_msvc_ops1000.csv > Output\windows\bench_windows_msvc_ops1000.txt
 :: 1 GiB (nếu khả thi; rất lâu)
-%T% bench --sizes 1GiB --backends ttable --ref openssl --runs 30 --dir enc --csv evidence\bench_windows_msvc_1gib.csv > evidence\bench_windows_msvc_1gib.txt
+%T% bench --sizes 1GiB --backends ttable --ref openssl --runs 30 --dir enc --csv Output\windows\bench_windows_msvc_1gib.csv > Output\windows\bench_windows_msvc_1gib.txt
 ```
 Với MinGW/Clang: đặt lại `T` rồi chạy lại các lệnh trên với tên `bench_windows_mingw*` / `bench_windows_clang*`. RAM không tự lấy được trên Windows → điền tay từ `systeminfo`.
 
 ### 6.8. Biểu đồ
 ```bat
-python scripts\plot_bench.py evidence\bench_windows_msvc.csv evidence\plot_windows_msvc
-python scripts\plot_bench.py evidence\bench_windows_msvc_computed.csv evidence\plot_windows_msvc_computed
+python scripts\plot_bench.py Output\windows\bench_windows_msvc.csv Output\windows\plot_windows_msvc
+python scripts\plot_bench.py Output\windows\bench_windows_msvc_computed.csv Output\windows\plot_windows_msvc_computed
 ```
 
 ### 6.9. Đóng gói binary + nộp
 ```bat
-copy build_windows_msvc\Release\aes_pure_tool.exe release\windows\aes_pure_tool_msvc.exe
-copy build_windows_gcc\aes_pure_tool.exe          release\windows\aes_pure_tool_mingw.exe
+copy build_windows_msvc\Release\aestool.exe release\windows\aestool_msvc.exe
+copy build_windows_gcc\aestool.exe          release\windows\aestool_mingw.exe
 :: Nếu exe liên kết động với OpenSSL, copy kèm libcrypto-*.dll vào release\windows\
 ```
 Nén thư mục `lab2` (loại `build_*` và `work`) cùng các thư mục `release`, `evidence`; gộp vào `MSV.All6labs.rar` cùng 5 lab còn lại.

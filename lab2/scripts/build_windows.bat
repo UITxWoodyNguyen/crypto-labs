@@ -167,7 +167,8 @@ if not exist "!EXE!" (
     echo [ERROR] Executable not found: !EXE!
     exit /b 1
 )
-"!EXE!" --kat kat\vectors.json
+if not exist "Output\windows\kat" mkdir "Output\windows\kat"
+"!EXE!" --kat kat\vectors.json --out Output\windows\kat\result.txt
 if errorlevel 1 (
     echo [ERROR] KAT failed.
     exit /b 1

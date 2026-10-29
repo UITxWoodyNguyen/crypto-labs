@@ -1,0 +1,77 @@
+﻿================================================================================
+DEMO NEGATIVE TESTS & FAIL-CLOSED BEHAVIOR (Lab 2 - Section 6 in windows.md)
+Working Directory: D:\UIT\NT219\crypto-labs\lab2\Output\windows\demo
+Tool: D:\UIT\NT219\crypto-labs\lab2\build_windows_msvc\Release\aestool.exe
+Date: 2026-10-29 09:22:59
+================================================================================
+
+== Bước chuẩn bị: Tạo msg.txt, key.bin, mã hoá ra ct.bin ==
+1. Created msg.txt: hello CTR
+2. Generated key.bin (exit=0)
+3. Encrypted msg.txt -> ct.bin + ct.bin.iv (exit=0)
+
+== 1) Giải mã đúng ==
+Command: aestool.exe decrypt --key key.bin --in ct.bin --out dec.txt --quiet --force
+Exit code: 0
+Comparing files msg.txt and DEC.TXT
+FC: no differences encountered
+
+Decrypted content: hello CTR
+Result: PASS (Plaintext khớp hoàn toàn)
+
+== 2) Sai key -> plaintext sai ==
+Generated second key: key2.bin
+Command: aestool.exe decrypt --key key2.bin --in ct.bin --out w1.txt --quiet --force
+Exit code: 0
+Comparing files msg.txt and W1.TXT
+00000000: 68 DA
+00000001: 65 4C
+00000002: 6C A3
+00000003: 6C 98
+00000004: 6F C8
+00000005: 20 47
+00000006: 43 C1
+00000007: 54 40
+00000008: 52 80
+Result: PASS (Plaintext sai khác khi dùng sai khóa)
+
+== 3) Sai IV -> plaintext sai ==
+Command: aestool.exe decrypt --key key.bin --iv-hex 00000000000000000000000000000001 --in ct.bin --out w2.txt --quiet --force
+Exit code: 0
+Comparing files msg.txt and W2.TXT
+00000000: 68 78
+00000001: 65 37
+00000002: 6C E6
+00000003: 6C DF
+00000004: 6F 60
+00000005: 20 0A
+00000006: 43 EC
+00000007: 54 82
+00000008: 52 EC
+Result: PASS (Plaintext sai khác khi dùng sai IV)
+
+== 4) IV sai độ dài -> bị từ chối (exit 3) ==
+Command: aestool.exe decrypt --key key.bin --iv-hex 00 --in ct.bin --out x.txt --quiet
+Exit code: 3 (mong đợi 3)
+Stderr: error: invalid IV length: expected exactly 16 bytes (32 hex chars)
+File x.txt exists: False
+Result: PASS (Bị từ chối đúng như mong đợi, không tạo file)
+
+== 5) Tràn counter -> bị từ chối (exit 5, không để lại file) ==
+Command: aestool.exe encrypt --key key.bin --iv-hex ffffffffffffffffffffffffffffffff --text "two blocks of data here !!!!!!!!!" --out o.bin --quiet
+Exit code: 5 (mong đợi 5)
+Stderr: error: CTR counter overflow: message too long for this IV (keystream would repeat)
+File o.bin exists: False
+Result: PASS (Bị từ chối và fail-closed, không để lại file)
+
+== 6) Ciphertext bị sửa (CTR không có xác thực toàn vẹn) ==
+Command: aestool.exe decrypt --key key.bin --in ct_tampered.bin --out dec_tampered.txt --quiet --force
+Exit code: 0 (exit 0 - giải mã vẫn thành công vì CTR không phát hiện giả mạo)
+Comparing files msg.txt and DEC_TAMPERED.TXT
+00000000: 68 69
+Decrypted tampered content: iello CTR
+Result: PASS (CTR không phát hiện giả mạo, chỉ đúng byte bị sửa đổi)
+
+================================================================================
+Tất cả các ca kiểm thử mục 6 hoàn thành thành công 100%!
+================================================================================

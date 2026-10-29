@@ -45,6 +45,10 @@ std::size_t parse_size(const std::string& s);
 // UTF-8 path -> std::filesystem::path (works for non-ASCII names on Windows).
 std::filesystem::path to_path(const std::string& utf8);
 bool file_exists(const std::string& path);
+std::filesystem::path get_executable_dir();
+std::filesystem::path get_project_root();
+std::filesystem::path get_os_output_dir();
+std::filesystem::path resolve_input_path(const std::string& path);
 Bytes read_file(const std::string& path, std::size_t max_bytes);
 // Reads a file that must contain exactly `expected` bytes (keys, IVs). `what` is used in errors.
 Bytes read_file_exact(const std::string& path, std::size_t expected, const char* what);
