@@ -138,7 +138,7 @@ sudo cpupower frequency-set -g performance               # hoặc: sudo cpufreq-
 Chạy (từ thư mục build):
 
 ```bash
-./aestool bench --sizes 1MiB,100MiB --runs 30 --csv ../Output/ubuntu/bench/bench_ubuntu.csv
+./build_ubuntu_gcc/aestool bench --sizes 1MiB,100MiB,1GiB --runs 30 --csv Output/ubuntu/bench/bench_ubuntu.csv
 # thêm 1GiB nếu đủ RAM:  --sizes 1MiB,100MiB,1GiB
 # backend computed rất chậm (~1 MB/s), chỉ nên đo size nhỏ:
 ./aestool bench --sizes 64KiB,1MiB --backends computed --runs 30
@@ -147,7 +147,7 @@ Chạy (từ thư mục build):
 Vẽ biểu đồ:
 
 ```bash
-python3 ../scripts/plot_bench.py ../Output/ubuntu/bench/bench_ubuntu.csv ../Output/ubuntu/bench/plot_ubuntu
+python3 scripts/plot_bench.py Output/ubuntu/bench/bench_ubuntu.csv Output/ubuntu/bench/plot_ubuntu
 # sinh ra plot_ubuntu_gcc_throughput.png và plot_ubuntu_gcc_latency.png
 ```
 

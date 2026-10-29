@@ -1,0 +1,7 @@
+Task 5: CLI usage
+explicit IV round-trip: PASS
+auto IV round-trip: PASS
+UTF-8 screen encryption:
+iv=f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
+ciphertext(hex)=94e5b153fb08bf109d
+ttable encryption: PASS

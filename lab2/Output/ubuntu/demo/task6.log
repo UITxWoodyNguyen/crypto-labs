@@ -1,0 +1,52 @@
+================================================================================
+DEMONSTRATION: Negative Tests & Fail-Closed Behavior (Lab 2 - aestool)
+Tool: /home/dell/home-crypto/crypto-labs/lab2/build_ubuntu_gcc/aestool
+================================================================================
+
+--- Case: Invalid key length (short key) ---
+Command: /home/dell/home-crypto/crypto-labs/lab2/build_ubuntu_gcc/aestool encrypt --key-hex 00112233 --text test
+error: invalid key length: AES-128 requires exactly 16 bytes (32 hex chars)
+Exit code: 3 (expected: 3)
+Result: PASS (failed as expected)
+
+--- Case: Invalid IV length (short IV) ---
+Command: /home/dell/home-crypto/crypto-labs/lab2/build_ubuntu_gcc/aestool encrypt --key-hex 2b7e151628aed2a6abf7158809cf4f3c --iv-hex 00 --text test
+error: invalid IV length: expected exactly 16 bytes (32 hex chars)
+Exit code: 3 (expected: 3)
+Result: PASS (failed as expected)
+
+--- Case: Malformed hex in input ---
+Command: /home/dell/home-crypto/crypto-labs/lab2/build_ubuntu_gcc/aestool decrypt --key-hex 2b7e151628aed2a6abf7158809cf4f3c --iv-hex 00000000000000000000000000000000 --text zz --in-encode hex
+NOTE: CTR is unauthenticated - tampering with the ciphertext cannot be detected.
+error: malformed hex: invalid character
+Exit code: 3 (expected: 3)
+Result: PASS (failed as expected)
+
+--- Case: Refuse overwrite without --force ---
+Command: /home/dell/home-crypto/crypto-labs/lab2/build_ubuntu_gcc/aestool encrypt --key /tmp/tmp.qzFPSKpyKA/key.bin --text test --out /tmp/tmp.qzFPSKpyKA/out.bin
+error: output file '/tmp/tmp.qzFPSKpyKA/out.bin' already exists (use --force)
+Exit code: 4 (expected: 4)
+Result: PASS (failed as expected)
+
+--- Case: Missing input file ---
+Command: /home/dell/home-crypto/crypto-labs/lab2/build_ubuntu_gcc/aestool encrypt --key /tmp/tmp.qzFPSKpyKA/key.bin --in /tmp/tmp.qzFPSKpyKA/nonexistent.bin --out /tmp/tmp.qzFPSKpyKA/x.bin
+error: cannot open input file '/tmp/tmp.qzFPSKpyKA/nonexistent.bin'
+Exit code: 4 (expected: 4)
+Result: PASS (failed as expected)
+
+--- Case: Counter overflow (max IV exhausted) ---
+Command: /home/dell/home-crypto/crypto-labs/lab2/build_ubuntu_gcc/aestool encrypt --key /tmp/tmp.qzFPSKpyKA/key.bin --text two blocks of data here !!!!!!!!! --iv-hex ffffffffffffffffffffffffffffffff --force --out /tmp/tmp.qzFPSKpyKA/ovf.bin
+WARNING: IV supplied manually. Reusing a (key, IV) pair destroys confidentiality (two-time pad).
+error: CTR counter overflow: message too long for this IV (keystream would repeat)
+Exit code: 5 (expected: 5)
+Result: PASS (failed as expected)
+
+--- Case: Unsupported mode (gcm) ---
+Command: /home/dell/home-crypto/crypto-labs/lab2/build_ubuntu_gcc/aestool encrypt --mode gcm --key /tmp/tmp.qzFPSKpyKA/key.bin --text test
+error: unsupported mode 'gcm': this lab implements CTR only
+Exit code: 2 (expected: 2)
+Result: PASS (failed as expected)
+
+================================================================================
+Demonstration complete!
+================================================================================

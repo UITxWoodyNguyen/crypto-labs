@@ -1,0 +1,23 @@
+PASS  aes128_block/fips197-appendix-b
+PASS  aes128_block/fips197-appendix-c1
+PASS  aes128_block/aesavs-gfsbox-0
+PASS  aes128_block/aesavs-gfsbox-1
+PASS  aes128_block/aesavs-keysbox-0
+PASS  aes128_block/aesavs-vartxt-0
+PASS  aes128_block/aesavs-varkey-0
+PASS  aes128_ctr/sp800-38a-f51-4blocks
+PASS  aes128_ctr/sp800-38a-f51-prefix-1B
+PASS  aes128_ctr/sp800-38a-f51-prefix-15B
+PASS  aes128_ctr/sp800-38a-f51-prefix-17B
+PASS  aes128_ctr/sp800-38a-f51-prefix-37B
+PASS  aes128_ctr/sp800-38a-f51-prefix-63B
+PASS  aes128_ctr/empty-message
+PASS  aes128_ctr/carry-low-byte
+PASS  aes128_ctr/carry-16bit
+PASS  aes128_ctr/carry-64bit
+PASS  aes128_ctr/carry-96bit
+PASS  aes128_ctr_errors/iv-all-ff-two-blocks
+PASS  aes128_ctr_errors/iv-ff..fe-three-blocks
+PASS  aes128_ctr_errors/iv-all-ff-33-bytes
+
+Summary: 21 tests, 21 passed, 0 failed
