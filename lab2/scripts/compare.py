@@ -143,31 +143,31 @@ def make_plot(rows: list[dict[str, object]], direction: str, metric: str, output
     sizes = sorted({int(row["size_bytes"]) for values in grouped.values() for row in values})
     x_positions = {size: index for index, size in enumerate(sizes)}
     implementations = sorted(grouped)
-    series = [(implementation, platform) for implementation in implementations for platform in ("windows", "linux")]
-    width = 0.8 / max(1, len(series))
-    for index, (implementation, platform) in enumerate(series):
+    for implementation in implementations:
         values = {int(row["size_bytes"]): row for row in grouped[implementation]}
-        xs, ys, errors = [], [], []
-        for size in sizes:
-            row = values.get(size)
-            if row is None:
-                continue
-            value = row[f"{platform}_{metric}"]
-            if value == "":
-                continue
-            value = float(value)
-            low = float(row[f"{platform}_{ci_low}"])
-            high = float(row[f"{platform}_{ci_high}"])
-            xs.append(x_positions[size] - 0.4 + width / 2 + index * width)
-            ys.append(value)
-            errors.append(max(value - low, high - value, 0.0))
-        if ys:
-            ax.bar(xs, ys, width, yerr=errors, capsize=3, label=f"{implementation} / {platform}")
+        for platform, marker, linestyle in (("windows", "o", "-"), ("linux", "s", "--")):
+            xs, ys, errors = [], [], []
+            for size in sizes:
+                row = values.get(size)
+                if row is None:
+                    continue
+                value = row[f"{platform}_{metric}"]
+                if value == "":
+                    continue
+                value = float(value)
+                low = float(row[f"{platform}_{ci_low}"])
+                high = float(row[f"{platform}_{ci_high}"])
+                xs.append(x_positions[size])
+                ys.append(value)
+                errors.append(max(value - low, high - value, 0.0))
+            if ys:
+                ax.errorbar(xs, ys, yerr=errors, marker=marker, linestyle=linestyle,
+                            linewidth=1.5, capsize=3, label=f"{implementation} / {platform}")
     ax.set_xticks(range(len(sizes)), [size_label(size) for size in sizes])
     ax.set_ylabel(metric_title)
     ax.set_xlabel("Payload size")
     ax.set_title(f"Windows/Linux benchmark comparison: {direction}")
-    ax.grid(axis="y", alpha=0.3)
+    ax.grid(True, alpha=0.3)
     ax.legend()
     fig.tight_layout()
     fig.savefig(output, dpi=150)
