@@ -394,6 +394,38 @@ done
 
 ## 8. CLI Command Specification & Examples
 
+## 8.1 PyQt6 GUI
+
+Lab 1 có GUI PyQt6 để gọi `aestool` mà không cần nhập thủ công các tham số
+command-line. GUI hoạt động trong thư mục `lab1`, tự tìm executable ở các
+thư mục build chuẩn (`build_ubuntu_gcc`, `build_ubuntu_clang`,
+`build_windows_gcc`, `build_windows_clang` và `build_windows_msvc/Release`).
+
+Cài PyQt6 nếu môi trường chưa có:
+
+```bash
+python3 -m pip install PyQt6
+```
+
+Khởi động GUI:
+
+```bash
+cd lab1
+python3 gui/aestool_gui.py
+```
+
+GUI hỗ trợ:
+
+- Encrypt/decrypt với ECB, CBC, CFB, OFB, CTR, XTS, CCM và GCM.
+- Chọn key/IV từ file hoặc nhập key/IV dạng hex.
+- AAD, authentication tag, metadata JSON, nonce database và các cờ bảo vệ
+  như `--aead`, `--allow-ecb`, `--verbose`.
+- Sinh key 256-bit, chạy KAT và benchmark nhanh.
+
+GUI chỉ chạy lệnh sau khi nhấn nút tương ứng. Benchmark được ghi vào thư mục
+do người dùng chọn; nên dùng `output/ubuntu/benchmarks/` hoặc
+`output/windows/benchmarks/` khi chạy đúng nền tảng.
+
 ### Help & Usage
 ```bash
 ./aestool --help
