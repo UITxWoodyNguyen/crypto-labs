@@ -1,23 +1,23 @@
-PASS  aes128_block/fips197-appendix-b
-PASS  aes128_block/fips197-appendix-c1
-PASS  aes128_block/aesavs-gfsbox-0
-PASS  aes128_block/aesavs-gfsbox-1
-PASS  aes128_block/aesavs-keysbox-0
-PASS  aes128_block/aesavs-vartxt-0
-PASS  aes128_block/aesavs-varkey-0
-PASS  aes128_ctr/sp800-38a-f51-4blocks
-PASS  aes128_ctr/sp800-38a-f51-prefix-1B
-PASS  aes128_ctr/sp800-38a-f51-prefix-15B
-PASS  aes128_ctr/sp800-38a-f51-prefix-17B
-PASS  aes128_ctr/sp800-38a-f51-prefix-37B
-PASS  aes128_ctr/sp800-38a-f51-prefix-63B
-PASS  aes128_ctr/empty-message
-PASS  aes128_ctr/carry-low-byte
-PASS  aes128_ctr/carry-16bit
-PASS  aes128_ctr/carry-64bit
-PASS  aes128_ctr/carry-96bit
-PASS  aes128_ctr_errors/iv-all-ff-two-blocks
-PASS  aes128_ctr_errors/iv-ff..fe-three-blocks
-PASS  aes128_ctr_errors/iv-all-ff-33-bytes
+PASS  aes128_block/fips197-appendix-b  [3 backends x (encrypt+decrypt)]
+PASS  aes128_block/fips197-appendix-c1  [3 backends x (encrypt+decrypt)]
+PASS  aes128_block/aesavs-gfsbox-0  [3 backends x (encrypt+decrypt)]
+PASS  aes128_block/aesavs-gfsbox-1  [3 backends x (encrypt+decrypt)]
+PASS  aes128_block/aesavs-keysbox-0  [3 backends x (encrypt+decrypt)]
+PASS  aes128_block/aesavs-vartxt-0  [3 backends x (encrypt+decrypt)]
+PASS  aes128_block/aesavs-varkey-0  [3 backends x (encrypt+decrypt)]
+PASS  aes128_ctr/sp800-38a-f51-4blocks  [64 bytes, 3 backends, enc+dec+chunked]
+PASS  aes128_ctr/sp800-38a-f51-prefix-1B  [1 bytes, 3 backends, enc+dec+chunked]
+PASS  aes128_ctr/sp800-38a-f51-prefix-15B  [15 bytes, 3 backends, enc+dec+chunked]
+PASS  aes128_ctr/sp800-38a-f51-prefix-17B  [17 bytes, 3 backends, enc+dec+chunked]
+PASS  aes128_ctr/sp800-38a-f51-prefix-37B  [37 bytes, 3 backends, enc+dec+chunked]
+PASS  aes128_ctr/sp800-38a-f51-prefix-63B  [63 bytes, 3 backends, enc+dec+chunked]
+PASS  aes128_ctr/empty-message  [0 bytes, 3 backends, enc+dec+chunked]
+PASS  aes128_ctr/carry-low-byte  [70 bytes, 3 backends, enc+dec+chunked]
+PASS  aes128_ctr/carry-16bit  [100 bytes, 3 backends, enc+dec+chunked]
+PASS  aes128_ctr/carry-64bit  [400 bytes, 3 backends, enc+dec+chunked]
+PASS  aes128_ctr/carry-96bit  [77 bytes, 3 backends, enc+dec+chunked]
+PASS  aes128_ctr_errors/iv-all-ff-two-blocks  [counter overflow rejected (fail closed)]
+PASS  aes128_ctr_errors/iv-ff..fe-three-blocks  [counter overflow rejected (fail closed)]
+PASS  aes128_ctr_errors/iv-all-ff-33-bytes  [counter overflow rejected (fail closed)]
 
 Summary: 21 tests, 21 passed, 0 failed
