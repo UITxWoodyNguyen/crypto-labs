@@ -1,44 +1,102 @@
 #!/usr/bin/env python3
-"""Plot throughput (MB/s, 95% CI error bars) and latency from `aestool bench --csv`.
-Usage: python3 scripts/plot_bench.py bench.csv [out_prefix]   (needs matplotlib)"""
+"""Plot throughput and latency from one or more `aestool bench --csv` files.
+
+Usage: python3 scripts/plot_bench.py bench.csv [other.csv ...]
+       [--out-prefix PREFIX]
+"""
+import argparse
 import csv
 import os
-import sys
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-rows = list(csv.DictReader(open(sys.argv[1])))
-prefix = sys.argv[2] if len(sys.argv) > 2 else os.path.splitext(sys.argv[1])[0]
+parser = argparse.ArgumentParser()
+parser.add_argument("csv_files", nargs="+", help="benchmark CSV files")
+parser.add_argument("--out-prefix", help="output filename prefix")
+args = parser.parse_args()
+
+csv_files = args.csv_files
+prefix = args.out_prefix
+# Keep the previous ``plot_bench.py input.csv output_prefix`` form working.
+if prefix is None and len(csv_files) > 1 and not csv_files[-1].lower().endswith(".csv"):
+    prefix = csv_files.pop()
+if prefix is None:
+    prefix = os.path.splitext(csv_files[0])[0]
+
+rows = []
+for csv_file in csv_files:
+    with open(csv_file, newline="", encoding="utf-8-sig") as stream:
+        file_rows = list(csv.DictReader(stream))
+    # Keep files distinguishable when several CSVs contain the same backend names.
+    source = os.path.splitext(os.path.basename(csv_file))[0]
+    for row in file_rows:
+        row["_source"] = source
+        rows.append(row)
 prefix_dir = os.path.dirname(os.path.abspath(prefix))
 if prefix_dir:
     os.makedirs(prefix_dir, exist_ok=True)
 sizes = sorted({int(r["size_bytes"]) for r in rows})
-impls = sorted({r["implementation"] for r in rows})
+implementation_sources = {}
+for row in rows:
+    implementation_sources.setdefault(row["implementation"], {}).setdefault(
+        row["_source"], set()
+    ).add(int(row["size_bytes"]))
+
+series = []
+for implementation in sorted(implementation_sources):
+    sources = implementation_sources[implementation]
+    sizes_by_source = list(sources.values())
+    has_overlapping_sizes = any(
+        left.intersection(right)
+        for index, left in enumerate(sizes_by_source)
+        for right in sizes_by_source[index + 1:]
+    )
+    if has_overlapping_sizes:
+        series.extend(
+            (source, implementation, f"{source}: {implementation}")
+            for source in sorted(sources)
+        )
+    else:
+        series.append((None, implementation, implementation))
 label = lambda n: f"{n >> 20} MiB" if n >= 1 << 20 else f"{n >> 10} KiB"
 
 for metric, lo, hi, title, unit, fname in [
     ("mean_MBps", "ci95_lo_MBps", "ci95_hi_MBps", "AES-128-CTR encrypt throughput", "MB/s", "throughput"),
     ("mean_ms_per_op", "ci95_lo_ms", "ci95_hi_ms", "AES-128-CTR latency per operation", "ms/op", "latency")]:
-    fig, ax = plt.subplots(figsize=(9, 5))
-    for k, impl in enumerate(impls):
-        xs, ys, err = [], [], []
+    fig, ax = plt.subplots(figsize=(11, 6))
+    bar_width = 0.8 / max(len(series), 1)
+    for k, (source, impl, series_label) in enumerate(series):
+        xs, ys, err_low, err_high = [], [], [], []
         for i, s in enumerate(sizes):
-            m = [r for r in rows if r["implementation"] == impl and int(r["size_bytes"]) == s and r["direction"] == "encrypt"]
+            m = [
+                r for r in rows
+                if (source is None or r["_source"] == source)
+                and r["implementation"] == impl
+                and int(r["size_bytes"]) == s
+                and r["direction"] == "encrypt"
+            ]
             if m:
                 v, l, h = float(m[0][metric]), float(m[0][lo]), float(m[0][hi])
-                xs.append(i); ys.append(v); err.append(max(h - v, 0))
+                xs.append(i - 0.4 + (k + 0.5) * bar_width)
+                ys.append(v)
+                err_low.append(max(v - l, 0))
+                err_high.append(max(h - v, 0))
         if ys:
-            ax.errorbar(
+            ax.bar(
                 xs,
                 ys,
-                yerr=err,
-                marker=["o", "s", "^", "D", "v", "P"][k % 6],
-                linewidth=1.8,
-                capsize=3,
-                label=impl,
+                width=bar_width,
+                yerr=[err_low, err_high],
+                error_kw={"elinewidth": 1, "capsize": 3},
+                alpha=0.85,
+                edgecolor="black",
+                linewidth=0.5,
+                label=series_label,
             )
     ax.set_xticks(range(len(sizes))); ax.set_xticklabels([label(s) for s in sizes])
     ax.set_yscale("log"); ax.set_ylabel(unit + " (log)"); ax.set_title(title + " (error bars: 95% CI)")
+    ax.set_xlabel("Payload size")
+    ax.grid(axis="y", alpha=0.3)
     ax.legend(); fig.tight_layout(); fig.savefig(f"{prefix}_{fname}.png", dpi=150)
     print("wrote", f"{prefix}_{fname}.png")

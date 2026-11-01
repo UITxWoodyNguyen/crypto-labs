@@ -175,8 +175,11 @@ Chuẩn bị để kết quả công bằng:
 - Luôn dùng build **Release**.
 
 ```bat
-aestool.exe bench --sizes 1MiB,100MiB --runs 30 --csv ..\Output\windows\bench\bench_windows.csv
-:: thêm 1GiB nếu đủ RAM:   --sizes 1MiB,100MiB,1GiB
+scripts\bench.bat
+:: Chạy 1MiB/100MiB/1GiB lần lượt 500/100/30 lần.
+:: Hoặc chạy thủ công:
+aestool.exe bench --sizes 1MiB --runs 500 --csv ..\Output\windows\bench\bench_windows_1MiB.csv
+:: thêm 100MiB và 1GiB với --runs 100 và --runs 30 tương ứng
 :: backend computed rất chậm (~1 MB/s), chỉ đo size nhỏ:
 aestool.exe bench --sizes 64KiB,1MiB --backends computed --runs 30
 ```
@@ -184,7 +187,7 @@ aestool.exe bench --sizes 64KiB,1MiB --backends computed --runs 30
 Vẽ biểu đồ (từ thư mục build):
 
 ```bat
-python ..\scripts\plot_bench.py ..\Output\windows\bench\bench_windows.csv ..\Output\windows\bench\plot_windows
+python ..\scripts\plot_bench.py ..\Output\windows\bench\bench_windows_1MiB.csv ..\Output\windows\bench\bench_windows_100MiB.csv --out-prefix ..\Output\windows\bench\plot_windows
 ```
 
 Phần header `bench` in ra (CPU, RAM, OS, compiler, flags) dùng để điền bảng phần cứng trong báo cáo. Trên Windows, CPU lấy từ biến môi trường; RAM hiển thị "unknown" nên bạn điền tay (Task Manager → Performance).

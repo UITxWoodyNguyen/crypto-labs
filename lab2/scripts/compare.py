@@ -128,21 +128,30 @@ def write_comparison(rows: list[dict[str, object]], output: Path) -> None:
         writer.writerows(rows)
 
 
-def make_plot(rows: list[dict[str, object]], direction: str, metric: str, output: Path) -> None:
+def make_plot(
+    rows: list[dict[str, object]],
+    direction: str,
+    metric: str,
+    output: Path,
+    payload_size: int | None = None,
+) -> None:
     metric_title = "Throughput (MB/s)" if metric == "mean_MBps" else "Latency (ms/op)"
     ci_low = "ci95_lo_MBps" if metric == "mean_MBps" else "ci95_lo_ms"
     ci_high = "ci95_hi_MBps" if metric == "mean_MBps" else "ci95_hi_ms"
     grouped: dict[str, list[dict[str, object]]] = {}
     for row in rows:
-        if row["direction"] == direction:
+        if row["direction"] == direction and (
+            payload_size is None or int(row["size_bytes"]) == payload_size
+        ):
             grouped.setdefault(str(row["implementation"]), []).append(row)
     if not grouped:
         return
 
     fig, ax = plt.subplots(figsize=(11, 6))
+    implementations = sorted(grouped)
     sizes = sorted({int(row["size_bytes"]) for values in grouped.values() for row in values})
     x_positions = {size: index for index, size in enumerate(sizes)}
-    implementations = sorted(grouped)
+    implementation_positions = {name: index for index, name in enumerate(implementations)}
     for implementation in implementations:
         values = {int(row["size_bytes"]): row for row in grouped[implementation]}
         for platform, marker, linestyle in (("windows", "o", "-"), ("linux", "s", "--")):
@@ -157,7 +166,11 @@ def make_plot(rows: list[dict[str, object]], direction: str, metric: str, output
                 value = float(value)
                 low = float(row[f"{platform}_{ci_low}"])
                 high = float(row[f"{platform}_{ci_high}"])
-                xs.append(x_positions[size])
+                xs.append(
+                    implementation_positions[implementation]
+                    if payload_size is not None
+                    else x_positions[size]
+                )
                 ys.append(value)
                 errors.append(max(value - low, high - value, 0.0))
             if ys:
@@ -165,8 +178,15 @@ def make_plot(rows: list[dict[str, object]], direction: str, metric: str, output
                             linewidth=1.5, capsize=3, label=f"{implementation} / {platform}")
     ax.set_xticks(range(len(sizes)), [size_label(size) for size in sizes])
     ax.set_ylabel(metric_title)
-    ax.set_xlabel("Payload size")
-    ax.set_title(f"Windows/Linux benchmark comparison: {direction}")
+    if payload_size is None:
+        ax.set_xlabel("Payload size")
+        title = f"Windows/Linux benchmark comparison: {direction}"
+    else:
+        ax.set_xlabel("Implementation")
+        title = f"Windows/Linux benchmark comparison: {direction}, {size_label(payload_size)}"
+        ax.set_xticks(range(len(implementations)))
+        ax.set_xticklabels(implementations, rotation=25, ha="right")
+    ax.set_title(title)
     ax.grid(True, alpha=0.3)
     ax.legend()
     fig.tight_layout()
@@ -190,6 +210,16 @@ def main() -> int:
     for direction in ("encrypt", "decrypt"):
         make_plot(rows, direction, "mean_MBps", args.out_dir / f"throughput_{direction}.png")
         make_plot(rows, direction, "mean_ms_per_op", args.out_dir / f"latency_{direction}.png")
+        for size in sorted({int(row["size_bytes"]) for row in rows}):
+            suffix = size_label(size).replace(" ", "_")
+            make_plot(
+                rows, direction, "mean_MBps",
+                args.out_dir / f"throughput_{direction}_{suffix}.png", size,
+            )
+            make_plot(
+                rows, direction, "mean_ms_per_op",
+                args.out_dir / f"latency_{direction}_{suffix}.png", size,
+            )
     print(f"[OK] Wrote {comparison_csv}")
     print(f"[OK] Wrote comparison plots to {args.out_dir}")
     return 0

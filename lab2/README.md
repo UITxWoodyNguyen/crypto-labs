@@ -92,6 +92,12 @@ auto-sized so a run lasts ≈0.25 s (cap 1000); use `--ops 1000` to follow the "
 (slow for large sizes). Run `bench --sizes 1MiB,100MiB` (add `1GiB` if memory allows) on each OS, then
 `python3 scripts/plot_bench.py bench.csv` for plots. Set the CPU governor to *performance* / Windows *High performance*,
 and fill the hardware table from the header the tool prints. `computed` is ~100x slower; restrict it to small sizes.
+For the full lab protocol, run `scripts/bench.sh` on Ubuntu or `scripts\bench.bat` on Windows;
+the scripts write separate 1MiB/100MiB/1GiB CSV files under `Output/<OS>/bench` using
+500/100/30 runs respectively. Multiple CSV files can be plotted together:
+`python3 scripts/plot_bench.py first.csv second.csv --out-prefix Output/combined`.
+`scripts/compare.py` keeps the combined plots and also writes one throughput/latency plot
+per payload size to `Output/compare`.
 
 ## Known limitations
 - Only AES-128 + CTR (AES-192/256, XTS, AES-NI are optional bonuses, not implemented).
