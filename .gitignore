@@ -18,7 +18,6 @@ lab-guide/
 *.suo
 
 # Compiled binaries & objects
-*.exe
 *.dll
 *.so
 *.dylib
