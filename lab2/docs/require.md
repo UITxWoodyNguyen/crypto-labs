@@ -207,7 +207,10 @@ Ghi nhận trong báo cáo: header `bench` in ra (CPU, RAM, OS, compiler, flags)
 ### 5.8. Biểu đồ
 ```bash
 python3 scripts/plot_bench.py Output/ubuntu/bench_ubuntu_gcc.csv Output/ubuntu/plot_ubuntu_gcc
-# -> Output/ubuntu/plot_ubuntu_gcc_throughput.png, Output/ubuntu/plot_ubuntu_gcc_latency.png
+# -> Output/ubuntu/plot_ubuntu_gcc_throughput_encrypt.png
+# -> Output/ubuntu/plot_ubuntu_gcc_throughput_decrypt.png
+# -> Output/ubuntu/plot_ubuntu_gcc_latency_encrypt.png
+# -> Output/ubuntu/plot_ubuntu_gcc_latency_decrypt.png
 python3 scripts/plot_bench.py Output/ubuntu/bench_ubuntu_gcc_computed.csv Output/ubuntu/plot_ubuntu_gcc_computed
 ```
 

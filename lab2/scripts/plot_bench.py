@@ -10,6 +10,7 @@ import os
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.ticker import ScalarFormatter
 
 parser = argparse.ArgumentParser()
 parser.add_argument("csv_files", nargs="+", help="benchmark CSV files")
@@ -61,42 +62,74 @@ for implementation in sorted(implementation_sources):
         series.append((None, implementation, implementation))
 label = lambda n: f"{n >> 20} MiB" if n >= 1 << 20 else f"{n >> 10} KiB"
 
-for metric, lo, hi, title, unit, fname in [
-    ("mean_MBps", "ci95_lo_MBps", "ci95_hi_MBps", "AES-128-CTR encrypt throughput", "MB/s", "throughput"),
-    ("mean_ms_per_op", "ci95_lo_ms", "ci95_hi_ms", "AES-128-CTR latency per operation", "ms/op", "latency")]:
-    fig, ax = plt.subplots(figsize=(11, 6))
-    bar_width = 0.8 / max(len(series), 1)
-    for k, (source, impl, series_label) in enumerate(series):
-        xs, ys, err_low, err_high = [], [], [], []
-        for i, s in enumerate(sizes):
-            m = [
-                r for r in rows
-                if (source is None or r["_source"] == source)
-                and r["implementation"] == impl
-                and int(r["size_bytes"]) == s
-                and r["direction"] == "encrypt"
-            ]
-            if m:
-                v, l, h = float(m[0][metric]), float(m[0][lo]), float(m[0][hi])
-                xs.append(i - 0.4 + (k + 0.5) * bar_width)
-                ys.append(v)
-                err_low.append(max(v - l, 0))
-                err_high.append(max(h - v, 0))
-        if ys:
-            ax.bar(
-                xs,
-                ys,
-                width=bar_width,
-                yerr=[err_low, err_high],
-                error_kw={"elinewidth": 1, "capsize": 3},
-                alpha=0.85,
-                edgecolor="black",
-                linewidth=0.5,
-                label=series_label,
-            )
-    ax.set_xticks(range(len(sizes))); ax.set_xticklabels([label(s) for s in sizes])
-    ax.set_yscale("log"); ax.set_ylabel(unit + " (log)"); ax.set_title(title + " (error bars: 95% CI)")
-    ax.set_xlabel("Payload size")
-    ax.grid(axis="y", alpha=0.3)
-    ax.legend(); fig.tight_layout(); fig.savefig(f"{prefix}_{fname}.png", dpi=150)
-    print("wrote", f"{prefix}_{fname}.png")
+for direction, direction_label in (("encrypt", "encryption"), ("decrypt", "decryption")):
+    for metric, lo, hi, metric_label, unit, fname in [
+        ("mean_MBps", "ci95_lo_MBps", "ci95_hi_MBps", "throughput", "MB/s", "throughput"),
+        ("mean_ms_per_op", "ci95_lo_ms", "ci95_hi_ms", "latency", "ms/op", "latency"),
+    ]:
+        fig, ax = plt.subplots(figsize=(11, 6))
+        bar_width = 0.8 / max(len(series), 1)
+        plotted_values = []
+        for k, (source, impl, series_label) in enumerate(series):
+            xs, ys, err_low, err_high = [], [], [], []
+            for i, s in enumerate(sizes):
+                matches = [
+                    r for r in rows
+                    if (source is None or r["_source"] == source)
+                    and r["implementation"] == impl
+                    and int(r["size_bytes"]) == s
+                    and r["direction"] == direction
+                ]
+                if matches:
+                    value = float(matches[0][metric])
+                    low = float(matches[0][lo])
+                    high = float(matches[0][hi])
+                    xs.append(i - 0.4 + (k + 0.5) * bar_width)
+                    ys.append(value)
+                    err_low.append(max(value - low, 0))
+                    err_high.append(max(high - value, 0))
+            if ys:
+                ax.bar(
+                    xs,
+                    ys,
+                    width=bar_width,
+                    yerr=[err_low, err_high],
+                    error_kw={"elinewidth": 1, "capsize": 3},
+                    alpha=0.85,
+                    edgecolor="black",
+                    linewidth=0.5,
+                    label=series_label,
+                )
+                plotted_values.extend(
+                    value
+                    for value in ys + err_low + err_high
+                    if value > 0
+                )
+        ax.set_xticks(range(len(sizes)))
+        ax.set_xticklabels([label(s) for s in sizes])
+        if plotted_values:
+            smallest = min(plotted_values)
+            largest = max(plotted_values)
+            # Log scale keeps very small implementations visible when the
+            # benchmark spans several orders of magnitude. For close values,
+            # linear ticks are easier to read.
+            if largest / smallest >= 100:
+                ax.set_yscale("log")
+                ax.set_ylim(max(smallest * 0.7, largest * 1e-6), largest * 1.25)
+            else:
+                ax.set_ylim(0, largest * 1.25)
+                if largest < 0.01:
+                    ax.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+                else:
+                    ax.yaxis.set_major_formatter(ScalarFormatter())
+        scale_label = "log scale" if plotted_values and max(plotted_values) / min(plotted_values) >= 100 else "linear scale"
+        ax.set_ylabel(f"{unit} ({scale_label})")
+        ax.set_title(f"AES-128-CTR {direction_label} {metric_label} (95% CI)")
+        ax.set_xlabel("Payload size")
+        ax.grid(axis="y", alpha=0.3)
+        ax.legend()
+        fig.tight_layout()
+        output = f"{prefix}_{fname}_{direction}.png"
+        fig.savefig(output, dpi=150)
+        plt.close(fig)
+        print("wrote", output)
