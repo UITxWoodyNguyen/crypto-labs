@@ -53,6 +53,9 @@ lab1/
 │   ├── build_windows.bat       # Automated build script for Windows (MSVC/GCC/Clang)
 │   ├── build_linux.sh          # Automated build script for Linux (GCC/Clang)
 │   └── plot_bench.py           # Python data processing and chart generation script
+├── release/
+│   ├── ubuntu/                 # Prebuilt Ubuntu binaries
+│   └── windows/                # Prebuilt Windows binaries
 ├── output/
 │   ├── windows/                # Test logs, CSVs, and plots on Windows
 │   ├── ubuntu/                 # Test logs, CSVs, and plots on Linux (Ubuntu)
@@ -95,6 +98,40 @@ lab1/
 ---
 
 ## 5. Building the Project
+
+### Prebuilt binaries
+
+Prebuilt CLI binaries are stored under `release/<OS_name>/`, where
+`<OS_name>` is `ubuntu` or `windows`. Building from source is optional when
+using one of these binaries. The compiler suffix identifies the build:
+
+| OS | Example binary |
+| :--- | :--- |
+| Ubuntu | `release/ubuntu/aestool_gcc` |
+| Windows (MinGW/GCC) | `release/windows/aestool_gcc.exe` |
+| Windows (MSVC) | `release/windows/aestool_msvc.exe` |
+
+Only binaries that have been released for the current platform are present.
+List the directory before running a command:
+
+```bash
+# Ubuntu
+cd lab1
+ls -l release/ubuntu
+./release/ubuntu/aestool_gcc --help
+./release/ubuntu/aestool_gcc --kat kat/vectors.json
+```
+
+```powershell
+# Windows PowerShell
+cd lab1
+Get-ChildItem release\windows
+.\release\windows\aestool_gcc.exe --help
+```
+
+Run these commands from the `lab1` root so that relative paths such as
+`kat/vectors.json` resolve correctly. The build instructions below remain
+available for rebuilding or running unit tests.
 
 ### Option 1: Using Automated Build Scripts (Recommended)
 
@@ -232,7 +269,7 @@ mkdir -Force output\windows\benchmarks
 ### Step 1: Known Answer Tests (NIST KAT)
 Execute the official 9 test vectors and save logs:
 ```powershell
-.\build_windows_gcc\aestool.exe --kat kat\vectors.json > output\windows\kat_windows_gcc.txt 2>&1
+.\release\windows\aestool_gcc.exe --kat kat\vectors.json > output\windows\kat_windows_release.txt 2>&1
 ```
 
 ### Step 2: Automated Unit Tests (Catch2 via CTest)
@@ -263,28 +300,28 @@ New-RandomFile "output\windows\key_bin\short_iv.bin"  8
 "Hello World plaintext for testing negative cases" | Out-File -Encoding ascii output\windows\key_bin\plain.txt
 
 # Encrypt to create valid reference ciphertexts (CBC & GCM)
-.\build_windows_gcc\aestool.exe encrypt --mode cbc --key output\windows\key_bin\key.bin --in output\windows\key_bin\plain.txt --out output\windows\key_bin\ct.bin
-.\build_windows_gcc\aestool.exe encrypt --mode gcm --aead --key output\windows\key_bin\key.bin --in output\windows\key_bin\plain.txt --out output\windows\key_bin\ct_gcm.bin
+.\release\windows\aestool_gcc.exe encrypt --mode cbc --key output\windows\key_bin\key.bin --in output\windows\key_bin\plain.txt --out output\windows\key_bin\ct.bin
+.\release\windows\aestool_gcc.exe encrypt --mode gcm --aead --key output\windows\key_bin\key.bin --in output\windows\key_bin\plain.txt --out output\windows\key_bin\ct_gcm.bin
 ```
 
 ### Step 4: Negative Testing (Fail-Closed Validations)
 Execute negative test cases and record outputs into `output\windows\neg_results\`:
 ```powershell
 # 1. Test wrong key (decryption failure)
-.\build_windows_gcc\aestool.exe decrypt --mode cbc --key output\windows\key_bin\key_wrong.bin --in output\windows\key_bin\ct.bin --out output\windows\key_bin\out.txt 2>&1 | Tee-Object -FilePath output\windows\neg_results\neg_key.txt
+.\release\windows\aestool_gcc.exe decrypt --mode cbc --key output\windows\key_bin\key_wrong.bin --in output\windows\key_bin\ct.bin --out output\windows\key_bin\out.txt 2>&1 | Tee-Object -FilePath output\windows\neg_results\neg_key.txt
 
 # 2. Test wrong IV
-.\build_windows_gcc\aestool.exe decrypt --mode cbc --key output\windows\key_bin\key.bin --iv output\windows\key_bin\iv_wrong.bin --in output\windows\key_bin\ct.bin --out output\windows\key_bin\out.txt 2>&1 | Tee-Object -FilePath output\windows\neg_results\neg_iv.txt
+.\release\windows\aestool_gcc.exe decrypt --mode cbc --key output\windows\key_bin\key.bin --iv output\windows\key_bin\iv_wrong.bin --in output\windows\key_bin\ct.bin --out output\windows\key_bin\out.txt 2>&1 | Tee-Object -FilePath output\windows\neg_results\neg_iv.txt
 
 # 3. Test wrong AEAD Tag (GCM authentication failure)
-.\build_windows_gcc\aestool.exe decrypt --mode gcm --aead --key output\windows\key_bin\key.bin --in output\windows\key_bin\ct_gcm.bin --out output\windows\key_bin\out.txt 2>&1 | Tee-Object -FilePath output\windows\neg_results\neg_tag.txt
+.\release\windows\aestool_gcc.exe decrypt --mode gcm --aead --key output\windows\key_bin\key.bin --in output\windows\key_bin\ct_gcm.bin --out output\windows\key_bin\out.txt 2>&1 | Tee-Object -FilePath output\windows\neg_results\neg_tag.txt
 
 # 4. Test invalid IV length (rejection on entry)
-.\build_windows_gcc\aestool.exe encrypt --mode cbc --key output\windows\key_bin\key.bin --iv output\windows\key_bin\short_iv.bin --in output\windows\key_bin\plain.txt --out output\windows\key_bin\ct.bin 2>&1 | Tee-Object -FilePath output\windows\neg_results\neg_ivlen.txt
+.\release\windows\aestool_gcc.exe encrypt --mode cbc --key output\windows\key_bin\key.bin --iv output\windows\key_bin\short_iv.bin --in output\windows\key_bin\plain.txt --out output\windows\key_bin\ct.bin 2>&1 | Tee-Object -FilePath output\windows\neg_results\neg_ivlen.txt
 
 # 5. Test ECB policy restriction on large payload without --allow-ecb
 fsutil file createnew output\windows\key_bin\large.bin 32768
-.\build_windows_gcc\aestool.exe encrypt --mode ecb --key output\windows\key_bin\key.bin --in output\windows\key_bin\large.bin --out output\windows\key_bin\ct.bin 2>&1 | Tee-Object -FilePath output\windows\neg_results\neg_ecb.txt
+.\release\windows\aestool_gcc.exe encrypt --mode ecb --key output\windows\key_bin\key.bin --in output\windows\key_bin\large.bin --out output\windows\key_bin\ct.bin 2>&1 | Tee-Object -FilePath output\windows\neg_results\neg_ecb.txt
 ```
 
 ### Step 5: Performance Benchmarking & Graph Generation
@@ -293,7 +330,7 @@ fsutil file createnew output\windows\key_bin\large.bin 32768
 powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 
 # Run benchmark (sweeps all 8 modes, Enc/Dec, and 6 payload sizes)
-.\build_windows_gcc\aestool.exe bench --key output\windows\key_bin\key.bin --runs 1000 --out output\windows\benchmarks\bench_windows_gcc.csv
+.\release\windows\aestool_gcc.exe bench --key output\windows\key_bin\key.bin --runs 1000 --out output\windows\benchmarks\bench_windows_release.csv
 
 # Generate plots
 mkdir -Force output\windows\benchmarks\graph
@@ -319,10 +356,7 @@ mkdir -p output/ubuntu/benchmarks
 ### Step 1: Known Answer Tests (NIST KAT)
 ```bash
 # KAT - GCC
-./build_ubuntu_gcc/aestool --kat kat/vectors.json > output/ubuntu/kat_ubuntu_gcc.txt 2>&1
-
-# KAT - Clang
-./build_ubuntu_clang/aestool --kat kat/vectors.json > output/ubuntu/kat_ubuntu_clang.txt 2>&1
+./release/ubuntu/aestool_gcc --kat kat/vectors.json > output/ubuntu/kat_ubuntu_release.txt 2>&1
 ```
 
 ### Step 2: Automated Unit Tests (Catch2 via CTest)
@@ -351,27 +385,27 @@ head -c 8  /dev/urandom > output/ubuntu/key_bin/short_iv.bin
 echo "Hello World plaintext for testing negative cases" > output/ubuntu/key_bin/plain.txt
 
 # 3. Encrypt plain text to create valid reference ciphertexts (CBC & GCM)
-./build_ubuntu_gcc/aestool encrypt --mode cbc --key output/ubuntu/key_bin/key.bin --in output/ubuntu/key_bin/plain.txt --out output/ubuntu/key_bin/ct.bin
-./build_ubuntu_gcc/aestool encrypt --mode gcm --aead --key output/ubuntu/key_bin/key.bin --in output/ubuntu/key_bin/plain.txt --out output/ubuntu/key_bin/ct_gcm.bin
+./release/ubuntu/aestool_gcc encrypt --mode cbc --key output/ubuntu/key_bin/key.bin --in output/ubuntu/key_bin/plain.txt --out output/ubuntu/key_bin/ct.bin
+./release/ubuntu/aestool_gcc encrypt --mode gcm --aead --key output/ubuntu/key_bin/key.bin --in output/ubuntu/key_bin/plain.txt --out output/ubuntu/key_bin/ct_gcm.bin
 ```
 
 ### Step 4: Negative Testing (Fail-Closed Validations)
 ```bash
 # 1. Test wrong key
-./build_ubuntu_gcc/aestool decrypt --mode cbc --key output/ubuntu/key_bin/key_wrong.bin --in output/ubuntu/key_bin/ct.bin --out output/ubuntu/key_bin/out.txt 2>&1 | tee output/ubuntu/neg_results/neg_key.txt
+./release/ubuntu/aestool_gcc decrypt --mode cbc --key output/ubuntu/key_bin/key_wrong.bin --in output/ubuntu/key_bin/ct.bin --out output/ubuntu/key_bin/out.txt 2>&1 | tee output/ubuntu/neg_results/neg_key.txt
 
 # 2. Test wrong IV
-./build_ubuntu_gcc/aestool decrypt --mode cbc --key output/ubuntu/key_bin/key.bin --iv output/ubuntu/key_bin/iv_wrong.bin --in output/ubuntu/key_bin/ct.bin --out output/ubuntu/key_bin/out.txt 2>&1 | tee output/ubuntu/neg_results/neg_iv.txt
+./release/ubuntu/aestool_gcc decrypt --mode cbc --key output/ubuntu/key_bin/key.bin --iv output/ubuntu/key_bin/iv_wrong.bin --in output/ubuntu/key_bin/ct.bin --out output/ubuntu/key_bin/out.txt 2>&1 | tee output/ubuntu/neg_results/neg_iv.txt
 
 # 3. Test wrong AEAD Tag (GCM)
-./build_ubuntu_gcc/aestool decrypt --mode gcm --aead --key output/ubuntu/key_bin/key.bin --in output/ubuntu/key_bin/ct_gcm.bin --out output/ubuntu/key_bin/out.txt 2>&1 | tee output/ubuntu/neg_results/neg_tag.txt
+./release/ubuntu/aestool_gcc decrypt --mode gcm --aead --key output/ubuntu/key_bin/key.bin --in output/ubuntu/key_bin/ct_gcm.bin --out output/ubuntu/key_bin/out.txt 2>&1 | tee output/ubuntu/neg_results/neg_tag.txt
 
 # 4. Test wrong IV length
-./build_ubuntu_gcc/aestool encrypt --mode cbc --key output/ubuntu/key_bin/key.bin --iv output/ubuntu/key_bin/short_iv.bin --in output/ubuntu/key_bin/plain.txt --out output/ubuntu/key_bin/ct.bin 2>&1 | tee output/ubuntu/neg_results/neg_ivlen.txt
+./release/ubuntu/aestool_gcc encrypt --mode cbc --key output/ubuntu/key_bin/key.bin --iv output/ubuntu/key_bin/short_iv.bin --in output/ubuntu/key_bin/plain.txt --out output/ubuntu/key_bin/ct.bin 2>&1 | tee output/ubuntu/neg_results/neg_ivlen.txt
 
 # 5. Test ECB policy restriction on large payload without --allow-ecb
 dd if=/dev/zero of=output/ubuntu/key_bin/large.bin bs=1K count=32
-./build_ubuntu_gcc/aestool encrypt --mode ecb --key output/ubuntu/key_bin/key.bin --in output/ubuntu/key_bin/large.bin --out output/ubuntu/key_bin/ct.bin 2>&1 | tee output/ubuntu/neg_results/neg_ecb.txt
+./release/ubuntu/aestool_gcc encrypt --mode ecb --key output/ubuntu/key_bin/key.bin --in output/ubuntu/key_bin/large.bin --out output/ubuntu/key_bin/ct.bin 2>&1 | tee output/ubuntu/neg_results/neg_ecb.txt
 ```
 
 ### Step 5: Performance Benchmarking & Graph Generation
@@ -380,8 +414,7 @@ dd if=/dev/zero of=output/ubuntu/key_bin/large.bin bs=1K count=32
 echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
 
 # Run full benchmark suite (sweeps all modes and payload sizes)
-./build_ubuntu_gcc/aestool bench --key output/ubuntu/key_bin/key.bin --runs 1000 --out output/ubuntu/benchmarks/bench_ubuntu_gcc.csv
-./build_ubuntu_clang/aestool bench --key output/ubuntu/key_bin/key.bin --runs 1000 --out output/ubuntu/benchmarks/bench_ubuntu_clang.csv
+./release/ubuntu/aestool_gcc bench --key output/ubuntu/key_bin/key.bin --runs 1000 --out output/ubuntu/benchmarks/bench_ubuntu_release.csv
 
 # Generate plots
 mkdir -p output/ubuntu/benchmarks/graph
