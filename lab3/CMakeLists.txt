@@ -52,17 +52,41 @@ endif()
 find_package(OpenSSL REQUIRED)
 find_package(Threads REQUIRED)
 
-if(MSVC)
-    add_compile_options(/W4 /permissive- /utf-8)
-else()
-    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
-endif()
+# Cảnh báo chỉ áp dụng cho target của lab (không áp cho Catch2 tải về).
+# Tắt -Werror: cmake .. -DLAB3_WERROR=OFF
+option(LAB3_WERROR "Treat warnings as errors (GCC/Clang)" ON)
+function(lab3_set_warnings target)
+    if(MSVC)
+        target_compile_options(${target} PRIVATE /W4 /permissive- /utf-8)
+    else()
+        target_compile_options(${target} PRIVATE -Wall -Wextra -Wpedantic)
+        if(LAB3_WERROR)
+            target_compile_options(${target} PRIVATE -Werror)
+        endif()
+    endif()
+endfunction()
 
-# Targets (to be implemented)
-# add_library(rsa_hybrid STATIC src/rsa_hybrid.cpp)
-# target_link_libraries(rsa_hybrid PUBLIC CryptoPP::CryptoPP OpenSSL::Crypto OpenSSL::SSL Threads::Threads)
-# add_executable(rsa_hybrid_tool src/main.cpp)
-# target_link_libraries(rsa_hybrid_tool PRIVATE rsa_hybrid)
+# ---- Targets ----
+add_library(rsa_hybrid_core STATIC
+    src/utils.cpp
+    src/rsa_oaep.cpp
+    src/key_manager.cpp
+    src/hybrid_engine.cpp
+    src/kat_runner.cpp
+    src/bench.cpp
+)
+target_include_directories(rsa_hybrid_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+# Crypto++ chưa được dùng trong code hiện tại (mã hoá dùng OpenSSL EVP) nhưng vẫn link theo template môn học.
+target_link_libraries(rsa_hybrid_core PUBLIC
+    CryptoPP::CryptoPP OpenSSL::Crypto OpenSSL::SSL Threads::Threads)
+if(WIN32)
+    target_link_libraries(rsa_hybrid_core PUBLIC ws2_32 crypt32)  # cần khi OpenSSL link tĩnh
+endif()
+lab3_set_warnings(rsa_hybrid_core)
+
+add_executable(rsatool src/main.cpp)
+target_link_libraries(rsatool PRIVATE rsa_hybrid_core)
+lab3_set_warnings(rsatool)
 
 option(BUILD_TESTS "Build unit tests" ON)
 if(BUILD_TESTS)
@@ -73,4 +97,6 @@ if(BUILD_TESTS)
         GIT_TAG v3.5.3
     )
     FetchContent_MakeAvailable(Catch2)
+    list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
+    add_subdirectory(tests)
 endif()
