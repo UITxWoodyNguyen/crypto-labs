@@ -1,0 +1,6 @@
+jupyter
+notebook
+pandas>=1.5
+numpy
+matplotlib
+psutil

@@ -19,6 +19,7 @@ endif()
 
 if(MSVC)
     set(COMPILER_NAME "msvc")
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     set(COMPILER_NAME "clang")
 else()
@@ -75,7 +76,10 @@ add_library(rsa_hybrid_core STATIC
     src/kat_runner.cpp
     src/bench.cpp
 )
-target_include_directories(rsa_hybrid_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(rsa_hybrid_core PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
 # Crypto++ chưa được dùng trong code hiện tại (mã hoá dùng OpenSSL EVP) nhưng vẫn link theo template môn học.
 target_link_libraries(rsa_hybrid_core PUBLIC
     CryptoPP::CryptoPP OpenSSL::Crypto OpenSSL::SSL Threads::Threads)
