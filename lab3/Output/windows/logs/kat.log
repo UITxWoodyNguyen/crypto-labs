@@ -1,5 +1,5 @@
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe --kat d:\UIT\NT219\crypto-labs\lab3\tests\vectors\rsa_oaep_vectors.json --verbose
-[rc=0] [0.20s]
+[rc=0] [0.11s]
 --- stdout ---
 [PASS] AES-256-GCM TC13 (empty plaintext)
 [PASS] AES-256-GCM TC14 (16 zero bytes)

@@ -1,59 +1,59 @@
 $ ctest --output-on-failure -C Release
-[rc=0] [5.55s]
+[rc=0] [4.98s]
 --- stdout ---
 Test project D:/UIT/NT219/crypto-labs/lab3/build_windows_msvc
       Start  1: OAEP plaintext limit: mLen <= k - 2hLen - 2
- 1/24 Test  #1: OAEP plaintext limit: mLen <= k - 2hLen - 2 ...................................   Passed    0.08 sec
+ 1/24 Test  #1: OAEP plaintext limit: mLen <= k - 2hLen - 2 ...................................   Passed    0.19 sec
       Start  2: RSA-OAEP round trip, with and without label
- 2/24 Test  #2: RSA-OAEP round trip, with and without label ...................................   Passed    0.06 sec
+ 2/24 Test  #2: RSA-OAEP round trip, with and without label ...................................   Passed    0.31 sec
       Start  3: RSA-OAEP is probabilistic
- 3/24 Test  #3: RSA-OAEP is probabilistic .....................................................   Passed    0.27 sec
+ 3/24 Test  #3: RSA-OAEP is probabilistic .....................................................   Passed    0.12 sec
       Start  4: RSA-OAEP boundary: exactly max succeeds, max+1 rejected
- 4/24 Test  #4: RSA-OAEP boundary: exactly max succeeds, max+1 rejected .......................   Passed    0.08 sec
+ 4/24 Test  #4: RSA-OAEP boundary: exactly max succeeds, max+1 rejected .......................   Passed    0.37 sec
       Start  5: RSA-OAEP empty plaintext
- 5/24 Test  #5: RSA-OAEP empty plaintext ......................................................   Passed    0.08 sec
+ 5/24 Test  #5: RSA-OAEP empty plaintext ......................................................   Passed    0.31 sec
       Start  6: Hybrid round trip for several sizes
- 6/24 Test  #6: Hybrid round trip for several sizes ...........................................   Passed    0.20 sec
+ 6/24 Test  #6: Hybrid round trip for several sizes ...........................................   Passed    0.16 sec
       Start  7: Hybrid uses fresh IV and key every time
- 7/24 Test  #7: Hybrid uses fresh IV and key every time .......................................   Passed    0.57 sec
+ 7/24 Test  #7: Hybrid uses fresh IV and key every time .......................................   Passed    0.12 sec
       Start  8: Envelope JSON round trip
- 8/24 Test  #8: Envelope JSON round trip ......................................................   Passed    0.15 sec
+ 8/24 Test  #8: Envelope JSON round trip ......................................................   Passed    0.11 sec
       Start  9: AES-256-GCM matches GCM spec test case 16
  9/24 Test  #9: AES-256-GCM matches GCM spec test case 16 .....................................   Passed    0.02 sec
       Start 10: Key files: PEM + DER + metadata, reload and use
-10/24 Test #10: Key files: PEM + DER + metadata, reload and use ...............................   Passed    0.22 sec
+10/24 Test #10: Key files: PEM + DER + metadata, reload and use ...............................   Passed    0.15 sec
       Start 11: Unsupported key sizes are rejected
 11/24 Test #11: Unsupported key sizes are rejected ............................................   Passed    0.02 sec
       Start 12: Encoding helpers
-12/24 Test #12: Encoding helpers ..............................................................   Passed    0.02 sec
+12/24 Test #12: Encoding helpers ..............................................................   Passed    0.01 sec
       Start 13: 1. Altered RSA ciphertext (single bit) fails
-13/24 Test #13: 1. Altered RSA ciphertext (single bit) fails ..................................   Passed    0.25 sec
+13/24 Test #13: 1. Altered RSA ciphertext (single bit) fails ..................................   Passed    0.07 sec
       Start 14: 1b. Truncated / extended / empty RSA ciphertext fails
-14/24 Test #14: 1b. Truncated / extended / empty RSA ciphertext fails .........................   Passed    0.15 sec
+14/24 Test #14: 1b. Truncated / extended / empty RSA ciphertext fails .........................   Passed    0.24 sec
       Start 15: 2. Altered AES-GCM ciphertext fails tag verification, no plaintext returned
-15/24 Test #15: 2. Altered AES-GCM ciphertext fails tag verification, no plaintext returned ...   Passed    0.42 sec
+15/24 Test #15: 2. Altered AES-GCM ciphertext fails tag verification, no plaintext returned ...   Passed    0.20 sec
       Start 16: 2b. Truncated AES-GCM ciphertext fails
-16/24 Test #16: 2b. Truncated AES-GCM ciphertext fails ........................................   Passed    0.22 sec
+16/24 Test #16: 2b. Truncated AES-GCM ciphertext fails ........................................   Passed    0.31 sec
       Start 17: 3. Wrong private key fails (direct and hybrid)
-17/24 Test #17: 3. Wrong private key fails (direct and hybrid) ................................   Passed    0.64 sec
+17/24 Test #17: 3. Wrong private key fails (direct and hybrid) ................................   Passed    0.32 sec
       Start 18: 4. Wrong or missing OAEP label fails
-18/24 Test #18: 4. Wrong or missing OAEP label fails ..........................................   Passed    0.15 sec
+18/24 Test #18: 4. Wrong or missing OAEP label fails ..........................................   Passed    0.26 sec
       Start 19: 5. Tampered envelope header fails closed
 19/24 Test #19: 5. Tampered envelope header fails closed ......................................   Passed    0.20 sec
       Start 20: 6. Malformed envelope JSON is rejected at parse time
-20/24 Test #20: 6. Malformed envelope JSON is rejected at parse time ..........................   Passed    0.53 sec
+20/24 Test #20: 6. Malformed envelope JSON is rejected at parse time ..........................   Passed    0.26 sec
       Start 21: 7. Malformed encodings are rejected
-21/24 Test #21: 7. Malformed encodings are rejected ...........................................   Passed    0.02 sec
+21/24 Test #21: 7. Malformed encodings are rejected ...........................................   Passed    0.01 sec
       Start 22: 8. Corrupted / wrong-type key files are rejected
-22/24 Test #22: 8. Corrupted / wrong-type key files are rejected ..............................   Passed    0.14 sec
+22/24 Test #22: 8. Corrupted / wrong-type key files are rejected ..............................   Passed    0.34 sec
       Start 23: 9. Decrypt errors are generic (no oracle by message)
-23/24 Test #23: 9. Decrypt errors are generic (no oracle by message) ..........................   Passed    0.53 sec
+23/24 Test #23: 9. Decrypt errors are generic (no oracle by message) ..........................   Passed    0.35 sec
       Start 24: kat_runner
-24/24 Test #24: kat_runner ....................................................................   Passed    0.47 sec
+24/24 Test #24: kat_runner ....................................................................   Passed    0.46 sec
 
 [0;32m100% tests passed[0;0m, 0 tests failed[0;0m out of 24
 
-Total Test time (real) =   5.51 sec
+Total Test time (real) =   4.94 sec
 
 --- stderr ---
 
