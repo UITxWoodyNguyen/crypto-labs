@@ -105,9 +105,9 @@ enum class Encoding { Base64, Hex, Raw };
 
 Encoding parse_encoding(const string& name); // "raw" | "hex" | "base64", invalid => UsageError
 string hex_encode(const Bytes& data);
-string hex_decode(const string& text); // invalid => FormatError
+Bytes hex_decode(const string& text); // invalid => FormatError
 string base64_encode(const Bytes& data);
-string base64_decode(const string& text); // invalid => FormatError
+Bytes base64_decode(const string& text); // invalid => FormatError
 string strip_ascii_whitespace(const string& s);
 
 Bytes to_bytes(const string& s);
