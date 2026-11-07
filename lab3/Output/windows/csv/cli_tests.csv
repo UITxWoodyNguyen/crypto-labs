@@ -1,6 +1,6 @@
 test,expected,result,detail
 keygen RSA-3072,"rc=0, PEM+DER+metadata",PASS,rc=0
-metadata JSON fields,"modulus_bits=3072, SHA-256, MGF1-SHA256",PASS,"{'creation_time': '2026-11-07T07:58:50Z', 'modulus_bits': 3072, 'hash': 'SHA-256', 'mgf': 'MGF1-SHA256'}"
+metadata JSON fields,"modulus_bits=3072, SHA-256, MGF1-SHA256",PASS,"{'creation_time': '2026-11-07T15:29:33Z', 'modulus_bits': 3072, 'hash': 'SHA-256', 'mgf': 'MGF1-SHA256'}"
 keygen RSA-4096,rc=0,PASS,rc=0
 keygen second RSA-3072 (wrong-key tests),rc=0,PASS,rc=0
 keygen RSA-2048 rejected,rc=2 (unsupported size),PASS,rc=2

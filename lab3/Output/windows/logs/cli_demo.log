@@ -1,5 +1,5 @@
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe keygen --bits 3072 --pub d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\pub.pem --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem
-[rc=0] [0.30s]
+[rc=0] [0.55s]
 --- stdout ---
 Generated RSA-3072 key pair:
   public  (PEM/SPKI) : d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\pub.pem
@@ -13,7 +13,7 @@ Keep the private key secret (file permissions restricted where supported).
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe keygen --bits 4096 --pub d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k4096\pub.pem --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k4096\priv.pem
-[rc=0] [0.23s]
+[rc=0] [4.65s]
 --- stdout ---
 Generated RSA-4096 key pair:
   public  (PEM/SPKI) : d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k4096\pub.pem
@@ -27,7 +27,7 @@ Keep the private key secret (file permissions restricted where supported).
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe keygen --bits 3072 --pub d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\other\pub.pem --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\other\priv.pem
-[rc=0] [0.15s]
+[rc=0] [0.28s]
 --- stdout ---
 Generated RSA-3072 key pair:
   public  (PEM/SPKI) : d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\other\pub.pem
@@ -41,7 +41,7 @@ Keep the private key secret (file permissions restricted where supported).
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe keygen --bits 2048 --pub d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\p2048.pem --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\s2048.pem
-[rc=2] [0.01s]
+[rc=2] [0.04s]
 --- stdout ---
 
 --- stderr ---
@@ -50,112 +50,112 @@ Usage error: unsupported key size (supported: 3072, 4096)
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe encrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\msg_small.bin --pub d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\pub.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\ct_small.bin
-[rc=0] [0.02s]
+[rc=0] [0.08s]
 --- stdout ---
 
 --- stderr ---
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\ct_small.bin --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\dec_small.bin
-[rc=0] [0.02s]
+[rc=0] [0.10s]
 --- stdout ---
 
 --- stderr ---
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe encrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\m318.bin --pub d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\pub.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\ct318.bin
-[rc=0] [0.02s]
+[rc=0] [0.12s]
 --- stdout ---
 
 --- stderr ---
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe encrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\m319.bin --pub d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\pub.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\ct319.bin
-[rc=0] [0.02s]
+[rc=0] [0.11s]
 --- stdout ---
 
 --- stderr ---
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\ct318.bin --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\d318.bin
-[rc=0] [0.02s]
+[rc=0] [0.07s]
 --- stdout ---
 
 --- stderr ---
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\ct319.bin --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\d319.bin
-[rc=0] [0.02s]
+[rc=0] [0.06s]
 --- stdout ---
 
 --- stderr ---
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe encrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\big.bin --pub d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\pub.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\big.env.json
-[rc=0] [0.03s]
+[rc=0] [0.10s]
 --- stdout ---
 
 --- stderr ---
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\big.env.json --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\big.dec
-[rc=0] [0.03s]
+[rc=0] [0.13s]
 --- stdout ---
 
 --- stderr ---
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe encrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\big.bin --pub d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k4096\pub.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\big4.env.json
-[rc=0] [0.02s]
+[rc=0] [0.10s]
 --- stdout ---
 
 --- stderr ---
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\big4.env.json --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k4096\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\big4.dec
-[rc=0] [0.04s]
+[rc=0] [0.13s]
 --- stdout ---
 
 --- stderr ---
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe encrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\msg_small.bin --pub d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\pub.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\ct_hex.txt --encode hex
-[rc=0] [0.02s]
+[rc=0] [0.07s]
 --- stdout ---
 
 --- stderr ---
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\ct_hex.txt --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\dec_hex.bin --encode hex
-[rc=0] [0.02s]
+[rc=0] [0.08s]
 --- stdout ---
 
 --- stderr ---
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe encrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\msg_small.bin --pub d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\pub.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\ct_base64.txt --encode base64
-[rc=0] [0.02s]
+[rc=0] [0.06s]
 --- stdout ---
 
 --- stderr ---
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\ct_base64.txt --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\dec_base64.bin --encode base64
-[rc=0] [0.02s]
+[rc=0] [0.08s]
 --- stdout ---
 
 --- stderr ---
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe encrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\msg_small.bin --pub d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\pub.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\ct_lbl.bin --label SECURE_CONTEXT
-[rc=0] [0.02s]
+[rc=0] [0.06s]
 --- stdout ---
 
 --- stderr ---
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\ct_lbl.bin --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\o1.bin --label WRONG_CONTEXT
-[rc=3] [0.02s]
+[rc=3] [0.08s]
 --- stdout ---
 
 --- stderr ---
@@ -163,7 +163,7 @@ Error: decryption failed
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\ct_lbl.bin --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\o2.bin
-[rc=3] [0.02s]
+[rc=3] [0.10s]
 --- stdout ---
 
 --- stderr ---
@@ -171,14 +171,14 @@ Error: decryption failed
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe encrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\big.bin --pub d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\pub.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\env_lbl.json --label SECURE_CONTEXT
-[rc=0] [0.03s]
+[rc=0] [0.08s]
 --- stdout ---
 
 --- stderr ---
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\env_lbl.json --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\o3.bin --label WRONG_CONTEXT
-[rc=3] [0.03s]
+[rc=3] [0.09s]
 --- stdout ---
 
 --- stderr ---
@@ -186,7 +186,7 @@ Error: decryption failed
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\ct_small.bin --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\other\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\o4.bin
-[rc=3] [0.02s]
+[rc=3] [0.07s]
 --- stdout ---
 
 --- stderr ---
@@ -194,7 +194,7 @@ Error: decryption failed
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\big.env.json --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\other\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\o5.bin
-[rc=3] [0.03s]
+[rc=3] [0.10s]
 --- stdout ---
 
 --- stderr ---
@@ -202,7 +202,7 @@ Error: decryption failed
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\ct_flip.bin --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\o6.bin
-[rc=3] [0.02s]
+[rc=3] [0.08s]
 --- stdout ---
 
 --- stderr ---
@@ -210,7 +210,7 @@ Error: decryption failed
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\env_ciphertext.json --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\o_ciphertext.bin
-[rc=3] [0.04s]
+[rc=3] [0.14s]
 --- stdout ---
 
 --- stderr ---
@@ -218,7 +218,7 @@ Error: decryption failed
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\env_iv.json --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\o_iv.bin
-[rc=3] [0.04s]
+[rc=3] [0.14s]
 --- stdout ---
 
 --- stderr ---
@@ -226,7 +226,7 @@ Error: decryption failed
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\env_tag.json --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\o_tag.bin
-[rc=3] [0.04s]
+[rc=3] [0.13s]
 --- stdout ---
 
 --- stderr ---
@@ -234,7 +234,7 @@ Error: decryption failed
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\env_wrapped_key.json --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\o_wrapped_key.bin
-[rc=3] [0.04s]
+[rc=3] [0.15s]
 --- stdout ---
 
 --- stderr ---
@@ -242,7 +242,7 @@ Error: decryption failed
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\envh_hash.json --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\oh_hash.bin
-[rc=1] [0.03s]
+[rc=1] [0.09s]
 --- stdout ---
 
 --- stderr ---
@@ -250,7 +250,7 @@ Error: malformed input
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\envh_mode.json --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\oh_mode.bin
-[rc=1] [0.03s]
+[rc=1] [0.09s]
 --- stdout ---
 
 --- stderr ---
@@ -258,7 +258,7 @@ Error: malformed input
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\envh_rsa_modulus.json --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\oh_rsa_modulus.bin
-[rc=1] [0.03s]
+[rc=1] [0.10s]
 --- stdout ---
 
 --- stderr ---
@@ -266,7 +266,7 @@ Error: malformed input
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\envh_label.json --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\oh_label.bin
-[rc=3] [0.03s]
+[rc=3] [0.09s]
 --- stdout ---
 
 --- stderr ---
@@ -274,7 +274,7 @@ Error: decryption failed
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe decrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\env_trunc.json --priv d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\k3072\priv.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\o_trunc.bin
-[rc=1] [0.03s]
+[rc=1] [0.08s]
 --- stdout ---
 
 --- stderr ---
@@ -282,7 +282,7 @@ Error: malformed input
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe encrypt --in d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\msg_small.bin --pub d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\pub_trunc.pem --out d:\UIT\NT219\crypto-labs\lab3\Output\windows\work\o_badkey.bin
-[rc=1] [0.02s]
+[rc=1] [0.06s]
 --- stdout ---
 
 --- stderr ---
@@ -290,7 +290,7 @@ Error: malformed input
 
 
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe bogus-command
-[rc=2] [0.01s]
+[rc=2] [0.03s]
 --- stdout ---
 
 --- stderr ---

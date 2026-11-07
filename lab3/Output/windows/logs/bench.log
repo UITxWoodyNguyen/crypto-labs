@@ -1,5 +1,5 @@
 $ d:\UIT\NT219\crypto-labs\lab3\build_windows_msvc\Release\rsatool.exe bench --what all --bits both --runs 100 --keygen-runs 100 --rsa-block 100 --warmup 1.0 --csv d:\UIT\NT219\crypto-labs\lab3\Output\windows\csv\bench_windows_msvc.csv
-[rc=0] [1034.97s]
+[rc=0] [1812.91s]
 --- stdout ---
 == System ==
 OS        : Windows
@@ -10,48 +10,48 @@ Protocol  : warm-up 1s, N=100 runs/case, RSA block=100 ops, hybrid block adaptiv
 Throughput: 1 MB = 10^6 bytes. CI 95% = Student t.
 
 cat     algo                  bits      size      metric        mean      median      stddev  95% CI
-aes     AES-256-GCM enc          -     1 KiB     latency       0.001       0.001       0.000  [0.001, 0.001] ms/op
-aes     AES-256-GCM enc          -     1 KiB  throughput     705.878     713.241      54.452  [694.988, 716.768] MB/s
-aes     AES-256-GCM dec          -     1 KiB     latency       0.001       0.001       0.000  [0.001, 0.001] ms/op
-aes     AES-256-GCM dec          -     1 KiB  throughput     777.520     769.231      71.166  [763.287, 791.753] MB/s
-aes     AES-256-GCM enc          -     1 MiB     latency       0.616       0.619       0.030  [0.610, 0.622] ms/op
-aes     AES-256-GCM enc          -     1 MiB  throughput    1706.376    1692.625      81.596  [1690.056, 1722.695] MB/s
-aes     AES-256-GCM dec          -     1 MiB     latency       0.737       0.712       0.080  [0.721, 0.753] ms/op
-aes     AES-256-GCM dec          -     1 MiB  throughput    1435.595    1472.420     114.697  [1412.655, 1458.534] MB/s
-aes     AES-256-GCM enc          -   100 MiB     latency      66.167      66.244       1.607  [65.845, 66.488] ms/op
-aes     AES-256-GCM enc          -   100 MiB  throughput    1585.719    1582.907      40.362  [1577.647, 1593.792] MB/s
-aes     AES-256-GCM dec          -   100 MiB     latency      67.958      66.317       5.479  [66.862, 69.053] ms/op
-aes     AES-256-GCM dec          -   100 MiB  throughput    1550.989    1581.155     101.244  [1530.740, 1571.238] MB/s
-rsa     RSA-3072 keygen       3072         -     latency     207.952     169.715     160.855  [175.781, 240.123] ms/op
-rsa     RSA-3072 OAEP enc     3072      32 B     latency       0.068       0.068       0.003  [0.067, 0.069] ms/op
-rsa     RSA-3072 OAEP dec     3072      32 B     latency       2.220       2.102       0.368  [2.147, 2.294] ms/op
-hybrid  Hybrid-3072 enc       3072     1 KiB     latency       0.076       0.075       0.004  [0.075, 0.077] ms/op
-hybrid  Hybrid-3072 enc       3072     1 KiB  throughput      13.521      13.673       0.638  [13.394, 13.649] MB/s
-hybrid  Hybrid-3072 dec       3072     1 KiB     latency       2.070       1.985       0.188  [2.032, 2.108] ms/op
-hybrid  Hybrid-3072 dec       3072     1 KiB  throughput       0.498       0.516       0.037  [0.491, 0.505] MB/s
-hybrid  Hybrid-3072 enc       3072     1 MiB     latency       0.711       0.706       0.020  [0.707, 0.715] ms/op
-hybrid  Hybrid-3072 enc       3072     1 MiB  throughput    1475.844    1485.729      37.768  [1468.290, 1483.398] MB/s
-hybrid  Hybrid-3072 dec       3072     1 MiB     latency       2.710       2.645       0.142  [2.682, 2.738] ms/op
-hybrid  Hybrid-3072 dec       3072     1 MiB  throughput     387.910     396.462      18.717  [384.167, 391.653] MB/s
-hybrid  Hybrid-3072 enc       3072   100 MiB     latency      65.843      65.738       2.593  [65.324, 66.361] ms/op
-hybrid  Hybrid-3072 enc       3072   100 MiB  throughput    1594.754    1595.090      57.329  [1583.288, 1606.220] MB/s
-hybrid  Hybrid-3072 dec       3072   100 MiB     latency      70.658      67.951       7.062  [69.245, 72.070] ms/op
-hybrid  Hybrid-3072 dec       3072   100 MiB  throughput    1496.308    1543.126     125.211  [1471.265, 1521.350] MB/s
-rsa     RSA-4096 keygen       4096         -     latency     569.790     462.598     365.953  [496.600, 642.981] ms/op
-rsa     RSA-4096 OAEP enc     4096      32 B     latency       0.095       0.094       0.006  [0.094, 0.096] ms/op
-rsa     RSA-4096 OAEP dec     4096      32 B     latency       4.523       4.376       0.429  [4.437, 4.608] ms/op
-hybrid  Hybrid-4096 enc       4096     1 KiB     latency       0.108       0.105       0.008  [0.107, 0.110] ms/op
-hybrid  Hybrid-4096 enc       4096     1 KiB  throughput       9.510       9.778       0.592  [9.392, 9.629] MB/s
-hybrid  Hybrid-4096 dec       4096     1 KiB     latency       4.573       4.497       0.240  [4.525, 4.621] ms/op
-hybrid  Hybrid-4096 dec       4096     1 KiB  throughput       0.224       0.228       0.011  [0.222, 0.227] MB/s
-hybrid  Hybrid-4096 enc       4096     1 MiB     latency       0.807       0.783       0.061  [0.795, 0.819] ms/op
-hybrid  Hybrid-4096 enc       4096     1 MiB  throughput    1305.671    1339.824      83.095  [1289.052, 1322.290] MB/s
-hybrid  Hybrid-4096 dec       4096     1 MiB     latency       5.342       5.253       0.331  [5.275, 5.408] ms/op
-hybrid  Hybrid-4096 dec       4096     1 MiB  throughput     196.983     199.608      11.101  [194.763, 199.203] MB/s
-hybrid  Hybrid-4096 enc       4096   100 MiB     latency      66.471      66.684       2.536  [65.964, 66.979] ms/op
-hybrid  Hybrid-4096 enc       4096   100 MiB  throughput    1579.649    1572.463      57.586  [1568.132, 1591.166] MB/s
-hybrid  Hybrid-4096 dec       4096   100 MiB     latency      71.355      71.425       3.660  [70.623, 72.087] ms/op
-hybrid  Hybrid-4096 dec       4096   100 MiB  throughput    1472.688    1468.072      63.298  [1460.028, 1485.347] MB/s
+aes     AES-256-GCM enc          -     1 KiB     latency       0.005       0.005       0.001  [0.005, 0.005] ms/op
+aes     AES-256-GCM enc          -     1 KiB  throughput     225.615     221.737      44.388  [216.738, 234.493] MB/s
+aes     AES-256-GCM dec          -     1 KiB     latency       0.005       0.005       0.001  [0.005, 0.005] ms/op
+aes     AES-256-GCM dec          -     1 KiB  throughput     215.837     199.513      49.608  [205.915, 225.758] MB/s
+aes     AES-256-GCM enc          -     1 MiB     latency       1.604       1.598       0.243  [1.556, 1.653] ms/op
+aes     AES-256-GCM enc          -     1 MiB  throughput     665.995     656.108      86.271  [648.741, 683.250] MB/s
+aes     AES-256-GCM dec          -     1 MiB     latency       1.077       1.060       0.091  [1.059, 1.095] ms/op
+aes     AES-256-GCM dec          -     1 MiB  throughput     980.327     989.610      78.819  [964.563, 996.091] MB/s
+aes     AES-256-GCM enc          -   100 MiB     latency      91.977      89.720      16.385  [88.700, 95.254] ms/op
+aes     AES-256-GCM enc          -   100 MiB  throughput    1167.397    1168.718     166.402  [1134.117, 1200.678] MB/s
+aes     AES-256-GCM dec          -   100 MiB     latency     160.138     115.309      72.876  [145.563, 174.714] ms/op
+aes     AES-256-GCM dec          -   100 MiB  throughput     768.286     909.363     267.046  [714.877, 821.695] MB/s
+rsa     RSA-3072 keygen       3072         -     latency     644.355     501.331     505.031  [543.349, 745.361] ms/op
+rsa     RSA-3072 OAEP enc     3072      32 B     latency       0.181       0.172       0.028  [0.175, 0.186] ms/op
+rsa     RSA-3072 OAEP dec     3072      32 B     latency       4.839       5.396       1.054  [4.628, 5.049] ms/op
+hybrid  Hybrid-3072 enc       3072     1 KiB     latency       0.116       0.115       0.008  [0.114, 0.118] ms/op
+hybrid  Hybrid-3072 enc       3072     1 KiB  throughput       8.867       8.942       0.617  [8.744, 8.991] MB/s
+hybrid  Hybrid-3072 dec       3072     1 KiB     latency       3.687       3.370       1.269  [3.433, 3.941] ms/op
+hybrid  Hybrid-3072 dec       3072     1 KiB  throughput       0.306       0.304       0.090  [0.288, 0.324] MB/s
+hybrid  Hybrid-3072 enc       3072     1 MiB     latency       0.948       0.934       0.052  [0.938, 0.959] ms/op
+hybrid  Hybrid-3072 enc       3072     1 MiB  throughput    1108.819    1122.334      56.772  [1097.465, 1120.174] MB/s
+hybrid  Hybrid-3072 dec       3072     1 MiB     latency       3.986       3.959       0.226  [3.941, 4.032] ms/op
+hybrid  Hybrid-3072 dec       3072     1 MiB  throughput     263.832     264.832      14.300  [260.972, 266.692] MB/s
+hybrid  Hybrid-3072 enc       3072   100 MiB     latency      92.582      91.099      13.154  [89.951, 95.213] ms/op
+hybrid  Hybrid-3072 enc       3072   100 MiB  throughput    1154.694    1151.026     159.653  [1122.763, 1186.625] MB/s
+hybrid  Hybrid-3072 dec       3072   100 MiB     latency      69.342      66.960       8.487  [67.645, 71.040] ms/op
+hybrid  Hybrid-3072 dec       3072   100 MiB  throughput    1532.373    1565.981     168.680  [1498.637, 1566.109] MB/s
+rsa     RSA-4096 keygen       4096         -     latency    1003.308     797.819     719.703  [859.368, 1147.249] ms/op
+rsa     RSA-4096 OAEP enc     4096      32 B     latency       0.168       0.157       0.024  [0.163, 0.172] ms/op
+rsa     RSA-4096 OAEP dec     4096      32 B     latency       6.573       6.080       1.576  [6.258, 6.888] ms/op
+hybrid  Hybrid-4096 enc       4096     1 KiB     latency       0.186       0.184       0.016  [0.182, 0.189] ms/op
+hybrid  Hybrid-4096 enc       4096     1 KiB  throughput       5.554       5.578       0.451  [5.464, 5.644] MB/s
+hybrid  Hybrid-4096 dec       4096     1 KiB     latency       7.974       8.094       2.120  [7.550, 8.398] ms/op
+hybrid  Hybrid-4096 dec       4096     1 KiB  throughput       0.138       0.127       0.038  [0.130, 0.145] MB/s
+hybrid  Hybrid-4096 enc       4096     1 MiB     latency       1.324       1.295       0.108  [1.302, 1.346] ms/op
+hybrid  Hybrid-4096 enc       4096     1 MiB  throughput     796.309     809.606      54.146  [785.480, 807.138] MB/s
+hybrid  Hybrid-4096 dec       4096     1 MiB     latency      10.007       9.164       2.792  [9.448, 10.565] ms/op
+hybrid  Hybrid-4096 dec       4096     1 MiB  throughput     109.919     114.430      19.596  [106.000, 113.839] MB/s
+hybrid  Hybrid-4096 enc       4096   100 MiB     latency     109.340     108.363       7.547  [107.831, 110.850] ms/op
+hybrid  Hybrid-4096 enc       4096   100 MiB  throughput     963.308     967.650      63.319  [950.644, 975.972] MB/s
+hybrid  Hybrid-4096 dec       4096   100 MiB     latency     131.474     122.622      27.006  [126.073, 136.875] ms/op
+hybrid  Hybrid-4096 dec       4096   100 MiB  throughput     824.269     855.139     134.362  [797.396, 851.141] MB/s
 
 CSV written to d:\UIT\NT219\crypto-labs\lab3\Output\windows\csv\bench_windows_msvc.csv
 
