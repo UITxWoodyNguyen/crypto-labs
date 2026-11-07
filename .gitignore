@@ -37,6 +37,7 @@ lab-guide/
 !tests/vectors/*.json
 
 # Python venv (nếu dùng script benchmark/GUI)
+.venv/
 venv/
 __pycache__/
 
