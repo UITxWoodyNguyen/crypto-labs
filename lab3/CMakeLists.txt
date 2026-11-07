@@ -32,6 +32,26 @@ message(STATUS "Suggested build dir: ${CMAKE_SOURCE_DIR}/build_${PLATFORM_NAME}_
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake")
 
 # Lab 3: RSA Hybrid Encryption (needs both Crypto++ and OpenSSL)
+# Linux package-manager installations commonly use /usr/include/crypto++
+# and architecture-specific library directories. Seed the shared finder with
+# those paths without changing the finder used by the other labs.
+if(NOT WIN32)
+    find_path(CryptoPP_INCLUDE_DIR
+        NAMES aes.h
+        HINTS
+            "$ENV{HOME}/Desktop/nt219lib/cryptopp/include"
+            /usr/include/crypto++
+            /usr/local/include/crypto++
+    )
+    find_library(CryptoPP_LIBRARY
+        NAMES cryptopp
+        HINTS
+            "$ENV{HOME}/Desktop/nt219lib/cryptopp/gcc/lib"
+            /usr/lib
+            /usr/lib64
+            /usr/local/lib
+    )
+endif()
 find_package(CryptoPP REQUIRED)
 
 if(WIN32)

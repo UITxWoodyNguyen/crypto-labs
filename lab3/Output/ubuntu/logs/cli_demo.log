@@ -1,0 +1,300 @@
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool keygen --bits 3072 --pub /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/pub.pem --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem
+[rc=0] [0.18s]
+--- stdout ---
+Generated RSA-3072 key pair:
+  public  (PEM/SPKI) : /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/pub.pem
+  public  (DER)      : /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/pub.der
+  private (PEM/PKCS8): /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem
+  private (DER)      : /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.der
+  metadata           : /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/keys_metadata.json
+Keep the private key secret (file permissions restricted where supported).
+
+--- stderr ---
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool keygen --bits 4096 --pub /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k4096/pub.pem --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k4096/priv.pem
+[rc=0] [1.14s]
+--- stdout ---
+Generated RSA-4096 key pair:
+  public  (PEM/SPKI) : /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k4096/pub.pem
+  public  (DER)      : /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k4096/pub.der
+  private (PEM/PKCS8): /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k4096/priv.pem
+  private (DER)      : /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k4096/priv.der
+  metadata           : /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k4096/keys_metadata.json
+Keep the private key secret (file permissions restricted where supported).
+
+--- stderr ---
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool keygen --bits 3072 --pub /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/other/pub.pem --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/other/priv.pem
+[rc=0] [0.18s]
+--- stdout ---
+Generated RSA-3072 key pair:
+  public  (PEM/SPKI) : /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/other/pub.pem
+  public  (DER)      : /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/other/pub.der
+  private (PEM/PKCS8): /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/other/priv.pem
+  private (DER)      : /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/other/priv.der
+  metadata           : /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/other/keys_metadata.json
+Keep the private key secret (file permissions restricted where supported).
+
+--- stderr ---
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool keygen --bits 2048 --pub /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/p2048.pem --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/s2048.pem
+[rc=2] [0.00s]
+--- stdout ---
+
+--- stderr ---
+Usage error: unsupported key size (supported: 3072, 4096)
+(run 'rsatool --help')
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool encrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/msg_small.bin --pub /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/pub.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/ct_small.bin
+[rc=0] [0.00s]
+--- stdout ---
+
+--- stderr ---
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/ct_small.bin --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/dec_small.bin
+[rc=0] [0.01s]
+--- stdout ---
+
+--- stderr ---
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool encrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/m318.bin --pub /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/pub.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/ct318.bin
+[rc=0] [0.00s]
+--- stdout ---
+
+--- stderr ---
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool encrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/m319.bin --pub /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/pub.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/ct319.bin
+[rc=0] [0.00s]
+--- stdout ---
+
+--- stderr ---
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/ct318.bin --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/d318.bin
+[rc=0] [0.01s]
+--- stdout ---
+
+--- stderr ---
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/ct319.bin --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/d319.bin
+[rc=0] [0.01s]
+--- stdout ---
+
+--- stderr ---
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool encrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/big.bin --pub /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/pub.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/big.env.json
+[rc=0] [0.01s]
+--- stdout ---
+
+--- stderr ---
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/big.env.json --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/big.dec
+[rc=0] [0.02s]
+--- stdout ---
+
+--- stderr ---
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool encrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/big.bin --pub /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k4096/pub.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/big4.env.json
+[rc=0] [0.01s]
+--- stdout ---
+
+--- stderr ---
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/big4.env.json --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k4096/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/big4.dec
+[rc=0] [0.02s]
+--- stdout ---
+
+--- stderr ---
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool encrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/msg_small.bin --pub /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/pub.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/ct_hex.txt --encode hex
+[rc=0] [0.01s]
+--- stdout ---
+
+--- stderr ---
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/ct_hex.txt --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/dec_hex.bin --encode hex
+[rc=0] [0.01s]
+--- stdout ---
+
+--- stderr ---
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool encrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/msg_small.bin --pub /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/pub.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/ct_base64.txt --encode base64
+[rc=0] [0.00s]
+--- stdout ---
+
+--- stderr ---
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/ct_base64.txt --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/dec_base64.bin --encode base64
+[rc=0] [0.01s]
+--- stdout ---
+
+--- stderr ---
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool encrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/msg_small.bin --pub /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/pub.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/ct_lbl.bin --label SECURE_CONTEXT
+[rc=0] [0.00s]
+--- stdout ---
+
+--- stderr ---
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/ct_lbl.bin --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/o1.bin --label WRONG_CONTEXT
+[rc=3] [0.01s]
+--- stdout ---
+
+--- stderr ---
+Error: decryption failed
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/ct_lbl.bin --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/o2.bin
+[rc=3] [0.01s]
+--- stdout ---
+
+--- stderr ---
+Error: decryption failed
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool encrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/big.bin --pub /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/pub.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/env_lbl.json --label SECURE_CONTEXT
+[rc=0] [0.01s]
+--- stdout ---
+
+--- stderr ---
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/env_lbl.json --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/o3.bin --label WRONG_CONTEXT
+[rc=3] [0.01s]
+--- stdout ---
+
+--- stderr ---
+Error: decryption failed
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/ct_small.bin --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/other/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/o4.bin
+[rc=3] [0.01s]
+--- stdout ---
+
+--- stderr ---
+Error: decryption failed
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/big.env.json --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/other/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/o5.bin
+[rc=3] [0.02s]
+--- stdout ---
+
+--- stderr ---
+Error: decryption failed
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/ct_flip.bin --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/o6.bin
+[rc=3] [0.01s]
+--- stdout ---
+
+--- stderr ---
+Error: decryption failed
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/env_ciphertext.json --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/o_ciphertext.bin
+[rc=3] [0.02s]
+--- stdout ---
+
+--- stderr ---
+Error: decryption failed
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/env_iv.json --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/o_iv.bin
+[rc=3] [0.02s]
+--- stdout ---
+
+--- stderr ---
+Error: decryption failed
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/env_tag.json --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/o_tag.bin
+[rc=3] [0.02s]
+--- stdout ---
+
+--- stderr ---
+Error: decryption failed
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/env_wrapped_key.json --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/o_wrapped_key.bin
+[rc=3] [0.02s]
+--- stdout ---
+
+--- stderr ---
+Error: decryption failed
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/envh_hash.json --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/oh_hash.bin
+[rc=1] [0.01s]
+--- stdout ---
+
+--- stderr ---
+Error: malformed input
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/envh_mode.json --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/oh_mode.bin
+[rc=1] [0.01s]
+--- stdout ---
+
+--- stderr ---
+Error: malformed input
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/envh_rsa_modulus.json --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/oh_rsa_modulus.bin
+[rc=1] [0.01s]
+--- stdout ---
+
+--- stderr ---
+Error: malformed input
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/envh_label.json --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/oh_label.bin
+[rc=3] [0.01s]
+--- stdout ---
+
+--- stderr ---
+Error: decryption failed
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool decrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/env_trunc.json --priv /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/k3072/priv.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/o_trunc.bin
+[rc=1] [0.01s]
+--- stdout ---
+
+--- stderr ---
+Error: malformed input
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool encrypt --in /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/msg_small.bin --pub /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/pub_trunc.pem --out /home/dell/home-crypto/crypto-labs/lab3/Output/ubuntu/work/o_badkey.bin
+[rc=1] [0.00s]
+--- stdout ---
+
+--- stderr ---
+Error: malformed input
+
+
+$ /home/dell/home-crypto/crypto-labs/lab3/build_ubuntu_gcc/rsatool bogus-command
+[rc=2] [0.00s]
+--- stdout ---
+
+--- stderr ---
+Usage error: unknown command: bogus-command
+(run 'rsatool --help')
+
+

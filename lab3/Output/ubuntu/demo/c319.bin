@@ -1,0 +1,11 @@
+{
+  "mode": "RSA-OAEP-AES-GCM",
+  "rsa_modulus": 3072,
+  "hash": "SHA-256",
+  "mgf": "MGF1-SHA256",
+  "label": "",
+  "wrapped_key": "FUZH5XLD5+vSOUQ+0oahyukiqJGn2rm6DZChY9DMSkqqPuqz6bV0XZUwcGzrLqwhvDaYaRbi6fyZoaagAuLhruGwtz5DpBqPdHubENx/kEggrVuee19Z79Vsa0yWHcUiOoKNYHE2ElToqdgRyW0QhMboOpGI19M1KkUmaQ1HovBNSGU/sovdhLgflXY4gNkzo/bMTCU9SEH1UYEnT+B5WbGK34nEQ/QtzqJ/HnBHD+kLLm6RGm2f5fQLlRKEo52uxBXSewjBsqXtdTEwRdTWnzZseO4TutFEul3VVeyjXCLfFRLcuuDNMcAnhPh/OQuk0Ic1VdVFn/ox1QrWDEHHFoc7WyA44WUIwj3GBp2vUoBLH3Os3QpivJske8rrcuVPIseiYsa3qgEXFEZHdXPBgZ82koR2bznfRAFblzOhN/TOqUSZk9EYnFxaqM9hA7Elzs5XN6gED70JssO9npVzCZ28fXq59F7CLS+sRhja+bvYyKJcEn9te5UbR9/nrche",
+  "iv": "15mUkhZwMVOsDk8l",
+  "tag": "3CZoFHDYkBApqtU2BR+h+Q==",
+  "ciphertext": "u3ecFV/izFI3KIjaKk/AeyRjzhJOAgmVMIDz0ibsg10BlM6VYIBe52hwdNueew/y4PngvyTfbm47Tci1678n06t9JEhN4JiqzdEms91yyxL0WZiVOgxHacA9varhkhyGPXmLSFobQnFL7nIBsbgs/zaB2AFFl7pTCf4E59F3SidkzCkLOtbO5OZkgO1D9031a6YgYuV8dhBdrULz6KXFClXJ3+7BEQLgZK7oxhOhx8YBIQPzQJRqUgTwvTYYbQc00MbSTw6zX/01YSIXNcbkCGJ/cj6HmuP9zxaY7CwTuCLBfwXKry4EKDKyX/Hn98j5YMscWAmtexxPTmEdTxLNQUJU1Hk4+SsogaoP+9EQt0GqkPk/8XD00X5rwTGa4ki3PzGiHlH6XjKbhubsvg2U18IB/x6SBmVb8Cb4tDDstQ=="
+}

@@ -1,55 +1,49 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # scripts/demo.sh - Chạy Bước 4 (Kiểm tra thủ công rsatool)
-# Sinh toàn bộ kết quả vào: lab3/Output/windows/demo
+# Sinh toàn bộ kết quả vào: lab3/Output/ubuntu/demo
 #
 # Cách dùng:
 #     ./scripts/demo.sh [thư_mục_build]
 # Ví dụ:
 #     ./scripts/demo.sh
-#     ./scripts/demo.sh build_windows_msvc
 #     ./scripts/demo.sh build_ubuntu_gcc
+#     ./scripts/demo.sh build_ubuntu_clang
+#
+# Biến môi trường tuỳ chọn:
+#     DEMO_OUTPUT=/duong/dan/khac   # đổi thư mục xuất kết quả
 # ==============================================================================
 
 set -u
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+OS_NAME="ubuntu"
 
 # 1. Tìm binary rsatool
 BUILD_ARG="${1:-}"
 BIN=""
 
 if [[ -n "$BUILD_ARG" ]]; then
-    if [[ -x "$ROOT_DIR/$BUILD_ARG/Release/rsatool.exe" ]]; then
-        BIN="$ROOT_DIR/$BUILD_ARG/Release/rsatool.exe"
-    elif [[ -x "$ROOT_DIR/$BUILD_ARG/rsatool.exe" ]]; then
-        BIN="$ROOT_DIR/$BUILD_ARG/rsatool.exe"
-    elif [[ -x "$ROOT_DIR/$BUILD_ARG/rsatool" ]]; then
-        BIN="$ROOT_DIR/$BUILD_ARG/rsatool"
-    fi
+    for cand in \
+        "$ROOT_DIR/$BUILD_ARG/rsatool" \
+        "$ROOT_DIR/$BUILD_ARG/Release/rsatool"; do
+        if [[ -f "$cand" && -x "$cand" ]]; then BIN="$cand"; break; fi
+    done
 fi
 
 if [[ -z "$BIN" ]]; then
     for cand in \
-        "$ROOT_DIR/build_windows_msvc/Release/rsatool.exe" \
-        "$ROOT_DIR/build_windows_msvc/rsatool.exe" \
-        "$ROOT_DIR/build_windows_gcc/rsatool.exe" \
-        "$ROOT_DIR/build_windows_clang/rsatool.exe" \
         "$ROOT_DIR/build_ubuntu_gcc/rsatool" \
         "$ROOT_DIR/build_ubuntu_clang/rsatool" \
         "$ROOT_DIR/build_linux/rsatool" \
-        "$ROOT_DIR/build/Release/rsatool.exe" \
         "$ROOT_DIR/build/rsatool"; do
-        if [[ -x "$cand" || -f "$cand" ]]; then
-            BIN="$cand"
-            break
-        fi
+        if [[ -f "$cand" && -x "$cand" ]]; then BIN="$cand"; break; fi
     done
 fi
 
 if [[ -z "$BIN" ]]; then
     echo "[ERROR] Không tìm thấy rsatool!"
-    echo "Vui lòng build dự án trước hoặc truyền đúng thư mục build: ./scripts/demo.sh <build_dir>"
+    echo "Hãy build trước (scripts/build_linux.sh) hoặc truyền đúng thư mục build: ./scripts/demo.sh <build_dir>"
     exit 1
 fi
 
@@ -58,12 +52,17 @@ echo "CHẠY BƯỚC 4: DEMO THỦ CÔNG RSATOOL"
 echo "Binary: $BIN"
 echo "=============================================================================="
 
-# 2. Tạo thư mục làm việc tại Output/windows/demo (hoặc tuỳ biến qua DEMO_OUTPUT)
-DEMO_DIR="${DEMO_OUTPUT:-$ROOT_DIR/Output/windows/demo}"
+# 2. Thư mục làm việc: Output/ubuntu/demo (hoặc DEMO_OUTPUT)
+DEMO_DIR="${DEMO_OUTPUT:-$ROOT_DIR/Output/$OS_NAME/demo}"
 mkdir -p "$DEMO_DIR"
-cd "$DEMO_DIR"
+cd "$DEMO_DIR" || exit 1
 echo "Thư mục làm việc: $(pwd)"
 echo
+
+PASS_COUNT=0
+FAIL_COUNT=0
+pass() { echo "[PASS] $1"; PASS_COUNT=$((PASS_COUNT + 1)); }
+fail() { echo "[FAIL] $1"; FAIL_COUNT=$((FAIL_COUNT + 1)); }
 
 # ------------------------------------------------------------------------------
 # 4.1 Sinh khoá
@@ -72,9 +71,17 @@ echo "==========================================================================
 echo "[4.1] Sinh khoá RSA-3072: pub.pem, priv.pem, pub.der, priv.der, keys_metadata.json"
 echo "=============================================================================="
 "$BIN" keygen --bits 3072 --pub pub.pem --priv priv.pem
+rc=$?
+if [[ $rc -eq 0 && -f pub.pem && -f priv.pem && -f pub.der && -f priv.der && -f keys_metadata.json ]]; then
+    pass "keygen tạo đủ 5 file"
+else
+    fail "keygen (rc=$rc) thiếu file"
+fi
 echo
 echo "Nội dung keys_metadata.json:"
 cat keys_metadata.json
+echo
+ls -l priv.pem
 echo
 
 # ------------------------------------------------------------------------------
@@ -92,21 +99,23 @@ echo "2. Mã hoá ra tệp ct.bin:"
 echo
 
 echo "3. Giải mã từ ct.bin:"
-"$BIN" decrypt --in ct.bin --priv priv.pem --label ctx
+out="$("$BIN" decrypt --in ct.bin --priv priv.pem --label ctx)"
+echo "$out"
+if [[ "$out" == "hello" && "$(stat -c %s ct.bin)" -eq 384 ]]; then
+    pass "round trip RSA-OAEP trực tiếp (ciphertext 384 byte)"
+else
+    fail "round trip RSA-OAEP trực tiếp"
+fi
 echo
 
 # ------------------------------------------------------------------------------
 # 4.3 Mã hoá tệp lớn (tự chuyển sang hybrid) rồi giải mã và so sánh
 # ------------------------------------------------------------------------------
 echo "=============================================================================="
-echo "[4.3] Mã hoá tệp lớn 1 MiB (tự chuyển sang hybrid) và giải mã kiểm tra hash"
+echo "[4.3] Mã hoá tệp lớn 1 MiB (tự chuyển sang hybrid) và giải mã kiểm tra dữ liệu"
 echo "=============================================================================="
 echo "Đang tạo tệp ngẫu nhiên 1 MiB (big.bin)..."
-if command -v openssl >/dev/null 2>&1; then
-    openssl rand -out big.bin 1048576 2>/dev/null || head -c 1048576 /dev/urandom > big.bin
-else
-    head -c 1048576 /dev/urandom > big.bin
-fi
+head -c 1048576 /dev/urandom > big.bin
 
 echo "Mã hoá big.bin -> big.env.json:"
 "$BIN" encrypt --in big.bin --pub pub.pem --out big.env.json --verbose
@@ -118,98 +127,80 @@ echo
 
 echo "So sánh dữ liệu giữa big.bin và big.dec:"
 if cmp -s big.bin big.dec; then
-    echo "[PASS] Hash/dữ liệu trùng khớp (True)"
+    pass "hybrid 1 MiB: dữ liệu trùng khớp"
 else
-    echo "[FAIL] Dữ liệu không khớp!"
-    exit 1
+    fail "hybrid 1 MiB: dữ liệu không khớp"
 fi
+echo
+
+echo "Ranh giới 318 / 319 byte:"
+head -c 318 /dev/urandom > m318.bin
+head -c 319 /dev/urandom > m319.bin
+"$BIN" encrypt --in m318.bin --pub pub.pem --out c318.bin
+"$BIN" encrypt --in m319.bin --pub pub.pem --out c319.bin
+if [[ "$(stat -c %s c318.bin)" -eq 384 ]]; then pass "318 B -> RSA-OAEP trực tiếp (384 B)"; else fail "318 B"; fi
+if [[ "$(head -c 1 c319.bin)" == "{" ]]; then pass "319 B -> hybrid (JSON envelope)"; else fail "319 B"; fi
 echo
 
 # ------------------------------------------------------------------------------
 # 4.4 Thử các trường hợp phải thất bại (fail-closed)
+# Mỗi lệnh phải báo lỗi, exit code != 0 và KHÔNG tạo file đầu ra
 # ------------------------------------------------------------------------------
 echo "=============================================================================="
 echo "[4.4] Thử các trường hợp phải thất bại (fail-closed)"
-# Mỗi lệnh phải báo lỗi, $? != 0 và KHÔNG tạo file đầu ra
 echo "=============================================================================="
 
-echo "--- 1. Sai label (yêu cầu exit code 3, o1.bin KHÔNG được tạo) ---"
+echo "--- 1. Sai label (mong đợi exit code 3, o1.bin KHÔNG được tạo) ---"
 "$BIN" encrypt --text "secret" --pub pub.pem --label SECURE_CONTEXT --out c1.bin >/dev/null
 rm -f o1.bin
-set +e
 "$BIN" decrypt --in c1.bin --priv priv.pem --label WRONG_CONTEXT --out o1.bin
 rc=$?
-set -e
-exists="False"
-[[ -f o1.bin ]] && exists="True"
+exists="False"; [[ -f o1.bin ]] && exists="True"
 echo "Exit code: $rc (mong đợi: 3) | o1.bin tồn tại: $exists"
-if [[ $rc -ne 0 && "$exists" == "False" ]]; then
-    echo "[PASS] Fail-closed đúng yêu cầu."
-else
-    echo "[FAIL] Kiểm tra thất bại!"
-fi
+if [[ $rc -eq 3 && "$exists" == "False" ]]; then pass "sai label -> fail-closed"; else fail "sai label"; fi
 echo
 
-echo "--- 2. Sai khoá private (yêu cầu exit code != 0, o2.bin KHÔNG được tạo) ---"
+echo "--- 2. Sai khoá private (mong đợi exit code != 0, o2.bin KHÔNG được tạo) ---"
 mkdir -p other
 "$BIN" keygen --bits 3072 --pub other/pub.pem --priv other/priv.pem >/dev/null
 rm -f o2.bin
-set +e
 "$BIN" decrypt --in big.env.json --priv other/priv.pem --out o2.bin
 rc=$?
-set -e
-exists="False"
-[[ -f o2.bin ]] && exists="True"
+exists="False"; [[ -f o2.bin ]] && exists="True"
 echo "Exit code: $rc | o2.bin tồn tại: $exists"
-if [[ $rc -ne 0 && "$exists" == "False" ]]; then
-    echo "[PASS] Fail-closed đúng yêu cầu."
-else
-    echo "[FAIL] Kiểm tra thất bại!"
-fi
+if [[ $rc -ne 0 && "$exists" == "False" ]]; then pass "sai khoá private -> fail-closed"; else fail "sai khoá private"; fi
 echo
 
-echo "--- 3. Sửa 1 byte của bản mã RSA (yêu cầu exit code != 0, o3.bin KHÔNG được tạo) ---"
+echo "--- 3. Sửa 1 byte của bản mã RSA (mong đợi exit code != 0, o3.bin KHÔNG được tạo) ---"
 cp ct.bin ct_bad.bin
 if command -v python3 >/dev/null 2>&1; then
     python3 -c "b = bytearray(open('ct_bad.bin','rb').read()); b[10] ^= 1; open('ct_bad.bin','wb').write(b)"
-elif command -v perl >/dev/null 2>&1; then
-    perl -e 'open(my $f, "+<", "ct_bad.bin"); binmode $f; seek($f, 10, 0); read($f, my $b, 1); seek($f, 10, 0); print $f chr(ord($b) ^ 1);'
-elif command -v powershell >/dev/null 2>&1; then
-    powershell -NoProfile -Command "$ct = [IO.File]::ReadAllBytes('ct.bin'); $ct[10] = $ct[10] -bxor 1; [IO.File]::WriteAllBytes('ct_bad.bin', $ct)"
+else
+    # dự phòng không cần python: ghi đè byte thứ 11 bằng giá trị khác
+    orig=$(dd if=ct_bad.bin bs=1 skip=10 count=1 2>/dev/null | od -An -tu1 | tr -d ' ')
+    new=$(( (orig ^ 1) & 255 ))
+    printf "$(printf '\\%03o' "$new")" | dd of=ct_bad.bin bs=1 seek=10 count=1 conv=notrunc 2>/dev/null
 fi
 rm -f o3.bin
-set +e
 "$BIN" decrypt --in ct_bad.bin --priv priv.pem --label ctx --out o3.bin
 rc=$?
-set -e
-exists="False"
-[[ -f o3.bin ]] && exists="True"
+exists="False"; [[ -f o3.bin ]] && exists="True"
 echo "Exit code: $rc | o3.bin tồn tại: $exists"
-if [[ $rc -ne 0 && "$exists" == "False" ]]; then
-    echo "[PASS] Fail-closed đúng yêu cầu."
-else
-    echo "[FAIL] Kiểm tra thất bại!"
-fi
+if [[ $rc -ne 0 && "$exists" == "False" ]]; then pass "bản mã RSA bị sửa -> fail-closed"; else fail "bản mã RSA bị sửa"; fi
 echo
 
-echo "--- 4. Khoá 2048 bit bị từ chối (yêu cầu exit code 2, p2048.pem KHÔNG được tạo) ---"
+echo "--- 4. Khoá 2048 bit bị từ chối (mong đợi exit code 2, p2048.pem KHÔNG được tạo) ---"
 rm -f p2048.pem s2048.pem
-set +e
 "$BIN" keygen --bits 2048 --pub p2048.pem --priv s2048.pem
 rc=$?
-set -e
-exists="False"
-[[ -f p2048.pem ]] && exists="True"
+exists="False"; [[ -f p2048.pem ]] && exists="True"
 echo "Exit code: $rc (mong đợi: 2) | p2048.pem tồn tại: $exists"
-if [[ $rc -eq 2 && "$exists" == "False" ]]; then
-    echo "[PASS] Từ chối khoá 2048 bit đúng yêu cầu."
-else
-    echo "[FAIL] Kiểm tra thất bại!"
-fi
+if [[ $rc -eq 2 && "$exists" == "False" ]]; then pass "từ chối khoá 2048 bit"; else fail "khoá 2048 bit"; fi
 echo
 
-cd "$ROOT_DIR"
+cd "$ROOT_DIR" || exit 1
 echo "=============================================================================="
-echo "HOÀN THÀNH BƯỚC 4 THÀNH CÔNG!"
+echo "KẾT QUẢ BƯỚC 4: $PASS_COUNT PASS, $FAIL_COUNT FAIL"
 echo "Toàn bộ artifacts đã được lưu tại: $DEMO_DIR"
 echo "=============================================================================="
+[[ $FAIL_COUNT -eq 0 ]]

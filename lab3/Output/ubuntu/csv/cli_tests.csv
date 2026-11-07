@@ -1,0 +1,31 @@
+test,expected,result,detail
+keygen RSA-3072,"rc=0, PEM+DER+metadata",PASS,rc=0
+metadata JSON fields,"modulus_bits=3072, SHA-256, MGF1-SHA256",PASS,"{'creation_time': '2026-11-07T15:02:41Z', 'modulus_bits': 3072, 'hash': 'SHA-256', 'mgf': 'MGF1-SHA256'}"
+keygen RSA-4096,rc=0,PASS,rc=0
+keygen second RSA-3072 (wrong-key tests),rc=0,PASS,rc=0
+keygen RSA-2048 rejected,rc=2 (unsupported size),PASS,rc=2
+direct RSA-OAEP round trip (100 B),"ct=384 B, plaintext equal",PASS,"rc=0,0"
+318 B -> direct RSA-OAEP,384-byte raw ciphertext,PASS,
+319 B -> automatic hybrid,JSON envelope,PASS,
+318/319 B round trip,plaintext equal,PASS,
+hybrid round trip 1 MiB (RSA-3072),plaintext equal,PASS,
+hybrid round trip 1 MiB (RSA-4096),plaintext equal,PASS,
+--encode hex round trip,plaintext equal,PASS,
+--encode base64 round trip,plaintext equal,PASS,
+wrong OAEP label (direct),fail-closed,PASS,rc=3
+missing OAEP label (direct),fail-closed,PASS,rc=3
+wrong OAEP label (hybrid),fail-closed,PASS,rc=3
+wrong private key (direct),fail-closed,PASS,rc=3
+wrong private key (hybrid),fail-closed,PASS,rc=3
+altered RSA ciphertext (1 bit),fail-closed,PASS,rc=3
+tampered envelope field 'ciphertext',fail-closed,PASS,rc=3
+tampered envelope field 'iv',fail-closed,PASS,rc=3
+tampered envelope field 'tag',fail-closed,PASS,rc=3
+tampered envelope field 'wrapped_key',fail-closed,PASS,rc=3
+tampered envelope header 'hash',fail-closed,PASS,rc=1
+tampered envelope header 'mode',fail-closed,PASS,rc=1
+tampered envelope header 'rsa_modulus',fail-closed,PASS,rc=1
+tampered envelope header 'label',fail-closed,PASS,rc=3
+truncated envelope JSON,fail-closed,PASS,rc=1
+corrupted public key PEM,rc!=0,PASS,rc=1
+unknown command,rc=2,PASS,rc=2

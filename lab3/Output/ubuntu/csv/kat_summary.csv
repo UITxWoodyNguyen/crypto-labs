@@ -1,0 +1,10 @@
+status,case
+PASS,AES-256-GCM TC13 (empty plaintext)
+PASS,AES-256-GCM TC14 (16 zero bytes)
+PASS,AES-256-GCM TC16 (with AAD)
+PASS,RSA-3072 OAEP round-trip (empty message)
+PASS,"RSA-3072 OAEP round-trip (32-byte key, label)"
+PASS,RSA-3072 OAEP round-trip (max 318 bytes)
+PASS,Hybrid RSA-3072 round-trip 319 B (just above OAEP limit)
+PASS,Hybrid RSA-3072 round-trip 1 KiB with label
+PASS,Hybrid RSA-3072 round-trip 1 MiB
