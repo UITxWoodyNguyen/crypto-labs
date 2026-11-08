@@ -1,0 +1,7 @@
+{
+  "ctest": true,
+  "kat": true,
+  "cli_tests_passed": 30,
+  "cli_tests_total": 30,
+  "bench_csv": "Output\\windows\\csv\\bench_windows_msvc.csv"
+}
